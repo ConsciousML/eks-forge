@@ -1,0 +1,8 @@
+[project]
+name = "eks-forge"
+version = "0.1.0"
+description = "EKS Forge is a fully-fledged platform for building and maintaining EKS Clusters."
+requires-python = "==3.13.1"
+dependencies = [
+    "mkdocs-material==9.7.7",
+]
