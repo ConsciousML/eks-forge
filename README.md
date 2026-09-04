@@ -5,7 +5,7 @@
 [![CI](https://github.com/ConsciousML/eks-forge/actions/workflows/ci.yaml/badge.svg)](https://github.com/ConsciousML/terragrunt-template-catalog-eks/actions/workflows/ci.yaml)
 [![PR's Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
 
-EKS Forge is a fully-fledged platform for building and maintaining EKS Clusters.
+EKS Forge is an open-source platform for building and operating EKS clusters
 
 ## Getting Started
 

@@ -11,7 +11,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'EKS Forge',
-  tagline: 'Documentation for the EKS Forge platform',
+  tagline: 'An open-source platform for building and operating EKS clusters',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
