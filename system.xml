@@ -4,14 +4,20 @@
     </context>
 
     <architecture>
-        Three repos:
-        1. This repository (EKS Forge): is the repository for hosting the documentation 
+        Four repos:
+        1. This repository (EKS Forge): is the repository for hosting the documentation
         2. `terragrunt-template-catalog-eks`: Terraform modules, Terragrunt units, and stack configs
         3. `terragrunt-template-live-eks`: live deployments (`dev`, `staging`, `prod`) that
           instantiate this catalog's stacks
         4. `argocd-app-of-apps-template`: GitOps repo owning the Kubernetes-side Helm charts and
           manifests, deployed through ArgoCD
     </architecture>
+
+    <site>
+        - `site/`: the Docusaurus site
+        - `site/docs/`: one dir per top-level category, order set by each dir's
+          `_category_.json` `position`
+    </site>
 
     <commits>
         - Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `revert:`, optional scope like
