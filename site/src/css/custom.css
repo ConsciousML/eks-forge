@@ -37,6 +37,12 @@
   letter-spacing: 0em;
 }
 
+.hero__subtitle {
+  font-family: 'Agdasima', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
 .navbar__title {
   font-family: 'Agdasima', sans-serif;
   font-weight: 700;
