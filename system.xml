@@ -5,7 +5,7 @@
 
     <architecture>
         Three repos:
-        1. This repository (EKS Forge): is the repository hosting documentation and the material for mkdocs site
+        1. This repository (EKS Forge): is the repository for hosting the documentation 
         2. `terragrunt-template-catalog-eks`: Terraform modules, Terragrunt units, and stack configs
         3. `terragrunt-template-live-eks`: live deployments (`dev`, `staging`, `prod`) that
           instantiate this catalog's stacks
@@ -16,7 +16,7 @@
     <commits>
         - Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `revert:`, optional scope like
         `fix(ci):`). Subject line only, no body.
-        - NEVER co-author commits (mentioning Claude etc.)
+        - All commits, and PRs should be using a single author. No Claude Code co-authoring.
         - Use one line style commits (no body)
     </commits>
 
