@@ -16,7 +16,7 @@
     <commits>
         - Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `revert:`, optional scope like
         `fix(ci):`). Subject line only, no body.
-        - NEVER co-author commits (mentioning Claude etc.)
+        - All commits, and PRs should be using a single author. No Claude Code co-authoring.
         - Use one line style commits (no body)
     </commits>
 
