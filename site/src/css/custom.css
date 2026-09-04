@@ -29,6 +29,22 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
+.hero__title {
+  font-family: 'Agdasima', sans-serif;
+  font-weight: 700;
+  font-size: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0em;
+}
+
+.navbar__title {
+  font-family: 'Agdasima', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0em;
+}
+
 .header-github-link:hover {
   opacity: 0.6;
 }
