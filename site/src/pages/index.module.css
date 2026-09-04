@@ -22,3 +22,7 @@
   align-items: center;
   justify-content: center;
 }
+
+:global(body.homepage-dark [class*='toggle_']) {
+  display: none;
+}
