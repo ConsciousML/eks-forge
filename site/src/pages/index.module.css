@@ -9,6 +9,8 @@
   position: relative;
   overflow: hidden;
   font-family: 'Helvetica', 'Arial', sans-serif;
+  background-color: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
 }
 
 @media screen and (max-width: 996px) {
@@ -25,4 +27,8 @@
 
 :global(body.homepage-dark [class*='toggle_']) {
   display: none;
+}
+
+:global(body.homepage-dark .navbar) {
+  --ifm-navbar-background-color: var(--ifm-background-color);
 }
