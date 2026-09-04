@@ -1,0 +1,11 @@
+# uv
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# MkDocs / Material for MkDocs
+site/
+.cache/
