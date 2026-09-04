@@ -1,0 +1,103 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -c '{hookSpecificOutput: {hookEventName: \"PreToolUse\", permissionDecision: \"allow\", updatedInput: {command: (\"export PATH=\\\"$HOME/.local/share/mise/shims:$PATH\\\"; \" + .tool_input.command)}}}'"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": { 
+    "defaultMode": "default",
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(git show:*)",
+      "Bash(git blame:*)",
+      "Bash(git ls-files:*)",
+
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr checks:*)",
+
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(sort:*)",
+      "Bash(echo:*)",
+      "Bash(cd:*)",
+      "Bash(jq:*)",
+      "Bash(yq:*)",
+      "Bash(wc:*)",
+      "Bash(diff:*)",
+      "Bash(cut:*)",
+      "Bash(tr:*)",
+      "Bash(uniq:*)",
+      "Bash(column:*)",
+      "Bash(stat:*)",
+      "Bash(file:*)",
+
+      "Bash(source .env)",
+
+      "Edit(~/.claude/plans/**)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Bash(.env)",
+
+      "Bash(cat .env)",
+      "Bash(cat .env*)",
+      "Bash(cat * .env*)",
+      "Bash(head .env)",
+      "Bash(head .env*)",
+      "Bash(head * .env*)",
+      "Bash(tail .env)",
+      "Bash(tail .env*)",
+      "Bash(tail * .env*)",
+      "Bash(less .env)",
+      "Bash(less * .env*)",
+      "Bash(more .env)",
+      "Bash(more * .env*)",
+      "Bash(vim .env)",
+      "Bash(vim * .env*)",
+      "Bash(vi .env)",
+      "Bash(nano .env)",
+      "Bash(code .env)",
+      "Bash(open .env)",
+      "Bash(grep * .env*)",
+      "Bash(diff .env*)",
+      "Bash(diff * .env*)",
+      "Bash(strings .env*)",
+      "Bash(xxd .env*)",
+      "Bash(od .env*)",
+      "Bash(cp .env*)",
+      "Bash(mv .env*)",
+      "Bash(scp * .env*)",
+      "Bash(curl * .env*)",
+      "Bash(pbcopy < .env*)",
+
+      "Read(.git/**)",
+      "Edit(.git/**)",
+
+      "Edit(CLAUDE.md)",
+      "Edit(.claude/settings.json)",
+      "Edit(.claude/settings.local.json)",
+      "Edit(~/.claude/settings.json)",
+      "Edit(~/.claude/settings.local.json)",
+      "Edit(~/.claude/CLAUDE.md)",
+      "Edit(~/.claude/hooks/**)"
+    ]
+  }
+}
