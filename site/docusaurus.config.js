@@ -91,6 +91,10 @@ const config = {
       },
       navbar: {
         title: 'EKS Forge',
+        logo: {
+          alt: 'EKS Forge Logo',
+          src: 'img/logo.svg',
+        },
         items: [
           {
             type: 'docSidebar',

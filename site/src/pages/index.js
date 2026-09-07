@@ -30,9 +30,16 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
-        <Heading as="h1" className="hero__title">
-          {siteConfig.title}
-        </Heading>
+        <div className={styles.heroTitleRow}>
+          <img
+            src="/img/eks_forge.png"
+            alt={`${siteConfig.title} logo`}
+            className={styles.heroLogo}
+          />
+          <Heading as="h1" className="hero__title">
+            {siteConfig.title}
+          </Heading>
+        </div>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link

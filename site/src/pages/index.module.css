@@ -19,6 +19,20 @@
   }
 }
 
+.heroTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.heroLogo {
+  height: 100px;
+  width: auto;
+  position: relative;
+  top: -5px;
+}
+
 .buttons {
   display: flex;
   align-items: center;
