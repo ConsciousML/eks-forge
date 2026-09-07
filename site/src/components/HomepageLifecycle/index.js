@@ -4,6 +4,12 @@ import styles from './styles.module.css';
 
 const StageList = [
   {
+    icon: '📖',
+    title: 'Overview',
+    description: 'What EKS Forge is and why use it',
+    link: '/docs/overview',
+  },
+  {
     icon: '🧭',
     title: 'Concepts',
     description: 'Understand EKS Forge in 5 min',
@@ -54,7 +60,7 @@ const StageList = [
   {
     icon: '🔒',
     title: 'Security',
-    description: 'Lock down your cluster',
+    description: 'Protect your cluster',
     link: '/docs/security',
   },
 ];

@@ -62,7 +62,7 @@ export default function Home() {
       <ForceDarkMode />
       <HomepageHeader />
       <main>
-        <HomepageFeatures />
+        {/* <HomepageFeatures /> */}
         <HomepageLifecycle />
       </main>
     </Layout>
