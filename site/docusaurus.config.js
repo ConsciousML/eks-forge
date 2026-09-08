@@ -9,17 +9,18 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
-// READTHEDOCS_CANONICAL_URL includes the /en/latest/ language+version
-// subpath, but Docusaurus's `url` must be origin-only — the subpath
-// goes in `baseUrl` instead.
+// READTHEDOCS_CANONICAL_URL includes the version (and, depending on
+// the project's versioning scheme, language) subpath, but Docusaurus's
+// `url` must be origin-only — the subpath goes in `baseUrl` instead.
+// Derived straight from the canonical URL so it tracks whatever
+// versioning scheme is configured on Read the Docs.
 const isReadTheDocs = process.env.READTHEDOCS === 'True';
-const readTheDocsLanguage = process.env.READTHEDOCS_LANGUAGE || 'en';
-const readTheDocsVersion = process.env.READTHEDOCS_VERSION || 'latest';
+const canonicalUrl = isReadTheDocs
+  ? new URL(/** @type {string} */ (process.env.READTHEDOCS_CANONICAL_URL))
+  : null;
 
-const siteUrl = isReadTheDocs
-  ? new URL(/** @type {string} */ (process.env.READTHEDOCS_CANONICAL_URL)).origin
-  : 'https://eks-forge.readthedocs.io';
-const siteBaseUrl = isReadTheDocs ? `/${readTheDocsLanguage}/${readTheDocsVersion}/` : '/';
+const siteUrl = canonicalUrl ? canonicalUrl.origin : 'https://eks-forge.readthedocs.io';
+const siteBaseUrl = canonicalUrl ? canonicalUrl.pathname : '/';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
