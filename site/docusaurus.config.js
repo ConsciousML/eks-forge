@@ -17,7 +17,7 @@ const readTheDocsLanguage = process.env.READTHEDOCS_LANGUAGE || 'en';
 const readTheDocsVersion = process.env.READTHEDOCS_VERSION || 'latest';
 
 const siteUrl = isReadTheDocs
-  ? new URL(process.env.READTHEDOCS_CANONICAL_URL).origin
+  ? new URL(/** @type {string} */ (process.env.READTHEDOCS_CANONICAL_URL)).origin
   : 'https://eks-forge.readthedocs.io';
 const siteBaseUrl = isReadTheDocs ? `/${readTheDocsLanguage}/${readTheDocsVersion}/` : '/';
 
