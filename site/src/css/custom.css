@@ -6,6 +6,8 @@
 
 /* You can override the default Infima variables here. */
 :root {
+  --ifm-font-family-base: 'Outfit', sans-serif;
+  --ifm-font-size-base: 105%;
   --ifm-color-primary: #1532c6;
   --ifm-color-primary-dark: #132db2;
   --ifm-color-primary-darker: #122aa8;
@@ -35,14 +37,14 @@
   font-size: 100px;
   text-transform: uppercase;
   letter-spacing: 0em;
-  color: #ffffff;
+  color: var(--ifm-color-content);
 }
 
 .hero__subtitle {
   font-family: 'Outfit', sans-serif;
   font-weight: 400;
-  font-size: 2rem;
-  color: #ffffff;
+  font-size: 1.5rem;
+  color: var(--ifm-color-content);
 }
 
 .navbar__title {
@@ -51,11 +53,7 @@
   font-size: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 0em;
-  color: #ffffff;
-}
-
-[data-theme='light'] .navbar__title {
-  color: #000000;
+  color: var(--ifm-color-content);
 }
 
 .header-github-link:hover {

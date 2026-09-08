@@ -15,7 +15,7 @@
   font-weight: 500;
   font-size: 36px;
   letter-spacing: 0;
-  color: #ffffff;
+  color: var(--ifm-color-content);
   margin-bottom: 1rem;
 }
 
@@ -56,6 +56,7 @@
 }
 
 .cardTitle {
+  font-family: 'Outfit', sans-serif;
   margin-bottom: 0.25rem;
   font-size: 1.35rem;
 }
