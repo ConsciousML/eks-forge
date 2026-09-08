@@ -66,3 +66,7 @@
   color: var(--ifm-color-emphasis-700);
   font-size: 1.1rem;
 }
+
+.cardDescription code {
+  font-size: 0.80em;
+}
