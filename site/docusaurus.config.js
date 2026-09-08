@@ -9,6 +9,18 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+// READTHEDOCS_CANONICAL_URL includes the /en/latest/ language+version
+// subpath, but Docusaurus's `url` must be origin-only — the subpath
+// goes in `baseUrl` instead.
+const isReadTheDocs = process.env.READTHEDOCS === 'True';
+const readTheDocsLanguage = process.env.READTHEDOCS_LANGUAGE || 'en';
+const readTheDocsVersion = process.env.READTHEDOCS_VERSION || 'latest';
+
+const siteUrl = isReadTheDocs
+  ? new URL(process.env.READTHEDOCS_CANONICAL_URL).origin
+  : 'https://eks-forge.readthedocs.io';
+const siteBaseUrl = isReadTheDocs ? `/${readTheDocsLanguage}/${readTheDocsVersion}/` : '/';
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'EKS Forge',
@@ -22,8 +34,8 @@ const config = {
 
   // Set the production url of your site here
   // Uses Read the Docs canonical URL env var, falling back for local builds
-  url: process.env.READTHEDOCS_CANONICAL_URL || 'https://eks-forge.readthedocs.io',
-  baseUrl: '/',
+  url: siteUrl,
+  baseUrl: siteBaseUrl,
 
   // Required for compatibility with Read the Docs
   trailingSlash: true,

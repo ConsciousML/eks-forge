@@ -5,9 +5,12 @@ build:
     nodejs: "26"
   jobs:
     install:
+      # Install Docusaurus dependencies
       - cd site/ && npm install
     build:
       html:
+        # Build the site
         - cd site/ && npm run build
+        # Copy generated files into Read the Docs directory
         - mkdir --parents $READTHEDOCS_OUTPUT/html/
         - cp --recursive site/build/* $READTHEDOCS_OUTPUT/html/
