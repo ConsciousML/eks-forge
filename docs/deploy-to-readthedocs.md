@@ -1,4 +1,4 @@
-# Deploy to Read the Docs
+# Deploy to Read the Docs (RTD)
 
 This documentation will walk you through the process of deploying your site to the `readthedocs.io` domain.
 Only public GitHub (or GitLab) repositories are supported on the free tier.
@@ -18,5 +18,7 @@ Finally, click `Save`.
 This modification should trigger another build. Once it's completed, go back to your project's home page and click `View docs`.
 
 Congratulations, you're Docusaurus documentation site is now live on `readthedocs.io`!
+
+**Note**: by default, when create a PR, RTD will also trigger PR builds. You should see a `docs/readthedocs.org:<your-repo-name>` check trigger on your PR page.
 
 For more information read [Adding a documentation project](https://docs.readthedocs.com/platform/stable/intro/add-project.html) and [Deploying Docusaurus on Read the Docs](https://docs.readthedocs.com/platform/stable/intro/docusaurus.html#deploying-docusaurus-on-read-the-docs).
