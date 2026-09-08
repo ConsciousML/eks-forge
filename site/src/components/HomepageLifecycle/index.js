@@ -1,0 +1,132 @@
+import Link from '@docusaurus/Link';
+import Heading from '@theme/Heading';
+import {
+  BookOpen,
+  Rocket,
+  Layers,
+  Blocks,
+  Package,
+  Workflow,
+  Eye,
+  Activity,
+  Bell,
+  Shield,
+} from 'lucide-react';
+import styles from './styles.module.css';
+
+const Groups = [
+  {
+    title: 'New to EKS Forge? Start here.',
+    stages: [
+      {
+        icon: <BookOpen size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Overview',
+        description: 'What EKS Forge is and why use it',
+        link: '/docs/overview',
+      },
+      {
+        icon: <Layers size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Concepts',
+        description: 'Understand EKS Forge in 5 min',
+        link: '/docs/concepts',
+      },
+      {
+        icon: <Rocket size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Quickstart',
+        description: 'Get a production-ready EKS cluster running',
+        link: '/docs/quickstart',
+      },
+    ],
+  },
+  {
+    title: 'Build & Deploy',
+    stages: [
+      {
+        icon: <Blocks size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Infrastructure as Code',
+        description: <>Create reusable modules and provision them across multiple environments (<code>dev</code>, <code>staging</code>, and <code>prod</code>)</>,
+        link: '/docs/iac',
+      },
+      {
+        icon: <Package size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Applications',
+        description: 'Deploy Kubernetes manifests and Helm charts with GitOps',
+        link: '/docs/applications',
+      },
+      {
+        icon: <Workflow size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'CI/CD',
+        description: <>Automate code quality and security checks on every PR, infrastructure testing in <code>staging</code>, and deployment to <code>prod</code> on merge</>,
+        link: '/docs/ci-cd',
+      },
+    ],
+  },
+  {
+    title: 'Operate',
+    stages: [
+      {
+        icon: <Eye size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Observability',
+        description: 'Visualize dashboards for node, pod, and addon metrics, as well as pod-to-pod traffic',
+        link: '/docs/observability',
+      },
+      {
+        icon: <Activity size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Monitoring',
+        description: 'Collect and aggregate metrics and logs across your cluster',
+        link: '/docs/monitoring',
+      },
+      {
+        icon: <Bell size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Alerting',
+        description: 'Get notified on Slack before things break',
+        link: '/docs/alerting',
+      },
+      {
+        icon: <Shield size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Security',
+        description: 'Harden the security of your cluster with Network Policies, Pod Security Standards, and more',
+        link: '/docs/security',
+      },
+    ],
+  },
+];
+
+function Stage({icon, title, description, link}) {
+  return (
+    <Link to={link} className={styles.card}>
+      <span className={styles.icon}>{icon}</span>
+      <Heading as="h3" className={styles.cardTitle}>
+        {title}
+      </Heading>
+      <p className={styles.cardDescription}>{description}</p>
+    </Link>
+  );
+}
+
+function Group({title, stages}) {
+  return (
+    <div className={styles.group}>
+      <Heading as="h3" className={styles.groupTitle}>
+        {title}
+      </Heading>
+      <div className={styles.grid}>
+        {stages.map((props, idx) => (
+          <Stage key={idx} {...props} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function HomepageLifecycle() {
+  return (
+    <section className={styles.lifecycle}>
+      <div className="container">
+        {Groups.map((group, idx) => (
+          <Group key={idx} {...group} />
+        ))}
+      </div>
+    </section>
+  );
+}
