@@ -1,6 +1,7 @@
 import {useEffect} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import {useColorMode} from '@docusaurus/theme-common';
 import Layout from '@theme/Layout';
@@ -27,12 +28,13 @@ function ForceDarkMode() {
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
+  const logoSrc = useBaseUrl('/img/eks_forge.png');
   return (
     <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
         <div className={styles.heroTitleRow}>
           <img
-            src="/img/eks_forge.png"
+            src={logoSrc}
             alt={`${siteConfig.title} logo`}
             className={styles.heroLogo}
           />
