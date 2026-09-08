@@ -39,9 +39,10 @@
 }
 
 .hero__subtitle {
-  font-family: 'Agdasima', sans-serif;
-  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
   font-size: 2rem;
+  color: #ffffff;
 }
 
 .navbar__title {

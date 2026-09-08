@@ -39,6 +39,10 @@
   justify-content: center;
 }
 
+.buttons a {
+  font-family: 'Outfit', sans-serif;
+}
+
 :global(body.homepage-dark [class*='toggle_']) {
   display: none;
 }

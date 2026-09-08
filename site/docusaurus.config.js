@@ -51,6 +51,13 @@ const config = {
         href: 'https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap',
       },
     },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&display=swap',
+      },
+    },
   ],
 
   // Even if you don't use internationalization, you can use this field to set

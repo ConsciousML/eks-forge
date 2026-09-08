@@ -16,7 +16,7 @@ import styles from './styles.module.css';
 
 const Groups = [
   {
-    title: 'Get Started',
+    title: 'New to EKS Forge? Start here.',
     stages: [
       {
         icon: <BookOpen size={36} color="var(--ifm-color-primary-dark)" />,
