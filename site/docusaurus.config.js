@@ -4,6 +4,7 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
+import 'dotenv/config';
 import {themes as prismThemes} from 'prism-react-renderer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
@@ -20,8 +21,12 @@ const config = {
   },
 
   // Set the production url of your site here
-  url: 'https://eks-forge.readthedocs.io',
+  // Uses Read the Docs canonical URL env var, falling back for local builds
+  url: process.env.READTHEDOCS_CANONICAL_URL || 'https://eks-forge.readthedocs.io',
   baseUrl: '/',
+
+  // Required for compatibility with Read the Docs
+  trailingSlash: true,
 
   organizationName: 'ConsciousML', // Usually your GitHub org/user name.
   projectName: 'eks-forge', // Usually your repo name.
