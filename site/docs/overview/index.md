@@ -60,8 +60,8 @@ It also comes with a precise development workflow to enforce guardrails through 
 Although EKS Forge aims to provide a starting platform that fits most teams, some design decisions are inevitable (ArgoCD or FluxCD? [Cloudflare](https://www.cloudflare.com/) or Tailscale? etc.).
 
 To decide whether EKS Forge suits your needs, here's a list of its features and the tools it's built around:
-- multi-environment IaC pipelines (`dev`, `staging` and `prod`) using [OpenTofu](https://opentofu.org/docs/intro/) (open-source fork of [Terraform](https://developer.hashicorp.com/terraform))
-- IaC module orchestration using [Terragrunt](https://docs.terragrunt.com/getting-started/overview/)
+- IaC modules using [OpenTofu](https://opentofu.org/docs/intro/) (open-source fork of [Terraform](https://developer.hashicorp.com/terraform))
+- multi-environment IaC pipelines (`dev`, `staging` and `prod`) orchestrated by [Terragrunt](https://docs.terragrunt.com/getting-started/overview/)
 - node autoscaling with [Karpenter](https://karpenter.sh/docs/)
 - GitOps via [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) following the [App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern-alternative)
 - [EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) to bind IAM roles to Kubernetes service accounts
@@ -89,4 +89,4 @@ To decide whether EKS Forge suits your needs, here's a list of its features and 
 Additionally, this documentation site is powered by [Docusaurus](https://docusaurus.io/) and deployed with [Read the Docs for open-source projects](https://about.readthedocs.com/).
 If you plan to host the documentation site of your private EKS Forge fork, you'll need to use a different hosting platform than Read the Docs OSS.
 
-This project also ships [custom system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts) and [skills](https://claude.com/skills) for [Claude Code](https://claude.com/product/claude-code) to develop on EKS Forge. See [AI and EKS Forge](../ai-eks-forge/index.md).
+This project also ships [custom system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts) and [skills](https://claude.com/skills) for [Claude Code](https://claude.com/product/claude-code) to help you develop on EKS Forge. See [AI and EKS Forge](../ai-eks-forge/index.md).
