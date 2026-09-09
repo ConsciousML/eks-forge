@@ -23,6 +23,14 @@ It is free, and built entirely on top of these open-source tools.
 You'll be able to bootstrap a production-grade platform covering the whole development lifecycle of EKS in about a day.
 More importantly, it provides documentation to understand, extend, and operate this environment yourself.
 
+## When not to use it?
+EKS Forge targets teams developing infrastructure for complex systems.
+If you don't have a platform or DevOps team, and don't need the advanced functionality this project offers, you're better off building your infrastructure yourself.
+
+Alternatively, if your existing stack already relies on different tools than the ones EKS Forge is built around (e.g. FluxCD instead of ArgoCD, Datadog instead of the Prometheus stack), adopting it may cost more than it saves.
+
+Review the [features section](#features) to assess if EKS Forge is the right fit for you.
+
 ## How does EKS Forge work?
 EKS Forge is composed of 3 template repositories (see the [Concepts](../concepts/index.md)).
 In other words, it is not meant to be used in-place, but rather to be forked and extended.
