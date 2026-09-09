@@ -2,6 +2,6 @@
 sidebar_position: 1
 ---
 
-# Agent Workflows
+# AI and EKS Forge
 
 Coming soon.

@@ -80,3 +80,5 @@ To decide whether EKS Forge suits your needs, here's a list of its features and 
 
 Additionally, this documentation site is powered by [Docusaurus](https://docusaurus.io/) and deployed with [Read the Docs for open-source projects](https://about.readthedocs.com/).
 If you plan to host the documentation site of your private EKS Forge fork, you'll need to use a different hosting platform than Read the Docs OSS.
+
+This project also ships [custom system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts) and [skills](https://claude.com/skills) for [Claude Code](https://claude.com/product/claude-code) to develop on EKS Forge. See [AI and EKS Forge](../ai-eks-forge/index.md).
