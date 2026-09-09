@@ -24,18 +24,20 @@ You'll be able to bootstrap a production-grade platform covering the whole devel
 More importantly, it provides documentation to understand, extend, and operate this environment yourself.
 
 ## How does EKS Forge work?
+EKS Forge is composed of 3 template repositories (see the [Concepts](../concepts/index.md)).
+In other words, it is not meant to be used in-place, but rather to be forked and extended.
 
 EKS Forge splits the platform into two halves that work together:
 - IaC provisions the AWS resources (the cluster, VPC, IAM, etc.)
 - GitOps deploys everything that runs inside the cluster ([Helm](https://helm.sh/) charts and plain manifests)
 
-Everything is wired together as pipelines, so you can deploy a full working environment with only a few CLI commands.
+Everything is wired together as pipelines, so you can deploy a full working environment (see [Features](#features)) with only a few CLI commands.
 These pipelines are modular and can be deployed across multiple environments:
 - `dev` for developing a new feature or fix
 - `staging` to test the infrastructure before production
-- `prod` for the production infrastructure
+- `prod` for the actual production infrastructure
 
-You can also create divergence across environments. For example, you can use cheaper [EC2](https://aws.amazon.com/ec2/) instances and switch [NAT Gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) to [fck-nat](https://fck-nat.dev/v1.4.0/) in `dev` to cut cloud costs, while `prod` keeps managed NAT Gateways and larger EC2 instances for reliability.
+You can also diverge environment configurations. For example, you can use smaller (and/or spot) [EC2](https://aws.amazon.com/ec2/) instances in `dev` to cut cloud costs, while `prod` keeps larger instances for reliability.
 
 EKS Forge has been designed with automation in mind. Some manual bootstrap steps are inevitable: add nameservers to your DNS registrar, create a Slack bot token for alerting, and create a [Tailscale](https://tailscale.com/) account for accessing VPC internal endpoints. However, everything that can be automated is handled by reproducible pipelines.
 
