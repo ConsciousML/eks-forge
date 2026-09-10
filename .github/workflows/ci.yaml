@@ -31,7 +31,11 @@ jobs:
       - name: Check links
         uses: lycheeverse/lychee-action@v2.9.0
         with:
-          args: --no-progress "site/build/**/*.html"
+          args: >-
+            --no-progress
+            --root-dir "${{ github.workspace }}/site/build"
+            --exclude "^https://eks-forge\.readthedocs\.io"
+            "site/build/**/*.html"
           fail: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
