@@ -8,8 +8,13 @@ function isInside(root, target) {
 }
 
 /**
- * Rewrites relative links inside imported submodule content (e.g. an
- * MDX-imported README) to GitHub blob URLs, using the `bases` produced by
+ * This repository imports and displays documentation from external repositories.
+ * These repositories are imported as submodules in `site/docs/_external/`
+ * External documentation can use relative links such as `../README.md`.
+ * These link with fails once rendered in the documentation site.
+ * 
+ * This function rewrites relative links inside imported submodule content
+ * to GitHub blob URLs, using the `bases` produced by
  * `getSubmoduleLinkBases`. Links that aren't relative, or don't resolve
  * inside any known submodule, are left untouched.
  */
@@ -31,7 +36,10 @@ export default function rewriteSubmoduleLinks({bases}) {
         return;
       }
 
-      const [pathPart, hashPart] = url.split('#');
+      // Split on first '#' only, so a fragment containing '#' stays intact.
+      const hashIdx = url.indexOf('#');
+      const pathPart = hashIdx === -1 ? url : url.slice(0, hashIdx);
+      const hashPart = hashIdx === -1 ? undefined : url.slice(hashIdx + 1);
       const absTarget = path.resolve(path.dirname(file.path), pathPart);
 
       if (!isInside(base.submoduleRoot, absTarget)) {

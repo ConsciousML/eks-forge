@@ -8,7 +8,8 @@ function normalizeGitUrl(url) {
   if (sshMatch) {
     return `https://${sshMatch[1]}/${sshMatch[2]}`;
   }
-  return url.replace(/\.git$/, '');
+  // Strip trailing slash so it doesn't double up before /blob/<sha>.
+  return url.replace(/\.git$/, '').replace(/\/$/, '');
 }
 
 /**
