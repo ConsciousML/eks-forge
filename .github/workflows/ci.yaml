@@ -28,7 +28,7 @@ jobs:
         working-directory: site
         run: npm run build
 
-      - name: Check links
+      - name: Check site for broken links
         uses: lycheeverse/lychee-action@v2.9.0
         with:
           args: >-
