@@ -11,7 +11,7 @@ function isInside(root, target) {
  * This repository imports and displays documentation from external repositories.
  * These repositories are imported as submodules in `site/docs/_external/`
  * External documentation can use relative links such as `../README.md`.
- * These link with fails once rendered in the documentation site.
+ * These links will fail once rendered in the documentation site.
  * 
  * This function rewrites relative links inside imported submodule content
  * to GitHub blob URLs, using the `bases` produced by

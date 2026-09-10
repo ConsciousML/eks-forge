@@ -12,7 +12,7 @@
       }
     ]
   },
-  "permissions": { 
+  "permissions": {
     "defaultMode": "default",
     "allow": [
       "Bash(git status:*)",
@@ -27,12 +27,10 @@
       "Bash(git show:*)",
       "Bash(git blame:*)",
       "Bash(git ls-files:*)",
-
       "Bash(gh pr view:*)",
       "Bash(gh pr list:*)",
       "Bash(gh pr diff:*)",
       "Bash(gh pr checks:*)",
-
       "Bash(cat:*)",
       "Bash(head:*)",
       "Bash(sort:*)",
@@ -48,15 +46,29 @@
       "Bash(column:*)",
       "Bash(stat:*)",
       "Bash(file:*)",
-
       "Bash(source .env)",
-
       "Edit(~/.claude/plans/**)"
+    ],
+    "ask": [
+      "Bash(* > ~/.claude/**)",
+      "Bash(* >> ~/.claude/**)",
+      "Bash(chflags * ~/.claude/**)",
+      "Bash(chmod * ~/.claude/**)",
+      "Bash(cp * ~/.claude/**)",
+      "Bash(jq * ~/.claude/**)",
+      "Bash(mv * ~/.claude/**)",
+      "Bash(rm -r ~/.claude/**)",
+      "Bash(rm -rf ~/.claude/**)",
+      "Bash(rm ~/.claude/**)",
+      "Bash(sed -i* ~/.claude/**)",
+      "Bash(tee -a ~/.claude/**)",
+      "Bash(tee ~/.claude/**)",
+      "Edit(~/.claude/**)",
+      "NotebookEdit(~/.claude/**)"
     ],
     "deny": [
       "Read(.env)",
       "Bash(.env)",
-
       "Bash(cat .env)",
       "Bash(cat .env*)",
       "Bash(cat * .env*)",
@@ -87,10 +99,8 @@
       "Bash(scp * .env*)",
       "Bash(curl * .env*)",
       "Bash(pbcopy < .env*)",
-
       "Read(.git/**)",
       "Edit(.git/**)",
-
       "Edit(CLAUDE.md)",
       "Edit(.claude/settings.json)",
       "Edit(.claude/settings.local.json)",
