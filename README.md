@@ -41,6 +41,13 @@ For more information on how to use mise, read their [getting started guide](http
 **Option 2: Install Tools Manually**
 - [Node.js](https://nodejs.org/en/download) (v26.8.1)
 
+### Submodules
+
+This repository pulls documentation content from other repos via git submodules. If you cloned without `--recurse-submodules`, initialize them:
+```bash
+git submodule update --init --recursive
+```
+
 ### Running the docs site
 
 ```bash
