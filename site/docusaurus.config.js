@@ -100,9 +100,6 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/ConsciousML/eks-forge/tree/main/site/',
           beforeDefaultRemarkPlugins: [[rewriteSubmoduleLinks, {bases: submoduleLinkBases}]],
         },
         blog: false,
