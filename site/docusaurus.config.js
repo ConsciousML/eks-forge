@@ -4,8 +4,12 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import 'dotenv/config';
 import {themes as prismThemes} from 'prism-react-renderer';
+import {getSubmoduleLinkBases} from './src/remark/get-submodule-link-bases.mjs';
+import rewriteSubmoduleLinks from './src/remark/rewrite-submodule-links.mjs';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -21,6 +25,9 @@ const canonicalUrl = isReadTheDocs
 
 const siteUrl = canonicalUrl ? canonicalUrl.origin : 'https://eks-forge.readthedocs.io';
 const siteBaseUrl = canonicalUrl ? canonicalUrl.pathname : '/';
+
+const siteDir = path.dirname(fileURLToPath(import.meta.url));
+const submoduleLinkBases = getSubmoduleLinkBases(path.resolve(siteDir, '..'));
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -93,9 +100,7 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/ConsciousML/eks-forge/tree/main/site/',
+          beforeDefaultRemarkPlugins: [[rewriteSubmoduleLinks, {bases: submoduleLinkBases}]],
         },
         blog: false,
         theme: {
