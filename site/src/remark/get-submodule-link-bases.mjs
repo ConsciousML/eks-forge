@@ -23,18 +23,31 @@ export function getSubmoduleLinkBases(repoRoot) {
     return [];
   }
 
-  const output = execFileSync('git', ['submodule', 'foreach', '--quiet', 'echo $sm_path'], {
-    cwd: repoRoot,
-  }).toString();
+  let output;
+  try {
+    output = execFileSync('git', ['submodule', 'foreach', '--quiet', 'echo $sm_path'], {
+      cwd: repoRoot,
+    }).toString();
+  } catch (err) {
+    throw new Error(`Failed to list git submodules in ${repoRoot}: ${err.message}`);
+  }
   const relPaths = output.split('\n').filter(Boolean);
 
   return relPaths.map((relPath) => {
     const submoduleRoot = path.join(repoRoot, relPath);
-    const remoteUrl = execFileSync('git', ['-C', submoduleRoot, 'remote', 'get-url', 'origin'])
-      .toString()
-      .trim();
-    // Pin to exact commit — submodule HEAD is detached, not a branch.
-    const commit = execFileSync('git', ['-C', submoduleRoot, 'rev-parse', 'HEAD']).toString().trim();
+
+    let remoteUrl;
+    let commit;
+    try {
+      remoteUrl = execFileSync('git', ['-C', submoduleRoot, 'remote', 'get-url', 'origin']).toString().trim();
+      // Pin to exact commit — submodule HEAD is detached, not a branch.
+      commit = execFileSync('git', ['-C', submoduleRoot, 'rev-parse', 'HEAD']).toString().trim();
+    } catch (err) {
+      throw new Error(
+        `Failed to resolve submodule "${relPath}" at ${submoduleRoot} — ` +
+          `is it initialized? Run "git submodule update --init --recursive". (${err.message})`
+      );
+    }
 
     return {
       submoduleRoot,

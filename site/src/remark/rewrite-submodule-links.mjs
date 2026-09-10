@@ -15,7 +15,13 @@ export default function rewriteSubmoduleLinks({bases}) {
       return;
     }
 
-    visit(tree, ['link', 'definition'], (node) => {
+    // Only files under a known submodule root can contain links worth rewriting.
+    const base = bases.find((b) => file.path.startsWith(b.submoduleRoot + path.sep));
+    if (!base) {
+      return;
+    }
+
+    visit(tree, ['link', 'image', 'definition'], (node) => {
       const url = node.url;
       if (!url || SKIP_PREFIXES.some((prefix) => url.startsWith(prefix))) {
         return;
@@ -24,8 +30,7 @@ export default function rewriteSubmoduleLinks({bases}) {
       const [pathPart, hashPart] = url.split('#');
       const absTarget = path.resolve(path.dirname(file.path), pathPart);
 
-      const base = bases.find((b) => absTarget.startsWith(b.submoduleRoot + path.sep));
-      if (!base) {
+      if (!absTarget.startsWith(base.submoduleRoot + path.sep)) {
         return;
       }
 
