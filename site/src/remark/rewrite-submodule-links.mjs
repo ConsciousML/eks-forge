@@ -3,6 +3,10 @@ import {visit} from 'unist-util-visit';
 
 const SKIP_PREFIXES = ['http://', 'https://', 'mailto:', '#', '/'];
 
+function isInside(root, target) {
+  return target.startsWith(root + path.sep);
+}
+
 /**
  * Rewrites relative links inside imported submodule content (e.g. an
  * MDX-imported README) to GitHub blob URLs, using the `bases` produced by
@@ -16,7 +20,7 @@ export default function rewriteSubmoduleLinks({bases}) {
     }
 
     // Only files under a known submodule root can contain links worth rewriting.
-    const base = bases.find((b) => file.path.startsWith(b.submoduleRoot + path.sep));
+    const base = bases.find((b) => isInside(b.submoduleRoot, file.path));
     if (!base) {
       return;
     }
@@ -30,7 +34,7 @@ export default function rewriteSubmoduleLinks({bases}) {
       const [pathPart, hashPart] = url.split('#');
       const absTarget = path.resolve(path.dirname(file.path), pathPart);
 
-      if (!absTarget.startsWith(base.submoduleRoot + path.sep)) {
+      if (!isInside(base.submoduleRoot, absTarget)) {
         return;
       }
 
