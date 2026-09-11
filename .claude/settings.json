@@ -63,8 +63,7 @@
       "Bash(sed -i* ~/.claude/**)",
       "Bash(tee -a ~/.claude/**)",
       "Bash(tee ~/.claude/**)",
-      "Edit(~/.claude/**)",
-      "NotebookEdit(~/.claude/**)"
+      "Edit(~/.claude/**)"
     ],
     "deny": [
       "Read(.env)",
