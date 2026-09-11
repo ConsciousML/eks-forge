@@ -32,14 +32,14 @@ Alternatively, if your existing stack already relies on different tools than the
 Review the [features section](#features) to assess if EKS Forge is the right fit for you.
 
 ## How does EKS Forge work?
-EKS Forge is composed of 3 template repositories (see the [Concepts](../concepts/index.md)).
+EKS Forge is composed of 3 [template repositories](../concepts/index.md).
 In other words, it is not meant to be used in-place, but rather to be forked and extended.
 
 EKS Forge splits the platform into two halves that work together:
-- IaC provisions the AWS resources (the cluster, VPC, IAM, etc.)
+- IaC provisions the [AWS](https://aws.amazon.com/) resources (the cluster, VPC, IAM, etc.)
 - GitOps deploys everything that runs inside the cluster ([Helm](https://helm.sh/) charts and plain manifests)
 
-Everything is wired together as pipelines, so you can deploy a full working environment (see [Features](#features)) with only a few CLI commands.
+Everything is wired together as pipelines, so you can deploy a [fully featured](#features) environment with only a few CLI commands.
 These pipelines are modular and can be deployed across multiple environments:
 - `dev` for developing a new feature or fix
 - `staging` to test the infrastructure before production
