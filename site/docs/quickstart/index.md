@@ -3,7 +3,7 @@ sidebar_position: 1
 ---
 
 import DocCards from '@site/src/components/DocCards';
-import {ClipboardList, Download, Rocket, CloudUpload} from 'lucide-react';
+import {ClipboardList, Download, Settings, Rocket, CloudUpload} from 'lucide-react';
 
 # Quickstart
 
@@ -23,14 +23,20 @@ In this tutorial, you'll deploy an EKS cluster with the following [features](../
     link: '/docs/quickstart/installation',
   },
   {
+    icon: <Settings size={36} color="var(--ifm-color-primary-dark)" />,
+    title: '3. Configuration',
+    description: 'Configure your repository to deploy resources to the cloud',
+    link: '/docs/quickstart/configuration',
+  },
+  {
     icon: <Rocket size={36} color="var(--ifm-color-primary-dark)" />,
-    title: '3. Bootstrap',
+    title: '4. Bootstrap',
     description: 'Create the account-wide resources once using automated pipelines',
     link: '/docs/quickstart/bootstrap',
   },
   {
     icon: <CloudUpload size={36} color="var(--ifm-color-primary-dark)" />,
-    title: '4. Deploy',
+    title: '5. Deploy',
     description: 'Deploy a production-ready EKS platform',
     link: '/docs/quickstart/deploy',
   },
