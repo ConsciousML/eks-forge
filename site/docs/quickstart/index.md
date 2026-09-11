@@ -7,6 +7,8 @@ import {ClipboardList, Download, Rocket, CloudUpload} from 'lucide-react';
 
 # Quickstart
 
+In this tutorial, you'll deploy an EKS cluster with the following [features](../overview/index.md#cluster-features) in the `dev` environment.
+
 <DocCards columns={2} items={[
   {
     icon: <ClipboardList size={36} color="var(--ifm-color-primary-dark)" />,
