@@ -38,6 +38,6 @@ In this tutorial, you'll deploy an EKS cluster with the following [features](../
     icon: <CloudUpload size={36} color="var(--ifm-color-primary-dark)" />,
     title: '5. Deploy',
     description: 'Deploy a production-ready EKS platform',
-    link: '/docs/quickstart/deploy',
+    link: '/docs/quickstart/deployment',
   },
 ]} />
