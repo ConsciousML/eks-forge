@@ -168,7 +168,6 @@ If you remove a unit or modify a dependency between units, run `terragrunt stack
 
 ### Options
 
-Terragrunt provide some useful options when running `terragrunt run --all <command>` such as:
+Terragrunt provides some useful options when running `terragrunt run --all <command>` such as:
 - [`--backend-bootstrap`](https://docs.terragrunt.com/reference/cli/commands/backend/bootstrap/): automatically creates an S3 bucket to store `.tfstate`
 - [`--non-interactive`](https://docs.terragrunt.com/reference/cli/global-flags/#non-interactive): doesn't prompt for `yes/no` before apply or destroy (useful for CI/CD)
-- [`--no-stack-generate`](http://docs.terragrunt.com/reference/cli/commands/stack/run/#flags): prevents re-generating the stack when you have already run `terragrunt stack generate`
