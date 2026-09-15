@@ -1,5 +1,4 @@
-import Link from '@docusaurus/Link';
-import Heading from '@theme/Heading';
+import DocCards from '@site/src/components/DocCards';
 import {
   BookOpen,
   Rocket,
@@ -99,39 +98,12 @@ const Groups = [
   },
 ];
 
-function Stage({icon, title, description, link}) {
-  return (
-    <Link to={link} className={styles.card}>
-      <span className={styles.icon}>{icon}</span>
-      <Heading as="h3" className={styles.cardTitle}>
-        {title}
-      </Heading>
-      <p className={styles.cardDescription}>{description}</p>
-    </Link>
-  );
-}
-
-function Group({title, stages}) {
-  return (
-    <div className={styles.group}>
-      <Heading as="h3" className={styles.groupTitle}>
-        {title}
-      </Heading>
-      <div className={styles.grid}>
-        {stages.map((props, idx) => (
-          <Stage key={idx} {...props} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export default function HomepageLifecycle() {
   return (
     <section className={styles.lifecycle}>
       <div className="container">
         {Groups.map((group, idx) => (
-          <Group key={idx} {...group} />
+          <DocCards key={idx} title={group.title} items={group.stages} />
         ))}
       </div>
     </section>
