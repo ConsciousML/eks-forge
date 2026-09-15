@@ -12,7 +12,7 @@ EKS Forge provisions infrastructure with [Terraform](https://developer.hashicorp
 2. [Terragrunt unit](#units): a wrapper over a TF module. It defines a single, deployable piece of infrastructure.
 3. [Terragrunt stack](#stacks): a re-usable [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) of units.
 
-In other words, a stack orchestrates multiple units that materialize TF modules.
+In other words, a stack orchestrates multiple units, each deploying the resources of their respective TF module.
 
 See the [catalog architecture](../concepts/#catalog-architecture) for how EKS Forge structures these layers.
 
@@ -165,3 +165,10 @@ After changing a module, unit, or stack, push the change to `git` and re-run `te
 :::warning[Clean the stack]
 If you remove a unit or modify a dependency between units, run `terragrunt stack clean` before regenerating. `terragrunt stack generate` doesn't remove stale files on its own, so the removed unit's old directory stays in `.terragrunt-stack` and `run --all` still picks it up.
 :::
+
+### Options
+
+Terragrunt provide some useful options when running `terragrunt run --all <command>` such as:
+- [`--backend-bootstrap`](https://docs.terragrunt.com/reference/cli/commands/backend/bootstrap/): automatically creates an S3 bucket to store `.tfstate`
+- [`--non-interactive`](https://docs.terragrunt.com/reference/cli/global-flags/#non-interactive): doesn't prompt for `yes/no` before apply or destroy (useful for CI/CD)
+- [`--no-stack-generate`](http://docs.terragrunt.com/reference/cli/commands/stack/run/#flags): prevents re-generating the stack when you have already run `terragrunt stack generate`
