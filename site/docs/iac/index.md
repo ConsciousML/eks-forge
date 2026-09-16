@@ -7,13 +7,14 @@ diataxis-tag: explanation
 
 ## Overview
 
-EKS Forge provisions infrastructure with [Terraform](https://developer.hashicorp.com/terraform) (TF), orchestrated by [Terragrunt](https://terragrunt.gruntwork.io/) (TG), composed in three layers, each building on the previous one:
+EKS Forge provisions infrastructure with [Terraform](https://developer.hashicorp.com/terraform) (TF), orchestrated by [Terragrunt](https://terragrunt.gruntwork.io/) (TG). A module alone has no notion of "which environment" it belongs to, so this flow builds up the environment awareness a module is missing, one layer at a time:
 
-1. [Terraform module](https://developer.hashicorp.com/terraform/language/modules): a re-usable component that creates cloud resources.
-2. [Terragrunt unit](#units): a wrapper over a TF module. It defines a single, deployable piece of infrastructure.
-3. [Terragrunt stack](#stacks): a re-usable [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) of units.
+1. [Terraform module](https://developer.hashicorp.com/terraform/language/modules): a re-usable component that creates cloud resources, the same for every environment.
+2. [Terragrunt unit](#units): wraps a module with the `values` a specific deployment needs (a name, a region, a VPC CIDR, etc.), so the same module can be reused across environments.
+3. [Terragrunt stack](#stacks): composes units into a re-usable [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph), so Terragrunt can apply or destroy them in dependency order instead of one at a time by hand.
+4. [Environment](#environments) (`dev`, `staging`, `prod`): the same stack, instantiated with different `values`, so the exact same units and stacks can be trusted from local iteration through to production.
 
-In other words, a stack orchestrates multiple units, each deploying the resources of their respective TF module.
+In other words, a stack orchestrates multiple units, each deploying the resources of their respective TF module. This is what lets the catalog's stacks be reused as-is across `dev`, `staging`, and `prod` in the [live repository](https://github.com/ConsciousML/terragrunt-template-live-eks): only the `values` fed into each unit change per environment, not the units or stacks themselves.
 
 See the [catalog architecture](../concepts/#catalog-architecture) for how EKS Forge structures these layers.
 
@@ -23,7 +24,7 @@ See the [catalog architecture](../concepts/#catalog-architecture) for how EKS Fo
 
 A [Terragrunt unit](https://docs.terragrunt.com/features/units/) is a directory containing a `terragrunt.hcl` file. It is the smallest deployable unit in Terragrunt.
 
-Let's start with a concrete example so you can understand how TG units work. Suppose the following tree:
+Take the following tree as an example:
 ```text
 project/
 ├── root.hcl                 # Shared configuration
@@ -68,7 +69,7 @@ It points to the source code of the AWS VPC TF module using the `source` attribu
 Although the `terraform` block is used here, EKS Forge uses [OpenTofu](https://opentofu.org/) under-the-hood.
 :::
 
-The `inputs` block lets you inject input values into the TF module. `values.version` and `values.name` read from the `values` variable, a set of key/value pairs passed into the unit by whatever calls it (a [stack](#stacks), in EKS Forge). Using `values.` instead of hardcoding lets the same unit be reused with different inputs.
+The `inputs` block lets you inject input values into the TF module. `values.version` and `values.name` read from the `values` variable, a set of key/value pairs passed into the unit by whatever calls it (a [stack](#stacks), in EKS Forge). Using `values.` instead of hardcoding lets the same unit be reused across `dev`, `staging`, and `prod` with different inputs for each.
 
 #### Shared Configuration
 
@@ -91,7 +92,7 @@ This configuration uses an S3 bucket to store the `.tfstate` of each unit by usi
 
 #### Unit Dependencies
 
-Now, let's see how units can depend on one another. `units/ec2/` needs the VPC's id to deploy the instance into it. A [`dependency` block](https://docs.terragrunt.com/reference/hcl/blocks/#dependency) reads it straight from the `vpc` unit's [TF outputs](https://developer.hashicorp.com/terraform/language/values/outputs):
+Units can also depend on one another. `units/ec2/` needs the VPC's id to deploy the instance into it. A [`dependency` block](https://docs.terragrunt.com/reference/hcl/blocks/#dependency) reads it straight from the `vpc` unit's [TF outputs](https://developer.hashicorp.com/terraform/language/values/outputs):
 ```hcl
 # units/ec2/terragrunt.hcl
 
@@ -117,9 +118,9 @@ inputs = {
 
 ### Stacks
 
-A [Terragrunt stack](https://docs.terragrunt.com/features/stacks/) is a collection of related units that can be managed together.
+A [Terragrunt stack](https://docs.terragrunt.com/features/stacks/) is a collection of related units that can be managed together. Instead of applying each unit by hand in the right order, a stack lets Terragrunt do it automatically, following the dependencies declared between units.
 
-We'll reuse the `vpc` and `ec2` units from the [units section](#units).
+The following stack composes the `vpc` and `ec2` units from the [units section](#units).
 
 #### Define a Stack
 `terragrunt.stack.hcl` files define the incorporated units, as well as the `values` fed into each one. Here's an [example of stack file](https://docs.terragrunt.com/features/stacks/explicit/#example-simple-stack-with-units):
@@ -143,7 +144,7 @@ unit "ec2" {
 ```
 
 #### Deploy a Stack
-Before being able to deploy the resources in a stack, we need to run `terragrunt stack generate` in the directory containing the stack file. This generates a `.terragrunt-stack` directory containing the unit directories:
+Before deploying the resources in a stack, run `terragrunt stack generate` in the directory containing the stack file. This resolves the stack file into concrete unit directories under `.terragrunt-stack`, each pinned to the `source` ref its unit declares:
 ```text
 .terragrunt-stack/
 ├── vpc/
@@ -154,10 +155,10 @@ Before being able to deploy the resources in a stack, we need to run `terragrunt
     └── terragrunt.values.hcl
 ```
 
-Now, we are able to run any Terraform command across all the units with `terragrunt run --all <command>`:
+Once generated, `terragrunt run --all <command>` runs any Terraform command across all the units in the stack, in dependency order:
 - `terragrunt run --all init`: initialize all the Terraform modules of the stack units.
 - `terragrunt run --all apply`: apply each unit in order of their dependencies. Here, `vpc` will be deployed before `ec2`, since `ec2`'s `dependency` block points at it.
-- `terragrunt run --all destroy`: destroy each unit in reverse order of their dependencies. `ec2` will be destroyed first, then `vpc`.
+- `terragrunt run --all destroy`: destroy each unit in reverse order of their dependencies. `ec2` will be destroyed first, then `vpc`. Add [`--non-interactive`](https://docs.terragrunt.com/reference/cli/global-flags/#non-interactive) to skip the `yes/no` prompt, which is why EKS Forge's CI pipelines always pass it.
 
 :::warning[Push your changes]
 After changing a module, unit, or stack, push the change to `git` and re-run `terragrunt stack generate` before the next `run --all` command. Otherwise the stack still points at the old commit, and your change won't apply.
@@ -167,8 +168,22 @@ After changing a module, unit, or stack, push the change to `git` and re-run `te
 If you remove a unit or modify a dependency between units, run `terragrunt stack clean` before regenerating. `terragrunt stack generate` doesn't remove stale files on its own, so the removed unit's old directory stays in `.terragrunt-stack` and `run --all` still picks it up.
 :::
 
-### Options
+## Environments
 
-Terragrunt provides some useful options when running `terragrunt run --all <command>` such as:
-- [`--backend-bootstrap`](https://docs.terragrunt.com/reference/cli/commands/backend/bootstrap/): automatically creates an S3 bucket to store `.tfstate`
-- [`--non-interactive`](https://docs.terragrunt.com/reference/cli/global-flags/#non-interactive): doesn't prompt for `yes/no` before apply or destroy (useful for CI/CD)
+The same stack runs in `dev`, `staging`, and `prod`, with almost the same units: only the `values` fed into them differ. Promoting a change from `dev` means running the same units in `staging` and `prod`, just parameterised differently, so what was validated in `dev` is what actually ships.
+
+### `dev`
+
+`dev` lives in the [catalog repository](https://github.com/ConsciousML/terragrunt-template-catalog-eks), under [`pipelines/dev/`](https://github.com/ConsciousML/terragrunt-template-catalog-eks/tree/main/pipelines/dev), and is meant for local development. Its units point at a local checkout via `get_repo_root()` instead of a pinned git ref, so a module or unit change applies the moment you re-run `terragrunt stack generate`, without pushing anything first.
+
+Beyond that, `dev` closely resembles `staging` and `prod`, tuned only where local development calls for it: cost and iteration speed over production guarantees. For example, an extra [fck-nat](https://fck-nat.dev/) unit replaces the managed AWS NAT Gateway `staging` and `prod` provision, cheaper but without its managed HA. The other specific `dev` divergences are marked with `# DEV:` comments in [`pipelines/dev/eks/stack/terragrunt.stack.hcl`](https://github.com/ConsciousML/terragrunt-template-catalog-eks/blob/main/pipelines/dev/eks/stack/terragrunt.stack.hcl).
+
+A validated `dev` change reaches `staging` and `prod` once its commit on `main` is tagged and pushed, that's the `?ref=` they pin to, so nothing reaches them until then.
+
+### `staging`
+
+`staging` exists to prove a change works against real infrastructure before `prod` sees it, not to iterate on the way `dev` does. It lives in the [live repository](https://github.com/ConsciousML/terragrunt-template-live-eks), pinning every unit's `source` to a git tag instead of resolving it locally, that's what the "Push your changes" warning above is really about: there's no ref to pin to until you've tagged and pushed. The [`terratest` job](https://github.com/ConsciousML/terragrunt-template-live-eks/blob/main/.github/workflows/ci.yaml) deploys it per-PR, gated behind a `run-terratest` label, tests it end to end with [Terratest](https://terratest.gruntwork.io/), then tears it down automatically. Nothing in `staging` is meant to outlive the PR that spun it up.
+
+### `prod`
+
+`prod` is the one environment meant to run 24/7, serving real traffic, not spun up and torn down per change the way `staging` is. It also lives in the live repository, pinned to the same git tag, but the [`cd.yaml` workflow](https://github.com/ConsciousML/terragrunt-template-live-eks/blob/main/.github/workflows/cd.yaml) applies it on every merge to `main`, updating the running cluster in place rather than replacing it.
