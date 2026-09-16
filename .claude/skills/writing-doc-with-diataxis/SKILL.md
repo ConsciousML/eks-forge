@@ -9,13 +9,13 @@ You help users create and improve technical documentation using the Diataxis fra
 
 ## What Diataxis Is
 
-Diataxis is a framework for creating documentation that **feels good to use** - documentation that has flow, anticipates needs, and fits how humans actually interact with a craft.
+Diataxis is a framework for creating documentation that **feels good to use**: documentation that has flow, anticipates needs, and fits how humans actually interact with a craft.
 
 **Important**: Diataxis is an approach, not a template. Don't create empty sections for tutorials/how-to/reference/explanation just to have them. Create content that serves actual user needs, apply these principles, and let structure emerge organically.
 
 **Core insight**: Documentation serves practitioners in a domain of skill. What they need changes based on two dimensions:
-1. **Action vs Cognition** - doing things vs understanding things
-2. **Acquisition vs Application** - learning vs working
+1. **Action vs Cognition**: doing things vs understanding things
+2. **Acquisition vs Application**: learning vs working
 
 These create exactly four documentation types:
 - **Learning by doing** → Tutorials
@@ -23,7 +23,7 @@ These create exactly four documentation types:
 - **Working and need facts** → Reference
 - **Learning to understand** → Explanation
 
-**Why exactly four**: These aren't arbitrary categories. The two dimensions create exactly four quarters - there cannot be three or five. This is the complete territory of what documentation must cover.
+**Why exactly four**: These aren't arbitrary categories. The two dimensions create exactly four quarters. There cannot be three or five. This is the complete territory of what documentation must cover.
 
 ## The Diataxis Compass (Your Primary Tool)
 
@@ -60,6 +60,8 @@ Replace `<type>` with `tutorial`, `how-to`, `reference`, or `explanation`.
 
 Read every match, not just one. These tagged pages are the voice and structure to follow. Treat the templates in `principles.md` as a fallback, not the primary source.
 
+Some matches are aggregation wrappers: an MDX file whose body is only an `import ... from '.../_external/...'` line and a `<Component />` render. The wrapper carries the tag but not the content. When a match is a wrapper, follow the import to its source file (see the `cross-repo-aggregated-docs` skill for the path layout) and read the source. Treat the source as the tagged page for voice and structure.
+
 If no page is tagged with that type yet, say so, then fall back to the templates in `principles.md`.
 
 Do this before drafting. Do not draft first and check examples afterwards.
@@ -82,42 +84,43 @@ Apply the two questions above to determine which documentation type serves this 
 ### 3. Apply the Core Principles
 
 **For Tutorials** (learning by doing):
-- You're responsible for the learner's success - every step must work
+- You're responsible for the learner's success: every step must work
 - Focus on doing, not explaining
 - Show where they're going upfront
 - Deliver visible results early and often
 - Maintain narrative of expectation ("You'll see...", "Notice that...")
-- Be concrete and specific - one path only, no alternatives
-- Eliminate the unexpected - perfectly repeatable
+- Be concrete and specific: one path only, no alternatives
+- Eliminate the unexpected: perfectly repeatable
 - Encourage repetition to build the "feeling of doing"
 - Aspire to perfect reliability
+- Naming a concept in one clause and linking out is fine. Flag it only if it actually explains or justifies the concept.
 
 **For How-to Guides** (working to achieve goals):
 - Address real-world problems, not tool capabilities
-- Assume competence - they know what they want
+- Assume competence: they know what they want
 - Provide logical sequence that flows with human thinking
 - Address real-world complexity with conditionals ("If X, do Y")
-- **Seek flow** - anticipate their next move, minimise context switching
-- Omit unnecessary detail - practical usability beats completeness
+- **Seek flow**: anticipate their next move, minimise context switching
+- Omit unnecessary detail: practical usability beats completeness
 - Focus on tasks, not tools
 - Name guides clearly: "How to [accomplish X]"
 
 **For Reference** (facts while working):
-- Describe, don't instruct - neutral facts only
+- Describe, don't instruct: neutral facts only
 - Structure mirrors the product architecture
 - Use standard, consistent patterns throughout
-- Be austere and authoritative - no ambiguity
+- Be austere and authoritative: no ambiguity
 - Separate description from instruction
 - Provide succinct usage examples
 - Completeness matters here (unlike how-to guides)
 
 **For Explanation** (understanding concepts):
 - Talk about the subject from multiple angles
-- Answer "why" - design decisions, history, constraints
+- Answer "why": design decisions, history, constraints
 - Make connections to related concepts
 - Provide context and bigger picture
-- Permit opinion and perspective - discuss trade-offs
-- Keep boundaries clear - no instruction or pure reference
+- Permit opinion and perspective: discuss trade-offs
+- Keep boundaries clear: no instruction or pure reference
 - Take higher, wider perspective
 
 ### 4. Use Appropriate Language
@@ -144,7 +147,7 @@ If content serves multiple needs, split it and link between documents.
 
 Use this iterative workflow:
 
-**1. Choose a piece** - Any page, section, or paragraph
+**1. Choose a piece**: Any page, section, or paragraph
 
 **2. Challenge it** with these questions:
 - What user need does this serve?
@@ -177,19 +180,19 @@ Don't try to restructure everything at once. Structure emerges from improving in
 
 ## Common Mistakes to Avoid
 
-1. **Tutorial/How-to conflation** - Tutorials are for learning (study), how-to guides are for working. Signs you've mixed them:
+1. **Tutorial/How-to conflation**: Tutorials are for learning (study), how-to guides are for working. Signs you've mixed them:
    - Your "tutorial" assumes users know what they want to do
    - Your "tutorial" offers multiple approaches
    - Your "how-to guide" tries to teach basic concepts
    - Your "tutorial" addresses real-world complexity
 
-2. **Over-explaining in tutorials** - Trust that learning happens through doing. Give minimal explanation and link to detailed explanation elsewhere.
+2. **Over-explaining in tutorials**: Trust that learning happens through doing. Give minimal explanation and link to detailed explanation elsewhere.
 
-3. **How-to guides that teach** - Assume competence. Don't explain basics.
+3. **How-to guides that teach**: Assume competence. Don't explain basics.
 
-4. **Reference that instructs** - Reference describes, it doesn't tell you what to do.
+4. **Reference that instructs**: Reference describes, it doesn't tell you what to do.
 
-5. **Explanation in action-oriented docs** - Move it to explanation docs and link to it.
+5. **Explanation in action-oriented docs**: Move it to explanation docs and link to it.
 
 ## Quick Reference Table
 
@@ -205,8 +208,8 @@ Don't try to restructure everything at once. Structure emerges from improving in
 ## Supporting Files
 
 For more detailed guidance, refer to:
-- **principles.md** - Comprehensive principles for each documentation type with examples
-- **reference.md** - Quality framework, complex scenarios, and additional guidance
+- **principles.md**: Comprehensive principles for each documentation type with examples
+- **reference.md**: Quality framework, complex scenarios, and additional guidance
 
 ## Output Requirements
 
