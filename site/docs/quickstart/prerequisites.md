@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
 title: Prerequisites
+diataxis-tag: tutorial
 ---
 
 ## AWS Account

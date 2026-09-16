@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+diataxis-tag: tutorial
 ---
 
 import DocCards from '@site/src/components/DocCards';
