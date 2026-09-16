@@ -27,7 +27,7 @@ However, Diataxis can **expose** lapses in functional quality:
 
 ### Deep Quality (Subjective, Felt)
 
-These characteristics are interdependent - aspects of the same thing:
+These characteristics are interdependent, aspects of the same thing:
 
 - Feels good to use
 - Has flow
@@ -47,7 +47,7 @@ Think of it this way:
 - **Functional quality** = Constraints you must conform to
 - **Deep quality** = Liberation, creativity, taste
 
-Functional quality is a burden - tests you might fail. Deep quality is the pleasure of crafting something that works well.
+Functional quality is a burden: tests you might fail. Deep quality is the pleasure of crafting something that works well.
 
 Diataxis helps pursue deep quality, which makes functional quality lapses more visible, which helps you improve functional quality, which then allows deep quality to shine.
 
@@ -74,7 +74,7 @@ These are effectively different products for different people. Each group has it
 - Do contributors need distinct workflows?
   - If yes: Completely separate their how-to guides
 - Does each group need all four documentation types?
-  - Maybe not - provide what each actually needs
+  - Maybe not: provide what each actually needs
 
 **Don't force these into rigid structure**. Structure follows user needs, not diagram purity.
 
@@ -216,10 +216,10 @@ Diataxis helps with form and structure, not everything else.
 
 Users move through a cycle with your product:
 
-1. **Learning phase** - Diving in to do things under guidance (tutorials)
-2. **Goal phase** - Putting skills to work on real problems (how-to guides)
-3. **Information phase** - Consulting facts while working (reference)
-4. **Understanding phase** - Stepping back to reflect and deepen knowledge (explanation)
+1. **Learning phase**: Diving in to do things under guidance (tutorials)
+2. **Goal phase**: Putting skills to work on real problems (how-to guides)
+3. **Information phase**: Consulting facts while working (reference)
+4. **Understanding phase**: Stepping back to reflect and deepen knowledge (explanation)
 
 This isn't strictly linear. A user might:
 - Jump to reference while following a tutorial
@@ -251,11 +251,11 @@ Your documentation should be the same:
 
 ### The Basic Workflow
 
-1. **Choose something** - Any piece, even at random
-2. **Assess it** - Challenge it with Diataxis questions
-3. **Decide on one action** - What single improvement helps now?
-4. **Do it** - Complete that action, commit it
-5. **Repeat** - Go back to step 1
+1. **Choose something**: Any piece, even at random
+2. **Assess it**: Challenge it with Diataxis questions
+3. **Decide on one action**: What single improvement helps now?
+4. **Do it**: Complete that action, commit it
+5. **Repeat**: Go back to step 1
 
 This keeps work flowing without requiring a big plan. Each small change moves in the right direction. Structure forms itself.
 

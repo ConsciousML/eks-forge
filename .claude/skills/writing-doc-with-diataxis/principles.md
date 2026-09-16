@@ -8,7 +8,7 @@ This file provides comprehensive guidance for each of the four Diataxis document
 
 A tutorial is a lesson that takes a learner by the hand through a practical learning experience. The purpose is to help the learner acquire basic competence and confidence through doing.
 
-**Key insight**: Learning happens through action, not explanation. What the learner *does* is not necessarily what they *learn* - they learn concepts, relationships, and confidence through the actions they perform.
+**Key insight**: Learning happens through action, not explanation. What the learner *does* is not necessarily what they *learn*: they learn concepts, relationships, and confidence through the actions they perform.
 
 ### Detailed Principles
 
@@ -17,10 +17,10 @@ A tutorial is a lesson that takes a learner by the hand through a practical lear
 You are responsible for the learner's success. If something goes wrong, that's your problem, not theirs. The only responsibility of the learner is to be attentive and follow directions.
 
 The tutorial must be:
-- **Meaningful** - the learner needs a sense of achievement
-- **Successful** - the learner must be able to complete it
-- **Logical** - the path must make sense
-- **Usefully complete** - encounters all key actions, concepts, and tools
+- **Meaningful**: the learner needs a sense of achievement
+- **Successful**: the learner must be able to complete it
+- **Logical**: the path must make sense
+- **Usefully complete**: encounters all key actions, concepts, and tools
 
 #### 2. Ruthlessly Minimise Explanation
 
@@ -82,11 +82,11 @@ Close learning loops by pointing things out:
 - "See that the status is now 'active'"
 - "The logs show that three connections were made"
 
-Observing is an active skill - teach it.
+Observing is an active skill: teach it.
 
 #### 7. Target the "Feeling of Doing"
 
-Accomplished practitioners experience a *feeling of doing* - where purpose, action, thinking, and result flow together. This is what makes work feel like a pleasure.
+Accomplished practitioners experience a *feeling of doing*, where purpose, action, thinking, and result flow together. This is what makes work feel like a pleasure.
 
 Your tutorial should create conditions for this feeling:
 - Tie together purpose and action
@@ -213,7 +213,7 @@ Minimise context switching:
 - Don't make them jump back and forth between files
 - Consider the pace and rhythm of their work
 
-At its best, a how-to guide anticipates the user - it places the next tool they need right in their hand.
+At its best, a how-to guide anticipates the user: it places the next tool they need right in their hand.
 
 #### 4. Address Real-World Complexity
 
@@ -250,7 +250,7 @@ Steps should flow in an order that makes sense for human thinking and action, no
 
 Sometimes the order is imposed by dependencies (step 2 requires step 1). But often there's subtlety: maybe two operations *could* be done in either order, but one sets up the user's environment or thinking in a way that benefits the other.
 
-Pay attention to sense and meaning in ordering - how human beings think and act.
+Pay attention to sense and meaning in ordering: how human beings think and act.
 
 #### 8. Name Guides Clearly
 
@@ -325,7 +325,7 @@ to understand how rate limiting algorithms work...
 
 ### What Reference Is
 
-Reference contains the technical description - facts - that a user needs to do things correctly. It's information you consult while working.
+Reference contains the technical description, facts, that a user needs to do things correctly. It's information you consult while working.
 
 **Key characteristic**: Reference is neutral. It's not concerned with what the user is doing, only with accurately describing what *is*.
 
@@ -537,7 +537,7 @@ Unlike reference (which must be neutral), explanation can and should include:
 
 Understanding is richer than pure facts. Discussion can consider and weigh contrary opinions.
 
-But keep it bounded - don't let opinion turn into advocacy or marketing.
+But keep it bounded: don't let opinion turn into advocacy or marketing.
 
 #### 6. Keep Boundaries Clear
 
@@ -549,7 +549,7 @@ But those have their own places. Keep explanation focused on understanding. If y
 
 Explanation doesn't take the user's eye-level view (like how-to guides) or the close-up view of machinery (like reference).
 
-Its scope is a topic - "an area of knowledge" with reasonable boundaries. It looks at things from above and across, showing the bigger picture.
+Its scope is a topic, "an area of knowledge" with reasonable boundaries. It looks at things from above and across, showing the bigger picture.
 
 ### Explanation Examples
 
@@ -563,13 +563,13 @@ reflects several trade-offs in our architecture.
 ## Session-based vs Token-based Authentication
 
 Session-based authentication stores state on the server. This simplifies some security
-concerns - invalidating a session is just deleting a server-side record. However, it
+concerns: invalidating a session is just deleting a server-side record. However, it
 complicates horizontal scaling. Every server needs access to session state, requiring
 either sticky sessions (which limit load balancing) or a shared session store (which
 becomes a single point of failure).
 
 JWT tokens are stateless. The token itself contains all authentication information,
-cryptographically signed. This makes them ideal for distributed systems - any server
+cryptographically signed. This makes them ideal for distributed systems: any server
 can validate any token without coordinating with others.
 
 ## The Token Revocation Problem
