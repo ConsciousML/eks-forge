@@ -33,7 +33,7 @@ Alternatively, if your existing stack already relies on different tools than the
 Review the [features section](#features) to assess if EKS Forge is the right fit for you.
 
 ## How does EKS Forge work?
-EKS Forge is composed of 3 [template repositories](../concepts/).
+EKS Forge is composed of 3 [template repositories](../architecture/).
 In other words, it is not meant to be used in-place, but rather to be forked and extended.
 
 EKS Forge splits the platform into two halves that work together:

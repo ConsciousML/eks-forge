@@ -16,7 +16,7 @@ EKS Forge provisions infrastructure with [Terraform](https://developer.hashicorp
 
 In other words, a stack orchestrates multiple units, each deploying the resources of their respective TF module. This is what lets the catalog's stacks be reused as-is across `dev`, `staging`, and `prod` in the [live repository](https://github.com/ConsciousML/terragrunt-template-live-eks): only the `values` fed into each unit change per environment, not the units or stacks themselves.
 
-See the [catalog architecture](../concepts/#catalog-architecture) for how EKS Forge structures these layers.
+See the [catalog architecture](../architecture/#catalog-architecture) for how EKS Forge structures these layers.
 
 ## Terragrunt
 

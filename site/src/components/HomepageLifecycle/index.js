@@ -26,9 +26,9 @@ const Groups = [
       },
       {
         icon: <Layers size={36} color="var(--ifm-color-primary-dark)" />,
-        title: 'Concepts',
+        title: 'Architecture',
         description: 'Understand the underlying concepts to work with EKS Forge in under 5 min',
-        link: '/docs/concepts',
+        link: '/docs/architecture',
       },
       {
         icon: <Rocket size={36} color="var(--ifm-color-primary-dark)" />,
