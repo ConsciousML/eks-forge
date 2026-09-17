@@ -41,7 +41,7 @@ EKS Forge splits the platform into two halves that work together:
 - GitOps deploys everything that runs inside the cluster ([Helm](https://helm.sh/) charts and plain manifests)
 
 Everything is wired together as pipelines, so you can deploy a [fully featured](#features) environment with only a few CLI commands.
-These pipelines are modular and can be deployed across multiple environments:
+These pipelines are modular and can be deployed across multiple [environments](../iac/index.md#environments):
 - `dev` for developing a new feature or fix
 - `staging` to test the infrastructure before production
 - `prod` for the actual production infrastructure

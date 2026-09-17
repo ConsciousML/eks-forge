@@ -23,7 +23,7 @@ You'll need a domain and access to its registrar to expose your cluster's privat
 - buy a domain name from a domain registrar (e.g [Namecheap](https://www.namecheap.com/), [GoDaddy](https://www.godaddy.com/domains), [Cloudflare](https://domains.cloudflare.com/), etc.)
 - or register a free domain name at [`nic.eu.org`](https://nic.eu.org/).
 
-Any registrar works, as long as it lets you add [NS records](https://www.cloudflare.com/learning/dns/dns-records/dns-ns-record/) to delegate each environment subdomain to AWS.
+Any registrar works, as long as it lets you add [NS records](https://www.cloudflare.com/learning/dns/dns-records/dns-ns-record/) to delegate each [environment](../iac/index.md#environments) subdomain to AWS.
 
 ## Tailscale Account
 You'll need a [Tailscale](https://tailscale.com/) account to reach private developer tools (e.g [Grafana](https://grafana.com/oss/) for dashboards, [Hubble](https://github.com/cilium/hubble) for traffic flow, etc.) over VPN inside the [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html). If you don't have one, [create one](https://login.tailscale.com/start).

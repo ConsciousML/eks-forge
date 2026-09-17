@@ -8,7 +8,7 @@ import {ClipboardList, Download, Settings, Rocket, CloudUpload} from 'lucide-rea
 
 # Quickstart
 
-In this tutorial, you'll deploy an EKS cluster with the following [features](../overview/index.md#cluster-features) in the `dev` environment.
+In this tutorial, you'll deploy an EKS cluster with the following [features](../overview/index.md#cluster-features) in the `dev` [environment](../iac/index.md#environments).
 
 <DocCards columns={2} items={[
   {
