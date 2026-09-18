@@ -35,6 +35,10 @@ jobs:
             --no-progress
             --root-dir "${{ github.workspace }}/site/build"
             --exclude "^https://eks-forge\.readthedocs\.io"
+            --exclude "^https://(app\.)?slack\.com/"
+            --exclude "^https://github\.com/signup$"
+            --exclude "^https://www\.godaddy\.com/"
+            --exclude "^https://www\.namecheap\.com/"
             "site/build/**/*.html"
           fail: true
         env:
