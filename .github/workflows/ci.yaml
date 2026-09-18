@@ -33,12 +33,9 @@ jobs:
         with:
           args: >-
             --no-progress
+            --accept "200..=299,403"
             --root-dir "${{ github.workspace }}/site/build"
             --exclude "^https://eks-forge\.readthedocs\.io"
-            --exclude "^https://(app\.)?slack\.com/"
-            --exclude "^https://github\.com/signup$"
-            --exclude "^https://www\.godaddy\.com/"
-            --exclude "^https://www\.namecheap\.com/"
             "site/build/**/*.html"
           fail: true
         env:
