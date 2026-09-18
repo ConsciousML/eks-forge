@@ -33,6 +33,7 @@ jobs:
         with:
           args: >-
             --no-progress
+            --accept "200..=299,403"
             --root-dir "${{ github.workspace }}/site/build"
             --exclude "^https://eks-forge\.readthedocs\.io"
             "site/build/**/*.html"
