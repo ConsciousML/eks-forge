@@ -97,6 +97,7 @@
     ]
   },
   "skillOverrides": {
-    "how-to-write-docs-catalog": "off"
+    "how-to-write-docs-catalog": "off",
+    "how-to-write-docs-live": "off"
   }
 }
