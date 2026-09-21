@@ -12,6 +12,12 @@ If your account belongs to an organization, ask your AWS administrator to attach
 ## GitHub Account
 You'll need a GitHub account to host your code and run [CI/CD](../ci-cd/index.md) with [GitHub Actions](https://github.com/features/actions). If you don't have one, [create an account](https://github.com/signup).
 
+You'll also need an SSH key added to your GitHub account, since your repositories and Terragrunt pull code from GitHub over SSH. If you don't have one, follow [GitHub's SSH guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh). Verify your setup with:
+```bash
+ssh -T git@github.com
+```
+You should see `Hi <your-username>! You've successfully authenticated`.
+
 ## Operating System
 A Unix-like shell is required. Make sure you're on one these operating systems:
 - Linux distros ([Ubuntu](https://ubuntu.com/download), [Debian](https://www.debian.org/distrib/), etc.)
