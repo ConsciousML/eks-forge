@@ -12,5 +12,4 @@ The [live repository](https://github.com/ConsciousML/terragrunt-template-live-ek
 - **Block force pushes**: enabled
 - **Require a pull request before merging**: enabled, with 0 required approvals
 - **Require status checks to pass**: enabled
-  - **Require branches to be up to date before merging**: enabled
   - **Required status checks**: `terratest`
