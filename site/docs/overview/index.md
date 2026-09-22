@@ -30,6 +30,8 @@ If you don't have a platform or DevOps team, and don't need the advanced functio
 
 Alternatively, if your existing stack already relies on different tools than the ones EKS Forge is built around (e.g. FluxCD instead of ArgoCD, Datadog instead of the Prometheus stack), adopting it may cost more than it saves.
 
+The CI/CD is also designed for small teams shipping a few changes a day. If several teams deploy to the same environments, read the [CI/CD limitations](/docs/ci-cd/limitations-and-improvements/) first.
+
 Review the [features section](#features) to assess if EKS Forge is the right fit for you.
 
 ## How does EKS Forge work?
