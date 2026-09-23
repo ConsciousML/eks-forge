@@ -12,6 +12,10 @@ In this guide, you'll fork and set up the [live repository](https://github.com/C
 
 Before starting, make sure you've performed the [quickstart](/docs/quickstart).
 
+:::warning
+This tutorial deploys billable AWS resources. A `staging` or `prod` cluster costs up to $10 per day in `us-east-1`. Each step ends by destroying what it deployed.
+:::
+
 <DocCards columns={3} items={[
   {
     icon: <Settings size={36} color="var(--ifm-color-primary-dark)" />,
