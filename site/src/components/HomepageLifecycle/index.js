@@ -29,7 +29,7 @@ const Groups = [
       {
         icon: <Rocket size={36} color="var(--ifm-color-primary-dark)" />,
         title: 'Quickstart',
-        description: <>Deploy your first EKS Forge cluster in the <code>dev</code> environment</>,
+        description: <>Deploy your first fully-featured cluster in the <code>dev</code> environment</>,
         link: '/docs/quickstart',
       },
       {
