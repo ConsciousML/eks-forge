@@ -10,6 +10,10 @@ import {ClipboardList, Download, Settings, Rocket, CloudUpload} from 'lucide-rea
 
 In this tutorial, you'll deploy an EKS cluster with the following [features](../overview/index.md#cluster-features) in the `dev` [environment](../iac/index.md#environments).
 
+:::warning
+This tutorial deploys billable AWS resources. A `dev` cluster costs around $5 per day in `us-east-1`. Follow the [destroy step](/docs/quickstart/deployment/#destroy-the-infrastructure) when you're done.
+:::
+
 <DocCards columns={2} items={[
   {
     icon: <ClipboardList size={36} color="var(--ifm-color-primary-dark)" />,

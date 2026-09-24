@@ -1,3 +1,6 @@
 [submodule "site/docs/_external/terragrunt-template-catalog-eks"]
 	path = site/docs/_external/terragrunt-template-catalog-eks
 	url = https://github.com/ConsciousML/terragrunt-template-catalog-eks.git
+[submodule "site/docs/_external/terragrunt-template-live-eks"]
+	path = site/docs/_external/terragrunt-template-live-eks
+	url = https://github.com/ConsciousML/terragrunt-template-live-eks.git

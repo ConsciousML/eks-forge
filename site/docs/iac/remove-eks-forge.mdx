@@ -1,0 +1,20 @@
+---
+sidebar_position: 3
+title: Remove EKS Forge
+diataxis-tag: how-to
+---
+
+import RemoveLive from '../_external/terragrunt-template-live-eks/docs/remove-eks-forge.md';
+import RemoveCatalog from '../_external/terragrunt-template-catalog-eks/docs/remove-eks-forge.md';
+
+# How to Remove EKS Forge
+
+This guide shows you how to destroy every AWS resource EKS Forge created, from both your [live](/docs/deployment/live-repository-setup/#fork-the-live-repository) and [catalog](/docs/quickstart/installation/#fork-the-eks-forge-catalog) forks.
+
+:::warning
+Only do this if you want to remove EKS Forge from your AWS account entirely. Once the bootstrap resources are destroyed, you need to run the [quickstart](/docs/quickstart/) and the [live repository setup](/docs/deployment/live-repository-setup/) again to deploy.
+:::
+
+<RemoveLive />
+
+<RemoveCatalog />

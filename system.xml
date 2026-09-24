@@ -17,6 +17,8 @@
         - `site/`: the Docusaurus site
         - `site/docs/`: one dir per top-level category, order set by each dir's
           `_category_.json` `position`
+        - Link between site pages with absolute routes (`/docs/ci-cd/limitations-and-improvements/`),
+          not relative file paths
     </site>
 
     <commits>
