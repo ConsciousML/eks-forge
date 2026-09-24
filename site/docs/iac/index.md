@@ -90,6 +90,8 @@ remote_state {
 ```
 This configuration uses an S3 bucket to store the `.tfstate` of each unit by using their relative path from the `root.hcl` file.
 
+EKS Forge's `root.hcl` and the other shared `.hcl` files are listed in the [HCL configuration reference](/docs/reference/hcl_configuration/).
+
 #### Unit Dependencies
 
 Units can also depend on one another. `units/ec2/` needs the VPC's id to deploy the instance into it. A [`dependency` block](https://docs.terragrunt.com/reference/hcl/blocks/#dependency) reads it straight from the `vpc` unit's [TF outputs](https://developer.hashicorp.com/terraform/language/values/outputs):
