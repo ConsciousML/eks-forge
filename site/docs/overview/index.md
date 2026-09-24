@@ -24,7 +24,7 @@ It is free, and built entirely on top of these open-source tools.
 You'll be able to bootstrap a production-grade platform covering the whole development lifecycle of EKS in about a day.
 More importantly, it provides documentation to understand, extend, and operate this environment yourself.
 
-## When not to use it?
+## When Not to Use It?
 EKS Forge targets teams developing infrastructure for complex systems.
 If you don't have a platform or DevOps team, and don't need the advanced functionality this project offers, you're better off building your infrastructure yourself.
 
@@ -34,7 +34,7 @@ The CI/CD is also designed for small teams shipping a few changes a day. If seve
 
 Review the [features section](#features) to assess if EKS Forge is the right fit for you.
 
-## How does EKS Forge work?
+## How Does EKS Forge Work?
 EKS Forge is composed of 3 [template repositories](../architecture/).
 In other words, it is not meant to be used in-place, but rather to be forked and extended.
 
