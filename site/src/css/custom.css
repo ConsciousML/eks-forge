@@ -71,3 +71,16 @@
 [data-theme='dark'] .header-github-link::before {
   filter: invert(1);
 }
+
+/* Outline tab groups, so the alternatives read as one block */
+.tabs-container {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  padding: 0 1rem 0.5rem;
+}
+
+.tabs-container > .tabs {
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  margin: 0 -1rem 1rem;
+  padding: 0 1rem;
+}
