@@ -64,6 +64,6 @@ Each pool's `requirements` block sets its `karpenter.sh/capacity-type` (`spot` o
 
 ## Apply the change
 
-Once the quota, MNG, or NodePool values are updated, deploy them in the desired [environment](/docs/iac/#environments):
+Once the MNG or NodePool values are updated, deploy them in the desired [environment](/docs/iac/#environments):
 - `dev`: see [Dev Deployment](/docs/quickstart/deployment/).
 - `staging` and `prod`: see [How to Edit the Live Configuration](/docs/iac/edit-live-configuration/).
