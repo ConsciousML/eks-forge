@@ -4,3 +4,6 @@
 [submodule "site/docs/_external/terragrunt-template-live-eks"]
 	path = site/docs/_external/terragrunt-template-live-eks
 	url = https://github.com/ConsciousML/terragrunt-template-live-eks.git
+[submodule "site/docs/_external/argocd-app-of-apps-template"]
+	path = site/docs/_external/argocd-app-of-apps-template
+	url = https://github.com/ConsciousML/argocd-app-of-apps-template.git
