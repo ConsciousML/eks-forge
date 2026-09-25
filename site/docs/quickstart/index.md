@@ -42,7 +42,7 @@ This tutorial deploys billable AWS resources. A `dev` cluster costs around $5 pe
   {
     icon: <CloudUpload size={36} color="var(--ifm-color-primary-dark)" />,
     title: '5. Dev Deployment',
-    description: 'Deploy a production-ready EKS platform',
+    description: 'Deploy the EKS platform to the dev environment',
     link: '/docs/quickstart/deployment',
   },
 ]} />
