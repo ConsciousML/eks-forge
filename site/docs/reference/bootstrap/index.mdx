@@ -1,0 +1,68 @@
+---
+sidebar_position: 0
+diataxis-tag: reference
+---
+
+import DocCards from '@site/src/components/DocCards';
+import {DollarSign, TrendingUp, KeyRound, Lock, Gauge, Globe, MessageSquare, Network, ShieldCheck} from 'lucide-react';
+
+# Bootstrap Pipelines
+
+Inputs and outputs of each [bootstrap pipeline](/docs/quickstart/bootstrap/):
+
+<DocCards columns={2} items={[
+  {
+    icon: <KeyRound size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'AWS GitHub Actions Authentication',
+    description: 'OIDC trust letting GitHub Actions assume an IAM role in AWS',
+    link: '/docs/reference/bootstrap/aws_gh_actions_auth',
+  },
+  {
+    icon: <Globe size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'DNS Bootstrap',
+    description: 'Public Route 53 hosted zone for an environment',
+    link: '/docs/reference/bootstrap/setup_dns',
+  },
+  {
+    icon: <DollarSign size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'AWS Billing Budgets',
+    description: 'Actual and forecasted monthly spend budgets with email alerts',
+    link: '/docs/reference/bootstrap/aws_billing_budgets',
+  },
+  {
+    icon: <TrendingUp size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'AWS Billing Anomaly Detection',
+    description: 'Cost anomaly monitor with email alerts',
+    link: '/docs/reference/bootstrap/aws_billing_anomaly_detection',
+  },
+  {
+    icon: <Gauge size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'AWS EC2 Quotas',
+    description: 'On-demand and spot vCPU quota increase requests',
+    link: '/docs/reference/bootstrap/aws_ec2_quotas',
+  },
+  {
+    icon: <Lock size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'Slack GitHub Secrets',
+    description: 'SLACK_BOT_TOKEN stored as a GitHub Actions secret',
+    link: '/docs/reference/bootstrap/slack_github_secrets',
+  },
+  {
+    icon: <MessageSquare size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'Slack Channels',
+    description: 'Alert channels prefixed with the environment name',
+    link: '/docs/reference/bootstrap/slack_channels',
+  },
+  {
+    icon: <Network size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'Tailscale ACL',
+    description: 'Tailnet ACL policy auto-approving each VPC\'s subnet routes',
+    link: '/docs/reference/bootstrap/tailscale_acl',
+  },
+  {
+    icon: <ShieldCheck size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'Tailscale WIF',
+    description: 'Workload Identity Federation credential letting CI authenticate to Tailscale',
+    link: '/docs/reference/bootstrap/tailscale_wif',
+  },
+]} />

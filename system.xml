@@ -28,6 +28,16 @@
         - Use one line style commits (no body)
     </commits>
 
+    <submodules>
+        - The sibling repos (`terragrunt-template-catalog-eks`, `terragrunt-template-live-eks`,
+          `argocd-app-of-apps-template`) are git submodules under `site/docs/_external/`.
+          Always edit from there instead of the original repos.
+        - Commit inside the submodule on a branch. Do not bump the
+          submodule pointer in this repo while the PR is in progress.
+        - At the end of the PR, push every touched submodule branch, then bump all changed
+          submodule pointers in this repo in one single commit (`docs: bump submodules`).
+    </submodules> 
+
     <restrictions>
      - Read sources directly instead of spawning Explore or Task agents
     </restrictions>

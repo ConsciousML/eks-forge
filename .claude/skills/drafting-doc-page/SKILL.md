@@ -23,6 +23,8 @@ Write pages with the user, not for them. The user reviews every change through e
 - Wait for the user's approval.
 
 ## 4. Write the page, one bullet per edit
+- If the page is sourced from a sibling repo, create its wrapper under `site/docs/` first,
+  so the user can watch each edit live on the dev server.
 - Make one Edit per outline bullet, in order.
 - An accepted edit means continue: go straight to the next bullet without commenting.
 - A rejected edit comes with feedback: apply it, then resume.
