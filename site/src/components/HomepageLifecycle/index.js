@@ -71,7 +71,7 @@ const Groups = [
         icon: <Package size={36} color="var(--ifm-color-primary-dark)" />,
         title: 'Applications',
         description: 'Deploy Kubernetes manifests and Helm charts with GitOps using ArgoCD and the App of Apps pattern',
-        link: '/docs/applications',
+        link: '/docs/applications/get-started',
       },
     ],
   },
