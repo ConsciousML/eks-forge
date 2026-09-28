@@ -8,7 +8,7 @@ import {Settings, CloudUpload, GitPullRequest} from 'lucide-react';
 
 # Production Deployment
 
-In this guide, you'll fork and set up the [live repository](https://github.com/ConsciousML/terragrunt-template-live-eks), deploy the EKS stack in the [`staging` environment](/docs/iac/#environments), and promote the stack to `prod`.
+In this tutorial, you'll fork and set up the [live repository](https://github.com/ConsciousML/terragrunt-template-live-eks), deploy the EKS stack in the [`staging` environment](/docs/iac/#environments), and promote the stack to `prod`.
 
 Before starting, make sure you've performed the [quickstart](/docs/quickstart).
 
