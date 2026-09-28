@@ -53,6 +53,11 @@ const config = {
 
   onBrokenLinks: 'throw',
 
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
+
   headTags: [
     {
       tagName: 'link',
