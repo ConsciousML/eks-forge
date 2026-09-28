@@ -4,7 +4,7 @@ diataxis-tag: tutorial
 ---
 
 import DocCards from '@site/src/components/DocCards';
-import {Settings} from 'lucide-react';
+import {Settings, CloudUpload} from 'lucide-react';
 
 # Set Up Your Applications Repository
 
@@ -18,5 +18,11 @@ Before starting, make sure you've performed the [quickstart](/docs/quickstart) a
     title: '1. ArgoCD App of Apps Setup',
     description: 'Fork the app of apps repository and point your catalog at it',
     link: '/docs/applications/get-started/app-of-apps-setup',
+  },
+  {
+    icon: <CloudUpload size={36} color="var(--ifm-color-primary-dark)" />,
+    title: '2. Deploy an App Change to Dev',
+    description: 'Push a change to your fork and watch ArgoCD sync it to your cluster',
+    link: '/docs/applications/get-started/deployment',
   },
 ]} />
