@@ -1,0 +1,65 @@
+---
+sidebar_position: 3
+title: Schedule Pods
+diataxis-tag: how-to
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# How to Schedule Pods
+
+This guide shows you how to place your pods on the managed node group or a Karpenter NodePool. They are all [tainted](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/), so a pod without a [toleration](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts) can't be scheduled anywhere. To understand why, see [How Pods Are Scheduled](/docs/compute/how-pods-are-scheduled/).
+
+Pick the tab that fits your workload, and add its `nodeSelector` and `tolerations` to the pod spec:
+- **Critical**: an application that must stay available.
+- **Elastic**: any other application.
+- **Managed node group**: a component that needs to run before Karpenter.
+
+<Tabs groupId="node-placement">
+<TabItem value="critical" label="Critical">
+
+```yaml
+nodeSelector:
+  karpenter.sh/nodepool: critical
+tolerations:
+  - key: karpenter.sh/workload-class
+    operator: Equal
+    value: critical
+    effect: NoSchedule
+```
+
+For a complete example, see [`charts/monitoring/blackbox-exporter/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/monitoring/blackbox-exporter/values.yaml).
+
+</TabItem>
+<TabItem value="elastic" label="Elastic">
+
+```yaml
+nodeSelector:
+  karpenter.sh/nodepool: elastic
+tolerations:
+  - key: karpenter.sh/workload-class
+    operator: Equal
+    value: elastic
+    effect: NoSchedule
+```
+
+For a complete example, see [`manifests/podinfo/podinfo-deployment.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/manifests/podinfo/podinfo-deployment.yaml).
+
+</TabItem>
+<TabItem value="mng" label="Managed node group">
+
+```yaml
+nodeSelector:
+  node-role/mng: "true"
+tolerations:
+  - key: node-role/mng
+    operator: Equal
+    value: "true"
+    effect: NoSchedule
+```
+
+</TabItem>
+</Tabs>
+
+Then ship the change to your cluster by following [Add, Edit, or Remove an App](/docs/applications/add-edit-or-remove-an-app/).
