@@ -46,9 +46,9 @@ Then apply:
 | Cognition    | Application   | **Reference**      |
 | Cognition    | Acquisition   | **Explanation**    |
 
-## Load Tagged Examples Before Writing
+## Load Tagged Examples Before Planning or Writing
 
-Once the compass above has told you the documentation type, load the existing examples for it before you write or review anything.
+Once the compass above has told you the documentation type, load the existing examples for it before you plan, write, or review anything.
 
 Grep the repo root for pages tagged with that type:
 
@@ -64,7 +64,7 @@ Some matches are aggregation wrappers: an MDX file whose body is only an `import
 
 If no page is tagged with that type yet, say so, then fall back to the templates in `principles.md`.
 
-Do this before drafting. Do not draft first and check examples afterwards.
+Do this before any outline, plan, or draft, including in plan mode. The examples set the structure, so an outline built without them is a draft checked afterwards. Do not outline or draft first and check examples afterwards.
 
 This is a hard requirement, not a suggestion. Treat it the same as reading a file before you edit it.
 
