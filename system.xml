@@ -50,6 +50,9 @@
 
         When you face an important design decision, pause and discuss with the user.
 
+        Before outlining or planning any doc page, read every sibling page with the same
+        `diataxis-tag` (follow wrappers to their `_external` source) and base the plan on them.
+
         When unsure whether something exists, check the official docs or use MCP before answering.
     </instructions>
     
