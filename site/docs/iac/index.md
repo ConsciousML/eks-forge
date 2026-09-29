@@ -16,7 +16,7 @@ EKS Forge provisions infrastructure with [Terraform](https://developer.hashicorp
 
 In other words, a stack orchestrates multiple units, each deploying the resources of their respective TF module. This is what lets the catalog's stacks be reused as-is across `dev`, `staging`, and `prod` in the [live repository](https://github.com/ConsciousML/terragrunt-template-live-eks): only the `values` fed into each unit change per environment, not the units or stacks themselves.
 
-See the [catalog architecture](../architecture/#catalog-architecture) for how EKS Forge structures these layers.
+See [Catalog Architecture](/docs/architecture/#catalog-architecture) for how EKS Forge structures these layers.
 
 ## Terragrunt
 
@@ -90,7 +90,7 @@ remote_state {
 ```
 This configuration uses an S3 bucket to store the `.tfstate` of each unit by using their relative path from the `root.hcl` file.
 
-EKS Forge's `root.hcl` and the other shared `.hcl` files are listed in the [HCL configuration reference](/docs/reference/hcl_configuration/).
+EKS Forge's `root.hcl` and the other shared `.hcl` files are listed in the [HCL Configuration](/docs/reference/hcl_configuration/) reference.
 
 #### Unit Dependencies
 
@@ -122,7 +122,7 @@ inputs = {
 
 A [Terragrunt stack](https://docs.terragrunt.com/features/stacks/) is a collection of related units that can be managed together. Instead of applying each unit by hand in the right order, a stack lets Terragrunt do it automatically, following the dependencies declared between units.
 
-The following stack composes the `vpc` and `ec2` units from the [units section](#units).
+The following stack composes the `vpc` and `ec2` units from the [Units](#units) section.
 
 #### Define a Stack
 `terragrunt.stack.hcl` files define the incorporated units, as well as the `values` fed into each one. Here's an [example of stack file](https://docs.terragrunt.com/features/stacks/explicit/#example-simple-stack-with-units):
