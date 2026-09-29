@@ -21,11 +21,11 @@ aws service-quotas get-service-quota --service-code ec2 --quota-code L-1216C47A 
 aws service-quotas get-service-quota --service-code ec2 --quota-code L-34B43A08 # Spot Standard
 ```
 
-If the increase you're about to make would push total on-demand or spot usage past the current quota value, raise the quota first. See the [EC2 quotas reference](/docs/reference/bootstrap/aws_ec2_quotas) for inputs, and the [bootstrap guide](/docs/quickstart/bootstrap/aws_service_quotas) to submit the request.
+If the increase you're about to make would push total on-demand or spot usage past the current quota value, raise the quota first. See the [AWS EC2 Quotas](/docs/reference/bootstrap/aws_ec2_quotas) reference for inputs, and the [AWS Service Quotas](/docs/quickstart/bootstrap/aws_service_quotas) bootstrap to submit the request.
 
 ## Raise managed node group capacity
 
-The MNG is the cluster's always-on baseline, not autoscaled by Karpenter. To give it more room, edit its block in your [environment's stack file](/docs/iac/#environments):
+The MNG is the cluster's always-on baseline, not autoscaled by Karpenter. To give it more room, edit its block in the stack file of your [environment](/docs/iac/#environments):
 
 ```hcl
 eks_managed_node_groups = {
@@ -43,7 +43,7 @@ See the [`eks-managed-node-group` submodule inputs](https://registry.terraform.i
 
 ## Raise a Karpenter NodePool's limit
 
-Raise `limits_cpu` in whichever pool's unit block applies, `critical` or `elastic`, in your [environment's stack file](/docs/iac/#environments):
+Raise `limits_cpu` in whichever pool's unit block applies, `critical` or `elastic`, in the stack file of your [environment](/docs/iac/#environments):
 ```hcl
 unit "karpenter_node_pool_critical" {
   values = {
@@ -66,4 +66,4 @@ Each pool's `requirements` block sets its `karpenter.sh/capacity-type` (`spot` o
 
 Once the MNG or NodePool values are updated, deploy them in the desired [environment](/docs/iac/#environments):
 - `dev`: see [Dev Deployment](/docs/quickstart/deployment/).
-- `staging` and `prod`: see [How to Edit the Live Configuration](/docs/iac/edit-live-configuration/).
+- `staging` and `prod`: see [Edit the Live Configuration](/docs/iac/edit-live-configuration/).

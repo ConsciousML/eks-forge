@@ -30,12 +30,12 @@ If you don't have a platform or DevOps team, and don't need the advanced functio
 
 Alternatively, if your existing stack already relies on different tools than the ones EKS Forge is built around (e.g. FluxCD instead of ArgoCD, Datadog instead of the Prometheus stack), adopting it may cost more than it saves.
 
-The CI/CD is also designed for small teams shipping a few changes a day. If several teams deploy to the same environments, read the [CI/CD limitations](/docs/ci-cd/limitations-and-improvements/) first.
+The CI/CD is also designed for small teams shipping a few changes a day. If several teams deploy to the same environments, read the CI/CD [Limitations & Improvements](/docs/ci-cd/limitations-and-improvements/) first.
 
-Review the [features section](#features) to assess if EKS Forge is the right fit for you.
+Review the [Features](#features) section to assess if EKS Forge is the right fit for you.
 
 ## How Does EKS Forge Work?
-EKS Forge is composed of 3 [template repositories](../architecture/).
+EKS Forge is composed of 3 [template repositories](/docs/architecture/).
 In other words, it is not meant to be used in-place, but rather to be forked and extended.
 
 EKS Forge splits the platform into two halves that work together:
@@ -43,7 +43,7 @@ EKS Forge splits the platform into two halves that work together:
 - GitOps deploys everything that runs inside the cluster ([Helm](https://helm.sh/) charts and plain manifests)
 
 Everything is wired together as pipelines, so you can deploy a [fully featured](#features) environment with only a few CLI commands.
-These pipelines are modular and can be deployed across multiple [environments](../iac/index.md#environments):
+These pipelines are modular and can be deployed across multiple [environments](/docs/iac/#environments):
 - `dev` for developing a new feature or fix
 - `staging` to test the infrastructure before production
 - `prod` for the actual production infrastructure
@@ -100,4 +100,4 @@ If you plan to host the documentation site of your private EKS Forge fork, you'l
 
 ### AI Features
 
-This project also ships [custom system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts) and [skills](https://claude.com/skills) for [Claude Code](https://claude.com/product/claude-code) to help you develop on EKS Forge. See [AI and EKS Forge](../ai-eks-forge/index.md).
+This project also ships [custom system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts) and [skills](https://claude.com/skills) for [Claude Code](https://claude.com/product/claude-code) to help you develop on EKS Forge. See [AI and EKS Forge](/docs/ai-eks-forge/).
