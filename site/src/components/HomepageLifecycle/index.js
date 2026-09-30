@@ -36,7 +36,7 @@ const Groups = [
         icon: <CloudUpload size={36} color="var(--ifm-color-primary-dark)" />,
         title: 'Deployment',
         description: <>Deploy the EKS stack to <code>staging</code> and promote it to <code>prod</code></>,
-        link: '/docs/deployment',
+        link: '/docs/deployment/get-started',
       },
       {
         icon: <Layers size={36} color="var(--ifm-color-primary-dark)" />,

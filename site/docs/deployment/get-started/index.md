@@ -21,18 +21,18 @@ This tutorial deploys billable AWS resources. A `staging` or `prod` cluster cost
     icon: <Settings size={36} color="var(--ifm-color-primary-dark)" />,
     title: '1. Live Repository Setup',
     description: 'Fork and configure the live repository',
-    link: '/docs/deployment/live-repository-setup',
+    link: '/docs/deployment/get-started/live-repository-setup',
   },
   {
     icon: <CloudUpload size={36} color="var(--ifm-color-primary-dark)" />,
     title: '2. Deploy to Staging',
     description: 'Apply the EKS stack manually in staging',
-    link: '/docs/deployment/deploy-to-staging',
+    link: '/docs/deployment/get-started/deploy-to-staging',
   },
   {
     icon: <GitPullRequest size={36} color="var(--ifm-color-primary-dark)" />,
-    title: '3. Promote to Production',
+    title: '3. Promote Your First Release',
     description: 'Bump the catalog version through a pull request and let CD apply prod',
-    link: '/docs/deployment/promote-to-production',
+    link: '/docs/deployment/get-started/promote-to-production',
   },
 ]} />
