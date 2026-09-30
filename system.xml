@@ -32,10 +32,12 @@
         - The sibling repos (`terragrunt-template-catalog-eks`, `terragrunt-template-live-eks`,
           `argocd-app-of-apps-template`) are git submodules under `site/docs/_external/`.
           Always edit from there instead of the original repos.
-        - Commit inside the submodule on a branch. Do not bump the
-          submodule pointer in this repo while the PR is in progress.
-        - At the end of the PR, push every touched submodule branch, then bump all changed
-          submodule pointers in this repo in one single commit (`docs: bump submodules`).
+        - Commit inside the submodule on a branch, and push it before committing in this repo.
+        - Stage the submodule pointer in the same commit as the eks-forge change that uses it
+          (e.g. a wrapper page importing a new submodule doc). Don't create a separate
+          `docs: bump submodules` commit.
+        - Only use a standalone `docs: bump submodules` commit when no eks-forge change goes with
+          the bump (e.g. re-pointing to the merged commits at the end of the PR).
     </submodules> 
 
     <restrictions>
@@ -47,6 +49,9 @@
         If not, expand deliberately.
 
         When you face an important design decision, pause and discuss with the user.
+
+        Before outlining or planning any doc page, read every sibling page with the same
+        `diataxis-tag` (follow wrappers to their `_external` source) and base the plan on them.
 
         When unsure whether something exists, check the official docs or use MCP before answering.
     </instructions>
