@@ -38,6 +38,9 @@
           `docs: bump submodules` commit.
         - Only use a standalone `docs: bump submodules` commit when no eks-forge change goes with
           the bump (e.g. re-pointing to the merged commits at the end of the PR).
+        - Never merge an eks-forge PR while a submodule points at a branch commit: the branch can
+          be deleted and then the site breaks. Merge the sibling PR first, then re-point the
+          submodule to its `main` and push before merging.
     </submodules> 
 
     <restrictions>

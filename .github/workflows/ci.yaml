@@ -6,6 +6,21 @@ on:
       - main
 
 jobs:
+  # A submodule pinned to a branch commit breaks the site once that branch is deleted
+  submodules-on-main:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+        with:
+          submodules: recursive
+
+      - name: Check submodules point at a commit on their main
+        run: |
+          git submodule foreach --quiet '
+            git fetch -q --unshallow origin main
+            git merge-base --is-ancestor HEAD origin/main || { echo "::error::$name is not on main"; exit 1; }'
+
   link-check:
     runs-on: ubuntu-24.04
     steps:
@@ -27,6 +42,13 @@ jobs:
       - name: Build site
         working-directory: site
         run: npm run build
+
+      - name: Check every catalog module has a reference page
+        run: |
+          expected=$(find site/docs/_external/terragrunt-template-catalog-eks/modules -mindepth 1 -maxdepth 1 -type d | wc -l)
+          actual=$(find site/build/docs/reference/terraform_modules -mindepth 2 -maxdepth 2 -name index.html | wc -l)
+          echo "modules: $expected, pages: $actual"
+          [ "$expected" -eq "$actual" ] || { echo "::error::Module count ($expected) != generated pages ($actual)"; exit 1; }
 
       - name: Check site for broken links
         uses: lycheeverse/lychee-action@v2.9.0

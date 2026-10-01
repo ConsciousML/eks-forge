@@ -29,6 +29,11 @@ const siteBaseUrl = canonicalUrl ? canonicalUrl.pathname : '/';
 const siteDir = path.dirname(fileURLToPath(import.meta.url));
 const submoduleLinkBases = getSubmoduleLinkBases(path.resolve(siteDir, '..'));
 
+// Catalog module READMEs (terraform-docs output) are served under Reference > Terraform Modules
+const modulesSourceDir = '_external/terragrunt-template-catalog-eks/modules';
+const modulesRouteDir = 'reference/terraform_modules';
+const modulesAbsDir = path.join(siteDir, 'docs', modulesSourceDir);
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'EKS Forge',
@@ -55,6 +60,26 @@ const config = {
 
   markdown: {
     mermaid: true,
+    // terraform-docs output tweaks: Docusaurus only checks `id` for broken anchors (not `name`),
+    // and the theme strips <pre> unless it wraps a <code>
+    preprocessor: ({filePath, fileContent}) =>
+      filePath.startsWith(modulesAbsDir + path.sep)
+        ? fileContent
+            .replaceAll('<a name="', '<a id="')
+            .replace(/<pre>(.*?)<\/pre>/g, '<pre><code>$1</code></pre>')
+        : fileContent,
+    parseFrontMatter: async (params) => {
+      const result = await params.defaultParseFrontMatter(params);
+      if (params.filePath.startsWith(modulesAbsDir + path.sep)) {
+        const moduleName = path.basename(path.dirname(params.filePath));
+        result.frontMatter.slug = `/${modulesRouteDir}/${moduleName}`;
+        // The H1 sits below <!-- BEGIN_TF_DOCS -->, so Docusaurus can't infer the title
+        result.frontMatter.title = moduleName;
+        // terraform-docs output has HTML comments and raw `{` in <pre>, which MDX rejects
+        result.frontMatter.mdx = {format: 'md'};
+      }
+      return result;
+    },
   },
   themes: ['@docusaurus/theme-mermaid'],
 
@@ -105,6 +130,29 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
+          // Default excludes, but '**/_*/**' is narrowed so that modules/<name>/README.md
+          // become docs while the rest of _external stays partials imported by wrapper pages
+          exclude: [
+            '**/_*.{js,jsx,ts,tsx,md,mdx}',
+            '**/*.test.{js,jsx,ts,tsx}',
+            '**/__tests__/**',
+            '_external/!(terragrunt-template-catalog-eks)/**',
+            '_external/terragrunt-template-catalog-eks/!(modules)/**',
+            '_external/terragrunt-template-catalog-eks/*',
+            `${modulesSourceDir}/*.md`,
+            `${modulesSourceDir}/*/!(README.md)`,
+            `${modulesSourceDir}/*/*/**`,
+          ],
+          // Place the module READMEs in the sidebar as if they lived in docs/reference/terraform_modules/
+          sidebarItemsGenerator: ({defaultSidebarItemsGenerator, docs, ...args}) =>
+            defaultSidebarItemsGenerator({
+              ...args,
+              docs: docs.map((doc) =>
+                doc.sourceDirName.startsWith(`${modulesSourceDir}/`)
+                  ? {...doc, sourceDirName: doc.sourceDirName.replace(modulesSourceDir, modulesRouteDir)}
+                  : doc
+              ),
+            }),
           beforeDefaultRemarkPlugins: [[rewriteSubmoduleLinks, {bases: submoduleLinkBases}]],
         },
         blog: false,
