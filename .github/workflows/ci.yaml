@@ -6,6 +6,21 @@ on:
       - main
 
 jobs:
+  # A submodule pinned to a branch commit breaks the site once that branch is deleted
+  submodules-on-main:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+        with:
+          submodules: recursive
+
+      - name: Check submodules point at a commit on their main
+        run: |
+          git submodule foreach --quiet '
+            git fetch -q --unshallow origin main
+            git merge-base --is-ancestor HEAD origin/main || { echo "::error::$name is not on main"; exit 1; }'
+
   link-check:
     runs-on: ubuntu-24.04
     steps:
