@@ -38,6 +38,9 @@ const modulesAbsDir = path.join(siteDir, 'docs', modulesSourceDir);
 const chartsSourceDir = '_external/argocd-app-of-apps-template/charts';
 const chartsRouteDir = 'reference/helm_charts';
 const chartsAbsDir = path.join(siteDir, 'docs', chartsSourceDir);
+// The root `apps` chart lives outside charts/, served next to them as app-of-apps
+const appsSourceDir = '_external/argocd-app-of-apps-template/apps';
+const appsAbsDir = path.join(siteDir, 'docs', appsSourceDir);
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -82,10 +85,11 @@ const config = {
         result.frontMatter.title = moduleName;
         // terraform-docs output has HTML comments and raw `{` in <pre>, which MDX rejects
         result.frontMatter.mdx = {format: 'md'};
-      } else if (params.filePath.startsWith(chartsAbsDir + path.sep)) {
+      } else if (params.filePath.startsWith(chartsAbsDir + path.sep) || params.filePath.startsWith(appsAbsDir + path.sep)) {
         const chartDir = path.dirname(params.filePath);
-        result.frontMatter.slug = `/${chartsRouteDir}/${path.relative(chartsAbsDir, chartDir)}`;
-        result.frontMatter.sidebar_label = path.basename(chartDir);
+        const chartPath = chartDir === appsAbsDir ? 'app-of-apps' : path.relative(chartsAbsDir, chartDir);
+        result.frontMatter.slug = `/${chartsRouteDir}/${chartPath}`;
+        result.frontMatter.sidebar_label = path.basename(chartPath);
         // helm-docs output has an HTML comment and raw `{` in tables, which MDX rejects
         result.frontMatter.mdx = {format: 'md'};
       }
@@ -153,20 +157,26 @@ const config = {
             `${modulesSourceDir}/*.md`,
             `${modulesSourceDir}/*/!(README.md)`,
             `${modulesSourceDir}/*/*/**`,
-            '_external/argocd-app-of-apps-template/!(charts)/**',
+            '_external/argocd-app-of-apps-template/!(charts|apps)/**',
             '_external/argocd-app-of-apps-template/*',
             `${chartsSourceDir}/**/!(README).md`,
+            `${appsSourceDir}/!(README.md)`,
+            `${appsSourceDir}/*/**`,
           ],
           // Place the module and chart READMEs in the sidebar as if they lived in docs/reference/
-          sidebarItemsGenerator: ({defaultSidebarItemsGenerator, docs, ...args}) =>
+          sidebarItemsGenerator: ({defaultSidebarItemsGenerator, docs, isCategoryIndex, ...args}) =>
             defaultSidebarItemsGenerator({
               ...args,
+              // apps/README.md lands in helm_charts/ itself, keep it a page instead of the category index
+              isCategoryIndex: (doc) => isCategoryIndex(doc) && doc.directories[0] !== path.basename(chartsRouteDir),
               docs: docs.map((doc) =>
                 doc.sourceDirName.startsWith(`${modulesSourceDir}/`)
                   ? {...doc, sourceDirName: doc.sourceDirName.replace(modulesSourceDir, modulesRouteDir)}
                   : doc.sourceDirName.startsWith(`${chartsSourceDir}/`)
                     ? {...doc, sourceDirName: doc.sourceDirName.replace(chartsSourceDir, chartsRouteDir)}
-                    : doc
+                    : doc.sourceDirName === appsSourceDir
+                      ? {...doc, sourceDirName: chartsRouteDir}
+                      : doc
               ),
             }),
           beforeDefaultRemarkPlugins: [[rewriteSubmoduleLinks, {bases: submoduleLinkBases}]],
