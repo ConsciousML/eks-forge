@@ -1,0 +1,28 @@
+---
+sidebar_position: 0
+sidebar_label: Terraform Modules
+diataxis-tag: reference
+---
+
+import DocCards from '@site/src/components/DocCards';
+import {useCurrentSidebarCategory, useDocsVersion} from '@docusaurus/plugin-content-docs/client';
+
+export function ModuleCards() {
+  const {docs} = useDocsVersion();
+  const items = useCurrentSidebarCategory().items.map((item) => {
+    // The excerpt drops underscores, so cut the "The <module> module" lead-in and keep the first sentence
+    const description = (docs[item.docId]?.description ?? '').replace(/^The \S+ module /, '').split(/\.\s+(?=[A-Z])/)[0];
+    return {
+      title: item.href.split('/').filter(Boolean).pop(),
+      description: description.charAt(0).toUpperCase() + description.slice(1).replace(/\.$/, ''),
+      link: item.href,
+    };
+  });
+  return <DocCards columns={2} items={items} />;
+}
+
+# Terraform Modules Reference
+
+Inputs and outputs of each Terraform module in the [catalog](/docs/architecture/#catalog-architecture):
+
+<ModuleCards />
