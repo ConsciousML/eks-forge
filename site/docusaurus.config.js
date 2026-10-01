@@ -42,6 +42,19 @@ const chartsAbsDir = path.join(siteDir, 'docs', chartsSourceDir);
 const appsSourceDir = '_external/argocd-app-of-apps-template/apps';
 const appsAbsDir = path.join(siteDir, 'docs', appsSourceDir);
 
+// App-of-apps manifest READMEs are served under Reference > Manifests, keeping their manifests/ path
+const manifestsSourceDir = '_external/argocd-app-of-apps-template/manifests';
+const manifestsRouteDir = 'reference/manifests';
+const manifestsAbsDir = path.join(siteDir, 'docs', manifestsSourceDir);
+
+// Submodule dirs served as if they lived under docs/reference/, [source, route]
+const sidebarDirRemaps = [
+  [modulesSourceDir, modulesRouteDir],
+  [chartsSourceDir, chartsRouteDir],
+  [appsSourceDir, chartsRouteDir],
+  [manifestsSourceDir, manifestsRouteDir],
+];
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'EKS Forge',
@@ -91,6 +104,12 @@ const config = {
         result.frontMatter.slug = `/${chartsRouteDir}/${chartPath}`;
         result.frontMatter.sidebar_label = path.basename(chartPath);
         // helm-docs output has an HTML comment and raw `{` in tables, which MDX rejects
+        result.frontMatter.mdx = {format: 'md'};
+      } else if (params.filePath.startsWith(manifestsAbsDir + path.sep)) {
+        const manifestPath = path.relative(manifestsAbsDir, path.dirname(params.filePath));
+        result.frontMatter.slug = `/${manifestsRouteDir}/${manifestPath}`;
+        result.frontMatter.sidebar_label = path.basename(manifestPath);
+        // The aggregation note is an HTML comment, which MDX rejects
         result.frontMatter.mdx = {format: 'md'};
       }
       return result;
@@ -145,8 +164,8 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
-          // Default excludes, but '**/_*/**' is narrowed so that modules/<name>/README.md and
-          // charts/**/README.md become docs while the rest of _external stays partials imported by wrapper pages
+          // Default excludes, but '**/_*/**' is narrowed so that modules/<name>/README.md, charts/**/README.md,
+          // and manifests/**/README.md become docs while the rest of _external stays partials imported by wrapper pages
           exclude: [
             '**/_*.{js,jsx,ts,tsx,md,mdx}',
             '**/*.test.{js,jsx,ts,tsx}',
@@ -157,27 +176,25 @@ const config = {
             `${modulesSourceDir}/*.md`,
             `${modulesSourceDir}/*/!(README.md)`,
             `${modulesSourceDir}/*/*/**`,
-            '_external/argocd-app-of-apps-template/!(charts|apps)/**',
+            '_external/argocd-app-of-apps-template/!(charts|apps|manifests)/**',
             '_external/argocd-app-of-apps-template/*',
             `${chartsSourceDir}/**/!(README).md`,
             `${appsSourceDir}/!(README.md)`,
             `${appsSourceDir}/*/**`,
+            `${manifestsSourceDir}/**/!(README).md`,
           ],
-          // Place the module and chart READMEs in the sidebar as if they lived in docs/reference/
+          // Place the module, chart, and manifest READMEs in the sidebar as if they lived in docs/reference/
           sidebarItemsGenerator: ({defaultSidebarItemsGenerator, docs, isCategoryIndex, ...args}) =>
             defaultSidebarItemsGenerator({
               ...args,
               // apps/README.md lands in helm_charts/ itself, keep it a page instead of the category index
               isCategoryIndex: (doc) => isCategoryIndex(doc) && doc.directories[0] !== path.basename(chartsRouteDir),
-              docs: docs.map((doc) =>
-                doc.sourceDirName.startsWith(`${modulesSourceDir}/`)
-                  ? {...doc, sourceDirName: doc.sourceDirName.replace(modulesSourceDir, modulesRouteDir)}
-                  : doc.sourceDirName.startsWith(`${chartsSourceDir}/`)
-                    ? {...doc, sourceDirName: doc.sourceDirName.replace(chartsSourceDir, chartsRouteDir)}
-                    : doc.sourceDirName === appsSourceDir
-                      ? {...doc, sourceDirName: chartsRouteDir}
-                      : doc
-              ),
+              docs: docs.map((doc) => {
+                const remap = sidebarDirRemaps.find(
+                  ([source]) => doc.sourceDirName === source || doc.sourceDirName.startsWith(`${source}/`)
+                );
+                return remap ? {...doc, sourceDirName: doc.sourceDirName.replace(...remap)} : doc;
+              }),
             }),
           beforeDefaultRemarkPlugins: [[rewriteSubmoduleLinks, {bases: submoduleLinkBases}]],
         },
