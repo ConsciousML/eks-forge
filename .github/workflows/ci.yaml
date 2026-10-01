@@ -28,6 +28,13 @@ jobs:
         working-directory: site
         run: npm run build
 
+      - name: Check every catalog module has a reference page
+        run: |
+          expected=$(find site/docs/_external/terragrunt-template-catalog-eks/modules -mindepth 1 -maxdepth 1 -type d | wc -l)
+          actual=$(find site/build/docs/reference/terraform_modules -mindepth 2 -maxdepth 2 -name index.html | wc -l)
+          echo "modules: $expected, pages: $actual"
+          [ "$expected" -eq "$actual" ] || { echo "::error::Module count ($expected) != generated pages ($actual)"; exit 1; }
+
       - name: Check site for broken links
         uses: lycheeverse/lychee-action@v2.9.0
         with:
