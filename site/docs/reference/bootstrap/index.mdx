@@ -5,7 +5,7 @@ diataxis-tag: reference
 ---
 
 import DocCards from '@site/src/components/DocCards';
-import {DollarSign, TrendingUp, KeyRound, Lock, Gauge, Globe, MessageSquare, Network, ShieldCheck} from 'lucide-react';
+import {DollarSign, TrendingUp, GitBranch, KeyRound, Lock, Gauge, Globe, MessageSquare, Network, ShieldCheck} from 'lucide-react';
 
 # Bootstrap Pipelines Reference
 
@@ -65,5 +65,11 @@ Inputs and outputs of each [bootstrap pipeline](/docs/quickstart/bootstrap/):
     title: 'Tailscale WIF',
     description: 'Workload Identity Federation credential letting CI authenticate to Tailscale',
     link: '/docs/reference/bootstrap/tailscale_wif',
+  },
+  {
+    icon: <GitBranch size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'App of Apps Deploy Key',
+    description: 'Write deploy key letting the app of apps CI push generated chart READMEs',
+    link: '/docs/reference/bootstrap/app_of_apps_deploy_key',
   },
 ]} />
