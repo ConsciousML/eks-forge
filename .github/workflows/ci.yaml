@@ -55,6 +55,9 @@ jobs:
         with:
           args: >-
             --no-progress
+            --max-retries 5
+            --retry-wait-time 5
+            --host-concurrency 5
             --accept "200..=299,403"
             --root-dir "${{ github.workspace }}/site/build"
             --exclude "^https://eks-forge\.readthedocs\.io"
