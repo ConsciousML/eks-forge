@@ -87,6 +87,25 @@ A [DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonse
 
 Tolerating the taints isn't enough to land on every node, though. Karpenter only accounts for a DaemonSet's resources when it launches a node, so a DaemonSet added later can find existing nodes already full. Its pod then stays `Pending` there. The `daemonset-critical` [priority class](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/) prevents this: the pod evicts a lower-priority pod to make room, and Karpenter launches a new node for the evicted one.
 
+```mermaid
+---
+title: DaemonSet preemption on a full node
+---
+sequenceDiagram
+    autonumber
+    participant alloy as Alloy pod
+    participant full as Full node
+    participant podinfo as podinfo pod
+    participant karpenter as Karpenter
+    participant new as New node
+    alloy->>full: No room left, Pending
+    alloy->>podinfo: Preempts, higher priority
+    podinfo->>full: Evicted, Pending
+    alloy->>full: Scheduled
+    karpenter->>new: Launches a node for podinfo
+    podinfo->>new: Scheduled
+```
+
 This works because of how priorities are ordered:
 1. Your workloads leave `priorityClassName` unset, so they sit at the default priority and DaemonSets can always evict them.
 2. `daemonset-critical` sits above them.
