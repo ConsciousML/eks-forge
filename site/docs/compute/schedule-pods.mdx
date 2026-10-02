@@ -64,6 +64,7 @@ tolerations:
 <TabItem value="all" label="All nodes">
 
 ```yaml
+priorityClassName: daemonset-critical
 tolerations:
   - key: karpenter.sh/workload-class
     operator: Exists
@@ -74,9 +75,13 @@ tolerations:
     effect: NoSchedule
 ```
 
+The tolerations let the DaemonSet run on every node, and `daemonset-critical` lets its pod fit on a node that's already full. To understand why, see [DaemonSets](/docs/compute/how-pods-are-scheduled/#daemonsets).
+
 For a complete example, see [`charts/monitoring/alloy/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/monitoring/alloy/values.yaml).
 
 </TabItem>
 </Tabs>
+
+Only DaemonSets set a `priorityClassName`. Leave it unset on other workloads, so DaemonSets can evict them to fit on a full node.
 
 Then ship the change to your cluster by following [Edit an App](/docs/applications/add-edit-or-remove-an-app/#edit-an-app).
