@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 2
 title: How Network Policies Work
 diataxis-tag: explanation
 ---
