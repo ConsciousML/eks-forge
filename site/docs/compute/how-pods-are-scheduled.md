@@ -63,6 +63,24 @@ This is deliberate. Where a pod runs decides how often it gets disrupted and how
 ## The Managed Node Group
 Some components can't wait for a Karpenter node, because Karpenter nodes depend on them. Karpenter can't run on the nodes it launches. [`cilium-operator`](https://docs.cilium.io/en/stable/internals/cilium_operator/) removes the startup taint that holds pods off a new Karpenter node until Cilium is ready there, so it must already be running elsewhere. The MNG gives them capacity that exists before any Karpenter node does (see [`eks_managed_node_groups`](https://github.com/ConsciousML/terragrunt-template-catalog-eks/blob/main/pipelines/dev/eks/stack/terragrunt.stack.hcl)).
 
+```mermaid
+---
+title: A new Karpenter node relies on the MNG
+---
+sequenceDiagram
+    autonumber
+    participant podinfo as podinfo pod
+    participant karpenter as Karpenter
+    participant operator as cilium-operator
+    participant new as New node
+    Note over karpenter,operator: Already running on the MNG
+    podinfo->>karpenter: Pending, no elastic node has room
+    karpenter->>new: Launches a node, with the Cilium startup taint
+    new->>new: cilium-agent becomes ready
+    operator->>new: Removes the startup taint
+    podinfo->>new: Scheduled
+```
+
 It also hosts components the cluster needs even when Karpenter is unhealthy: CoreDNS, metrics-server, and Hubble, so you can still troubleshoot Karpenter node networking when no Karpenter node is working.
 
 ## The Karpenter NodePools
