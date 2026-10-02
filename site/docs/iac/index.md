@@ -118,6 +118,30 @@ inputs = {
 ```
 `config_path` points to the `vpc` unit's directory. `dependency.vpc.outputs.vpc_id` reads its `vpc_id` output and injects it as an input to `ec2`. This also tells Terragrunt that `ec2` depends on `vpc`, so it applies `vpc` first.
 
+```mermaid
+---
+title: How the vpc and ec2 units fit together
+---
+flowchart LR
+    root["root.hcl<br/>shared configuration"]
+    values["values<br/>passed in by the caller"]
+    subgraph units["units/"]
+        vpc["vpc"]
+        ec2["ec2"]
+    end
+    subgraph modules["TF modules"]
+        vpcmod["terraform-aws-modules/vpc"]
+        ec2mod["terraform-aws-modules/ec2-instance"]
+    end
+    root -->|"include"| vpc
+    root -->|"include"| ec2
+    values --> vpc
+    values --> ec2
+    vpc -->|"dependency: vpc_id"| ec2
+    vpc -->|"inputs"| vpcmod
+    ec2 -->|"inputs"| ec2mod
+```
+
 ### Stacks
 
 A [Terragrunt stack](https://docs.terragrunt.com/features/stacks/) is a collection of related units that can be managed together. Instead of applying each unit by hand in the right order, a stack lets Terragrunt do it automatically, following the dependencies declared between units.
@@ -162,6 +186,35 @@ Once generated, `terragrunt run --all <command>` runs any Terraform command acro
 - `terragrunt run --all apply`: apply each unit in order of their dependencies. Here, `vpc` will be deployed before `ec2`, since `ec2`'s `dependency` block points at it.
 - `terragrunt run --all destroy`: destroy each unit in reverse order of their dependencies. `ec2` will be destroyed first, then `vpc`. Add [`--non-interactive`](https://docs.terragrunt.com/reference/cli/global-flags/#non-interactive) to skip the `yes/no` prompt, which is why EKS Forge's CI pipelines always pass it.
 
+```mermaid
+---
+title: From stack file to applied units
+---
+flowchart TD
+    user(["User"])
+    subgraph catalog["infrastructure-catalog at v0.0.1"]
+        cvpc["units/vpc"]
+        cec2["units/ec2"]
+    end
+    subgraph stack["terragrunt.stack.hcl"]
+        svpc["unit &quot;vpc&quot;<br/>values"]
+        sec2["unit &quot;ec2&quot;<br/>values"]
+    end
+    subgraph generated[".terragrunt-stack/"]
+        vpc["vpc/"]
+        ec2["ec2/"]
+    end
+    svpc -->|"source"| cvpc
+    sec2 -->|"source"| cec2
+    user -->|"1. creates"| stack
+    user -->|"2. terragrunt stack generate"| stack
+    stack -->|"3. generates"| generated
+    vpc -.->|"fetches source"| cvpc
+    ec2 -.->|"fetches source"| cec2
+    user -->|"4. terragrunt run --all apply"| generated
+    vpc -->|"applied first"| ec2
+```
+
 :::warning[Push your changes]
 After changing a module, unit, or stack, push the change to `git` and re-run `terragrunt stack generate` before the next `run --all` command. Otherwise the stack still points at the old commit, and your change won't apply.
 :::
@@ -173,6 +226,33 @@ If you remove a unit or modify a dependency between units, run `terragrunt stack
 ## Environments
 
 The same stack runs in `dev`, `staging`, and `prod`, with almost the same units: only the `values` fed into them differ. Promoting a change from `dev` means running the same units in `staging` and `prod`, just parameterised differently, so what was validated in `dev` is what actually ships.
+
+```mermaid
+---
+title: Promoting a change across environments
+---
+flowchart TD
+    user(["User"])
+    subgraph catalog["Catalog repository"]
+        branch["feature branch"]
+        tag["main, tagged"]
+    end
+    subgraph live["Live repository"]
+        pr["PR bumping the tag"]
+    end
+    subgraph envs["Environments"]
+        dev["dev"]
+        staging["staging<br/>created, tested, destroyed"]
+        prod["prod<br/>updated in place"]
+    end
+    user -->|"1. designs the stack"| branch
+    branch -->|"2. deployed and tested"| dev
+    user -->|"3. merges and tags main"| tag
+    user -->|"4. opens"| pr
+    tag -->|"pinned by"| pr
+    pr -->|"5. Terratest"| staging
+    pr -->|"6. merged, CD applies"| prod
+```
 
 ### `dev`
 
