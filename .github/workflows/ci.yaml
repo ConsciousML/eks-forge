@@ -50,11 +50,14 @@ jobs:
           echo "modules: $expected, pages: $actual"
           [ "$expected" -eq "$actual" ] || { echo "::error::Module count ($expected) != generated pages ($actual)"; exit 1; }
 
+      # GITHUB_TOKEN doesn't cover blob/tree URLs, so github.com throttles them: the remap checks
+      # sibling repo files against the submodule checkouts instead
       - name: Check site for broken links
         uses: lycheeverse/lychee-action@v2.9.0
         with:
           args: >-
             --no-progress
+            --remap "^https://github\.com/${{ github.repository_owner }}/(argocd-app-of-apps-template|terragrunt-template-catalog-eks|terragrunt-template-live-eks)/(blob|tree)/[^/]+/ file://${{ github.workspace }}/site/docs/_external/\$1/"
             --max-retries 5
             --retry-wait-time 5
             --host-concurrency 5
