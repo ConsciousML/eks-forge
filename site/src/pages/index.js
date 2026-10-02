@@ -60,7 +60,7 @@ export default function Home() {
   return (
     <Layout
       title={`Welcome to ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      description={siteConfig.tagline}>
       <ForceDarkMode />
       <HomepageHeader />
       <main>
