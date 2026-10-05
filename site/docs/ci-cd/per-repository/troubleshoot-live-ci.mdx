@@ -1,0 +1,254 @@
+---
+sidebar_position: 3
+diataxis-tag: how-to
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Troubleshoot Live CI
+
+This guide shows you how to fix a failing CI job on a pull request in your [live fork](/docs/deployment/get-started/live-repository-setup/#fork-the-live-repository), or a failing CD run after a merge. For what each job does and why, see [CI/CD](/docs/ci-cd/).
+
+If a job of your pull request fails, go to [Troubleshoot CI](#troubleshoot-ci). If your merge didn't deploy to `prod`, go to [Troubleshoot CD](#troubleshoot-cd).
+
+## Troubleshoot CI
+
+From the root of your live fork, list the jobs of your pull request:
+```bash
+gh pr checks
+```
+
+Otherwise, open your pull request on GitHub and go to the **Checks** tab. The failing jobs show a red cross in the left sidebar. Click one to open its log.
+
+Then go to the section of the failing job below.
+
+### `check-if-pr-is-draft`
+
+Your pull request is a draft, and CI doesn't run on drafts. Mark it as ready for review, which starts a new run:
+```bash
+gh pr ready
+```
+
+### `code-quality-checks`
+
+Open the job's log, find the step that failed, then go to its section below.
+
+#### Setup Fails
+
+The `Run ./.github/actions/setup` step, or one of the Tailscale steps after it, fails when a GitHub Actions secret it reads is missing. The [bootstrap pipelines](/docs/deployment/get-started/live-repository-setup/#bootstrap) of your live fork create these secrets. List the ones your fork has:
+```bash
+gh secret list
+```
+
+Find what failed in the table below, and check that its secrets are in the list:
+
+| What fails | Secrets | Bootstrap pipeline |
+|------------|---------|--------------------|
+| `webfactory/ssh-agent` | `DEPLOY_KEY_TG_LIVE`, `DEPLOY_KEY_TG_CATALOG` | `live/bootstrap/aws_gh_actions_auth` |
+| `Configure AWS Credentials` | `AWS_ROLE_ARN`, `AWS_REGION` | `live/bootstrap/aws_gh_actions_auth` |
+| `Get Tailscale identity token` or `Connect to Tailscale` | `TS_OAUTH_CLIENT_ID`, `TS_AUDIENCE`, `TS_TAGS` | `live/bootstrap/tailscale` |
+| `Request Tailscale API token using WIF credentials` or `Create temporary Tailscale OAuth client` | `TS_OAUTH_CLIENT_ID`, `TS_AUDIENCE`, `TS_TAGS` | `live/bootstrap/tailscale` |
+
+If a secret is missing, run its bootstrap pipeline. Then rerun the failed jobs, replacing `<run-id>` with the ID of the run, shown in the URL of the job's log:
+```bash
+gh run rerun <run-id> --failed
+```
+
+#### A Pre-commit Hook Fails
+
+The only hook is `Terragrunt hcl fmt`, which fails when an `.hcl` file isn't formatted. To run it, from the root of your live fork:
+```bash
+prek run --all-files
+```
+
+Format the files, then commit and push:
+```bash
+terragrunt hcl fmt
+```
+
+To run the hook on every commit, see [Enable the Pre-commit Hooks](/docs/deployment/get-started/live-repository-setup/#enable-the-pre-commit-hooks).
+
+### `terragrunt-validate-plan`
+
+This job runs twice, once for `staging` and once for `prod`. The name of the failing job says which, e.g. `terragrunt-validate-plan (staging)`. Open its log and find the step that failed.
+
+If it's the setup or one of the Tailscale steps, see [Setup Fails](#setup-fails).
+
+If it's the `Terragrunt stack generate, validate, and plan` step, the stack of that environment doesn't generate, validate, or plan on your change. To run the same commands, from the root of your live fork, replacing `<env>` with `staging` or `prod`:
+```bash
+source .env
+cd live/<env>/eks/stack
+terragrunt stack clean
+terragrunt stack generate
+terragrunt run --all init --backend-bootstrap --non-interactive --no-stack-generate
+terragrunt run --all validate --no-stack-generate
+terragrunt run --all plan --non-interactive --no-stack-generate
+```
+
+Fix the error the commands print, then commit and push:
+- **`terragrunt stack generate` can't fetch a unit**: the `version_catalog` tag of your stack file isn't in your catalog fork. Push it as in [Tag the Catalog Fork](/docs/iac/release-an-iac-change/#tag-the-catalog-fork), then rerun the failed jobs as in [Setup Fails](#setup-fails).
+- **`Error acquiring the state lock`**: continue at [State Is Locked](#state-is-locked).
+
+### `check-pr-labels`
+
+Your pull request must have exactly one of the `run-terratest` and `skip-terratest` labels (see [Why Terratest Needs a Label](/docs/ci-cd/#why-terratest-needs-a-label)). CI comments on your pull request to say whether it has none or both.
+
+Pick the tab of the label that fits your change:
+
+<Tabs groupId="terratest-label">
+<TabItem value="run" label="run-terratest">
+
+Deploys `staging`, tests it end to end, and destroys it. Use it by default.
+
+If your pull request has no label, add it:
+```bash
+gh pr edit --add-label run-terratest
+```
+
+If it has both, remove the other one:
+```bash
+gh pr edit --remove-label skip-terratest
+```
+
+</TabItem>
+<TabItem value="skip" label="skip-terratest">
+
+Skips the `staging` tests. Use it only if you changed nothing but docs.
+
+If your pull request has no label, add it:
+```bash
+gh pr edit --add-label skip-terratest
+```
+
+If it has both, remove the other one:
+```bash
+gh pr edit --remove-label run-terratest
+```
+
+</TabItem>
+</Tabs>
+
+If the command fails because the label doesn't exist in your fork, create the labels as in [Run the Tests](/docs/deployment/get-started/promote-to-production/#run-the-tests).
+
+Changing a label doesn't start a new run, so rerun the failed jobs as in [Setup Fails](#setup-fails).
+
+### `terratest`
+
+If the setup or one of the Tailscale steps failed, see [Setup Fails](#setup-fails).
+
+Otherwise, the `Run Terratest` step failed. Its log is too long to search from the job's page, so open the raw one: click the gear icon at the top right of the job's log, then **View raw logs**. Search it for the last `[ERROR]` line. The test destroys `staging` after a failure, so the log is all that's left of the run.
+
+Find what the log shows in the table below:
+
+| Log shows | Cause | Fix |
+|-----------|-------|-----|
+| A Terragrunt error, before any `[INFO]` line | The apply of the `staging` stack failed | Fix the error Terragrunt prints, then commit and push |
+| `app-of-apps stuck at sync=...` or `app-of-apps did not become Synced and Healthy` | An application doesn't sync or start | The `kubectl get pod -A` output printed right above shows which pods aren't `Running`. To find out why, see [Reproduce the Failure on Staging](#reproduce-the-failure-on-staging) |
+| `<url> did not become ready` | A tool deployed, but its hostname doesn't answer | Check the tool's route, DNS record, and network policies, as in [Reproduce the Failure on Staging](#reproduce-the-failure-on-staging) |
+| `login to <url> returned unexpected status` | A tool rejects its admin password | Check the tool reads the password its Secrets Manager secret holds, as in [Reproduce the Failure on Staging](#reproduce-the-failure-on-staging) |
+| `panic: test timed out` | The run reached its 90 minute timeout | See [Destroy a Leftover Staging](#destroy-a-leftover-staging) |
+
+#### Reproduce the Failure on Staging
+
+CI destroyed the cluster that failed, so deploy `staging` yourself to inspect it. From your branch, follow [Deploy to Staging](/docs/deployment/get-started/deploy-to-staging/) up to [Test the Stack](/docs/deployment/get-started/deploy-to-staging/#test-the-stack), which runs the same checks as CI.
+
+Fix what fails, and run the tests again until they pass. Then commit and push.
+
+:::warning
+CI deploys to the same `staging` environment. Check that no CI run is in progress before you deploy, and [destroy your cluster](/docs/deployment/get-started/deploy-to-staging/#destroy-the-infrastructure) before you push again.
+:::
+
+#### Destroy a Leftover Staging
+
+A run that timed out or was cancelled never reached its destroy, so its `staging` cluster keeps running and being billed, and the next run fails on it.
+
+First, check that no CI run is in progress. This prints nothing when none is:
+```bash
+gh run list --workflow ci.yaml --status in_progress
+```
+
+Then destroy `staging` from the branch of the run that left it, by following [Destroy the Staging Stack](/docs/iac/remove-eks-forge/#destroy-the-staging-stack). If the destroy fails with `Error acquiring the state lock`, continue at [State Is Locked](#state-is-locked).
+
+Once `staging` is destroyed, rerun the failed jobs as in [Setup Fails](#setup-fails).
+
+### `revoke-oauth` and `revoke-plan-oauth`
+
+These jobs revoke the temporary Tailscale OAuth client a plan, a test run, or an apply created (see [Short-Lived Credentials](/docs/ci-cd/#short-lived-credentials)). When one fails, in CI or in CD, the client stays in your tailnet with its secret still valid.
+
+Open the [Trust credentials](https://console.tailscale.com/admin/settings/trust-credentials) page of the Tailscale admin console. Find the client by its description, where `<run-id>` is the ID of the run, shown in the URL of the job's log, then select **Revoke**:
+
+| Job | Description of the client |
+|-----|---------------------------|
+| `revoke-plan-oauth` | `plan-staging-ci-<run-id>` or `plan-prod-ci-<run-id>` |
+| `revoke-oauth`, in CI | `terratest-ci-<run-id>` |
+| `revoke-oauth`, in CD | `cd-apply-prod-<run-id>` |
+
+You have nothing to push. If the job failed on its `Request Tailscale API token using WIF credentials` step, also see [Setup Fails](#setup-fails).
+
+## Troubleshoot CD
+
+CD runs on `main`, not on your pull request. Open the **Actions** tab of your live fork on GitHub, and select the **Apply on Production Environment** workflow in the left sidebar. Click its latest run: the failing jobs show a red cross. Click one to open its log.
+
+Then go to the section of the failing job below. For `revoke-oauth`, see [`revoke-oauth` and `revoke-plan-oauth`](#revoke-oauth-and-revoke-plan-oauth).
+
+### `check-skip-cd`
+
+This CD job doesn't fail: it decides whether CD applies. If your merge didn't deploy to `prod`, open its log. It skips the apply when your pull request has the `skip-cd` label, or when the commit on `main` has no pull request (see [How a Change Reaches Prod](/docs/ci-cd/#how-a-change-reaches-prod)).
+
+To deploy a pull request merged with `skip-cd`, remove the label, then rerun the CD run, replacing `<pr-number>` and `<run-id>`:
+```bash
+gh pr edit <pr-number> --remove-label skip-cd
+gh run rerun <run-id>
+```
+
+A rerun applies the commit of its run. If another pull request merged after yours, don't rerun: its own CD run already applied `main`, with your change in it.
+
+### `terragrunt-apply-prod`
+
+:::warning
+A failed apply stops halfway: the units applied before the error keep their changes, so `prod` may run a mix of the old and new configuration until the next successful apply.
+:::
+
+Open the job's log and find the step that failed. If it's the setup or one of the Tailscale steps, see [Setup Fails](#setup-fails).
+
+If it's the `Terragrunt apply on prod` step, its log is too long to search from the job's page, so open the raw one: click the gear icon at the top right of the job's log, then **View raw logs**. Search it for the error, then:
+- **`Error acquiring the state lock`**: continue at [State Is Locked](#state-is-locked).
+- **An error that isn't caused by your change**, such as an AWS API timeout: rerun the failed jobs as in [Setup Fails](#setup-fails).
+- **Any other error**: fix it in a new pull request, by following [Release a Change to Production](/docs/deployment/release-a-change-to-production/). Its CD run applies the fix on top of what the failed run applied.
+
+## State Is Locked
+
+A run that was cancelled or timed out while Terragrunt was running left its [state lock](https://opentofu.org/docs/language/state/locking/) behind, so every later plan or apply of that unit fails with:
+```text
+Error: Error acquiring the state lock
+
+Lock Info:
+  ID:        <lock-id>
+  Path:      <bucket>/<env>/eks/stack/.terragrunt-stack/<path>/tofu.tfstate
+  Operation: OperationTypeApply
+```
+
+First, check that no CI or CD run is in progress. These print nothing when none is:
+```bash
+gh run list --workflow ci.yaml --status in_progress
+gh run list --workflow cd.yaml --status in_progress
+```
+
+:::warning
+Never release the lock of a run that's still in progress. Wait for it to finish instead.
+:::
+
+From the root of your live fork, generate the stack, then release the lock with [`force-unlock`](https://opentofu.org/docs/cli/commands/force-unlock/) from the unit's directory, replacing `<env>`, `<path>`, and `<lock-id>` with the ones in the error:
+```bash
+source .env
+cd live/<env>/eks/stack
+terragrunt stack clean
+terragrunt stack generate
+cd .terragrunt-stack/<path>
+terragrunt run -- force-unlock <lock-id>
+```
+
+Then rerun the failed jobs, as in [Setup Fails](#setup-fails).
+
+To avoid leaving a lock behind, never cancel a CI or CD run (see [Why Runs Are Queued](/docs/ci-cd/#why-runs-are-queued)).
