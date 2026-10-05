@@ -60,6 +60,13 @@ CI pushes that commit with a [deploy key](https://docs.github.com/en/authenticat
 
 In the catalog CI, the `check-docs-changes` job fails when terraform-docs pushed a commit. The rest of that run would plan the commit from before the push, so it stops there. The run started by the new commit plans the final code instead.
 
+## Why the Image Scan Never Fails
+The app of apps CI scans every container image of its charts and manifests for vulnerabilities, and prints the `HIGH` and `CRITICAL` ones in its log. Unlike the other checks, it passes whatever it finds.
+
+Most of these images come from external charts. A vulnerability in one of them is fixed by its maintainers, on their schedule, and new ones are published every day. A blocking scan would fail pull requests that didn't cause the finding and can't fix it.
+
+A vulnerability also matters only if something can reach it. So the scan is there to be read, not to gate a merge: you decide where your security boundaries are, then fix what crosses them and accept the rest. The trade-off is that nothing forces the review, so a green run says nothing about your images (see [Review the Image Vulnerabilities](/docs/ci-cd/per-repository/troubleshoot-app-of-apps-ci/#review-the-image-vulnerabilities)).
+
 ## Why Terratest Needs a Label
 The live CI runs the infrastructure tests when the pull request has the `run-terratest` label, and skips them when it has `skip-terratest`. There is no default: with neither label, the `check-pr-labels` job fails, and CI comments on the pull request to ask for one. The tests take around an hour and deploy a real cluster, so running or skipping them is a choice made on each pull request, where the reviewer can see it.
 
