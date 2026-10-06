@@ -20,7 +20,7 @@ The catalog CI and the app of apps CI check a change without deploying it. The l
 |---|---|---|---|
 | **Catalog** | Static checks, then a plan of the `dev` stack | Nothing | The modules and units are valid, and the stack plans |
 | **App of apps** | Lint, validation, and scans of every chart | Nothing | The charts render and pass the checks |
-| **Live** | Plans of `staging` and `prod`, then [infrastructure tests](/docs/ci-cd/add-an-infrastructure-test/#what-the-tests-check) on `staging` | `staging`, destroyed after the tests | The whole stack deploys and works end to end |
+| **Live** | Plans of `staging` and `prod`, then [infrastructure tests](/docs/ci-cd/testing/add-an-infrastructure-test/#what-the-tests-check) on `staging` | `staging`, destroyed after the tests | The whole stack deploys and works end to end |
 
 The [catalog CI](https://github.com/ConsciousML/terragrunt-template-catalog-eks/blob/main/.github/workflows/ci.yaml) plans the `dev` stack and never applies it. It sets [`TG_ENVIRONMENT`](/docs/reference/environment_variable/) to `catalog-eks-ci`, so the plan runs against its own empty state, not your `dev` environment's. An apply would build a full cluster on every pull request, which the live CI already does once per release.
 
@@ -70,7 +70,7 @@ A vulnerability also matters only if something can reach it. So the scan is ther
 ## Why Terratest Needs a Label
 The live CI runs the infrastructure tests when the pull request has the `run-terratest` label, and skips them when it has `skip-terratest`. There is no default: with neither label, the `check-pr-labels` job fails, and CI comments on the pull request to ask for one. The tests take around an hour and deploy a real cluster, so running or skipping them is a choice made on each pull request, where the reviewer can see it.
 
-For what the tests check, see [What the Tests Check](/docs/ci-cd/add-an-infrastructure-test/#what-the-tests-check). For what they can't catch, see [Limitations](/docs/ci-cd/limitations-and-improvements/#limitations).
+For what the tests check, see [What the Tests Check](/docs/ci-cd/testing/add-an-infrastructure-test/#what-the-tests-check). For what they can't catch, see [Limitations](/docs/ci-cd/limitations-and-improvements/#limitations).
 
 ## How a Change Reaches Prod
 The live CI plans `prod` on every pull request, and posts a link to that plan as a comment. This is the approval gate: you read what will change in `prod`, and merging the pull request approves it.
