@@ -44,7 +44,7 @@ Your `dev` cluster keeps costing around $5 per day in `us-east-1` while it runs.
   {
     icon: <Bell size={36} color="var(--ifm-color-primary-dark)" />,
     title: '5. Alerts',
-    description: 'Follow an alert from firing to its Slack channel, then silence it',
+    description: 'Follow an alert from firing to its Slack channel',
     link: '/docs/monitoring/get-started/alerts',
   },
 ]} />
