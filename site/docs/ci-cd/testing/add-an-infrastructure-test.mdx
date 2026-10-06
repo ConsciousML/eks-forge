@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 title: Add an Infrastructure Test
 diataxis-tag: how-to
 ---
@@ -8,7 +8,7 @@ import Tests from '../../_external/terragrunt-template-live-eks/tests/README.md'
 
 # How to Add an Infrastructure Test
 
-This guide shows you how to add a check to the infrastructure tests, and run it against your own `staging` cluster before CI does. The tests are in your [live fork](/docs/deployment/get-started/live-repository-setup/#fork-the-live-repository), and CI runs them against [`staging`](/docs/iac/#staging) on each pull request. For when CI runs the tests, see [Why Terratest Needs a Label](/docs/ci-cd/#why-terratest-needs-a-label). For what they already cover, see [What the Tests Check](#what-the-tests-check).
+This guide shows you how to add a check to the infrastructure tests, and run it against your own `staging` cluster before CI does. The tests are in your [live fork](/docs/deployment/get-started/live-repository-setup/#fork-the-live-repository), and CI runs them against [`staging`](/docs/iac/#staging) on each pull request. For when CI runs the tests, see [Why Terratest Needs a Label](/docs/ci-cd/#why-terratest-needs-a-label). For what they already cover, see [What the Tests Check](/docs/ci-cd/testing/how-the-infrastructure-tests-work/#what-the-tests-check).
 
 Start at the section that fits what you want to check:
 - **A tool with a hostname** (e.g. a web UI or an API): [Add an Endpoint Check](#add-an-endpoint-check).
