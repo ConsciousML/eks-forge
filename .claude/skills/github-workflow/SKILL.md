@@ -32,10 +32,27 @@ Skip if the user gives an existing issue.
 
 ## 2. Branches
 
-Create the same kebab-case branch in eks-forge and in each submodule the change touches (never `/`
-in branch names, it breaks Terragrunt):
+Use the same kebab-case branch in eks-forge and in each submodule the change touches (never `/` in
+branch names, it breaks Terragrunt).
+
+**Wait**: ask the user whether to work in a git worktree, so other sessions can keep working in the
+main checkout on other branches. When running autonomously, don't create one unless the user asked.
+
+Without a worktree, create the eks-forge branch in place:
 ```bash
 git checkout main && git pull && git checkout -b <branch>
+```
+
+With a worktree, create it with the branch, then switch the session into it with the
+`EnterWorktree` tool (`path: .claude/worktrees/<branch>`) and initialise its submodules:
+```bash
+git fetch origin main
+git worktree add .claude/worktrees/<branch> -b <branch> origin/main
+git submodule update --init
+```
+
+Either way, then create the branch in each touched submodule:
+```bash
 git -C site/docs/_external/<repo> checkout main
 git -C site/docs/_external/<repo> pull
 git -C site/docs/_external/<repo> checkout -b <branch>
@@ -96,3 +113,15 @@ git submodule foreach -q 'git fetch -q origin main && git merge-base --is-ancest
 ```
 
 Then merge with the same command and style as step 5, and pull `main`.
+
+If the work was done in a worktree, `main` is checked out elsewhere, so skip the pull there.
+**Wait** for the user to confirm the worktree can go, then leave it with the `ExitWorktree` tool
+(`action: keep`) and, from the main checkout:
+```bash
+git worktree remove --force .claude/worktrees/<branch>
+git branch -D <branch>
+git pull   # only if the main checkout is on main
+```
+
+`--force` is needed because the worktree holds submodules. It discards anything uncommitted or
+unpushed in the worktree and its submodules, so check `git status` in each first.
