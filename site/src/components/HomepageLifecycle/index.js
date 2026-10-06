@@ -9,9 +9,7 @@ import {
   Package,
   Workflow,
   Cpu,
-  Eye,
   Activity,
-  Bell,
   Shield,
 } from 'lucide-react';
 import styles from './styles.module.css';
@@ -91,22 +89,10 @@ const Groups = [
         link: '/docs/compute',
       },
       {
-        icon: <Eye size={36} color="var(--ifm-color-primary-dark)" />,
-        title: 'Observability',
-        description: 'Visualize dashboards for node, pod, and addon metrics, as well as pod-to-pod network traffic',
-        link: '/docs/observability',
-      },
-      {
         icon: <Activity size={36} color="var(--ifm-color-primary-dark)" />,
-        title: 'Monitoring',
-        description: 'Collect and aggregate the metrics and logs produced by the components running inside your cluster',
+        title: 'Monitoring & Observability',
+        description: 'Explore the metrics, logs, and pod-to-pod network traffic of your cluster, and get notified on Slack before things break',
         link: '/docs/monitoring',
-      },
-      {
-        icon: <Bell size={36} color="var(--ifm-color-primary-dark)" />,
-        title: 'Alerting',
-        description: 'Get notified on Slack before things break',
-        link: '/docs/alerting',
       },
     ],
   },
