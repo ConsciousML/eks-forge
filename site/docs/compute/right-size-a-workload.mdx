@@ -101,13 +101,15 @@ Pick the tab of the repository that defines your workload:
 <Tabs groupId="workload-owner">
 <TabItem value="app-of-apps" label="App of apps">
 
-In your app of apps fork, edit the container's `resources`:
+Create a branch in your app of apps fork and point `dev` at it, as in [Point Dev at Your Branch](/docs/applications/add-edit-or-remove-an-app/#point-dev-at-your-branch). On that branch, edit the container's `resources`:
 - **Plain manifests**: in the workload's manifest (e.g. [`manifests/podinfo/podinfo-deployment.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/manifests/podinfo/podinfo-deployment.yaml)).
 - **A Helm chart**: in the chart's `values.yaml`, under the dependency's `name` if it wraps an upstream chart (e.g. [`charts/monitoring/blackbox-exporter/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/monitoring/blackbox-exporter/values.yaml)).
 
 If the values must differ per environment, see [Configure an App per Environment](/docs/applications/configure-an-app-per-environment/).
 
-Then ship the change to your cluster by following [Edit an App](/docs/applications/add-edit-or-remove-an-app/#edit-an-app).
+Then commit, push, and sync ArgoCD by following [Test in Dev](/docs/applications/add-edit-or-remove-an-app/#test-in-dev), and continue with the sections after it to open a pull request and merge.
+
+To ship the change to `staging` and `prod`, see [Release a Change to Production](/docs/deployment/release-a-change-to-production/).
 
 </TabItem>
 <TabItem value="catalog" label="Catalog">
@@ -139,12 +141,7 @@ Once the change is rolled out, let the workload run through its peak usage again
 
 In Grafana, open the **Kubernetes / Compute Resources / Namespace (Pods)** dashboard, as in [Open a Dashboard](/docs/monitoring/get-started/metrics/#open-a-dashboard), and set its **namespace** dropdown to the workload's namespace. Check that the usage of each pod stays close to its requests and below its limits.
 
-Then check that no container was killed for running out of memory, replacing `<namespace>`:
-```bash
-kubectl get pods -n <namespace> -o custom-columns='POD:.metadata.name,RESTARTS:.status.containerStatuses[*].restartCount,LAST_EXIT:.status.containerStatuses[*].lastState.terminated.reason'
-```
-
-If `LAST_EXIT` shows `OOMKilled`, the memory limit is too low: raise the memory request and limit together.
+If a container restarts with the `OOMKilled` reason, its memory limit is too low: raise the memory request and limit together.
 
 Finally, open the workload in Goldilocks again. Its recommendation should now be close to the requests you set. If it isn't, repeat from [Read the Recommendation](#read-the-recommendation).
 
