@@ -1,0 +1,151 @@
+---
+sidebar_position: 4
+title: Right-Size a Workload
+diataxis-tag: how-to
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# How to Right-Size a Workload
+
+This guide shows you how to set a container's CPU and memory [`requests` and `limits`](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits) from the recommendation [Goldilocks](https://goldilocks.docs.fairwinds.com/) shows for it. Goldilocks only displays the recommendation: nothing in the cluster changes a workload for you.
+
+If you've never opened the Goldilocks dashboard, follow [Read a Resource Recommendation](/docs/monitoring/get-started/resource-recommendations/) first.
+
+## Let the Workload Run Under Load
+
+The recommendation is computed from the CPU and memory the workload used in the past. If the workload has been serving its usual traffic for several days, continue at [Read the Recommendation](#read-the-recommendation).
+
+If you just deployed it, or it hasn't seen real traffic yet, wait until it has run through both its peak and its off-peak usage. A recommendation read before that is too low.
+
+## Read the Recommendation
+
+The Goldilocks dashboard is only reachable over [Tailscale](/docs/security/tailscale/). Connect by running `tailscale up`, then open `https://goldilocks.private.<environment>.<base_domain>` in your browser, replacing `<environment>` with your [environment](/docs/iac/#environments) (e.g. `dev`) and `<base_domain>` with your base domain.
+
+Click the workload's namespace, then find the workload and its container.
+
+Under the container, note the recommended CPU and memory `requests` of the **Guaranteed QoS** block. Ignore its `limits` and the **Burstable QoS** block: you set the limits yourself in the next section.
+
+## Set the Requests and Limits
+
+Whatever the workload, set:
+- Both `requests` to the recommendation.
+- The memory limit to the memory request.
+
+Then pick the tab that fits your workload, for its CPU limit:
+- **Latency-sensitive**: it answers requests and must absorb bursts (e.g. a web app or an API).
+- **Throughput**: it should finish its work as fast as the node allows (e.g. a background worker).
+- **Steady**: its usage barely moves (e.g. an idle controller or a predictable batch job).
+
+<Tabs groupId="workload-shape">
+<TabItem value="latency" label="Latency-sensitive">
+
+Set the CPU limit to 2 to 5 times the request:
+```yaml
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+```
+
+For a complete example, see the `dashboard` key in [`charts/right-sizing/goldilocks/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/right-sizing/goldilocks/values.yaml).
+
+</TabItem>
+<TabItem value="throughput" label="Throughput">
+
+Set no CPU limit:
+```yaml
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    memory: 1Gi
+```
+
+For a complete example, see the `recommender` key in [`charts/right-sizing/vpa/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/right-sizing/vpa/values.yaml).
+
+</TabItem>
+<TabItem value="steady" label="Steady">
+
+Set the CPU limit to the request:
+```yaml
+resources:
+  requests:
+    cpu: 15m
+    memory: 100Mi
+  limits:
+    cpu: 15m
+    memory: 100Mi
+```
+
+For a complete example, see the `controller` key in [`charts/right-sizing/goldilocks/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/right-sizing/goldilocks/values.yaml).
+
+</TabItem>
+</Tabs>
+
+:::warning
+Never set a CPU limit on a component every pod of a node depends on, such as `kube-proxy` or the VPC CNI. Throttling it breaks networking for the whole node.
+:::
+
+## Apply the Change
+
+Pick the tab of the repository that defines your workload:
+- **App of apps**: an application ArgoCD deploys (e.g. podinfo or Loki).
+- **Catalog**: an EKS add-on or a Helm chart a [unit](/docs/iac/#units) installs (e.g. CoreDNS or Cilium).
+
+<Tabs groupId="workload-owner">
+<TabItem value="app-of-apps" label="App of apps">
+
+In your app of apps fork, edit the container's `resources`:
+- **Plain manifests**: in the workload's manifest (e.g. [`manifests/podinfo/podinfo-deployment.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/manifests/podinfo/podinfo-deployment.yaml)).
+- **A Helm chart**: in the chart's `values.yaml`, under the dependency's `name` if it wraps an upstream chart (e.g. [`charts/monitoring/blackbox-exporter/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/monitoring/blackbox-exporter/values.yaml)).
+
+If the values must differ per environment, see [Configure an App per Environment](/docs/applications/configure-an-app-per-environment/).
+
+Then ship the change to your cluster by following [Edit an App](/docs/applications/add-edit-or-remove-an-app/#edit-an-app).
+
+</TabItem>
+<TabItem value="catalog" label="Catalog">
+
+In the stack file of your [environment](/docs/iac/#environments), edit the workload's `resources`. For an EKS add-on, they're in its `configuration_values`, under `addons` in the `cluster` unit. For a Helm chart, they're in its unit's `helm_values`. For example, for the `metrics-server` add-on:
+```hcl
+metrics-server = {
+  ...
+  configuration_values = jsonencode({
+    resources = {
+      requests = { cpu = "11m", memory = "64M" }
+      limits   = { cpu = "55m", memory = "64M" }
+    }
+    ...
+  })
+}
+```
+
+Then deploy the change in the desired environment:
+- `dev`: see [Validate in Dev](/docs/iac/add-a-unit/#validate-in-dev).
+- `staging` and `prod`: see [Edit the Live Configuration](/docs/iac/edit-live-configuration/).
+
+</TabItem>
+</Tabs>
+
+## Check the Result
+
+Once the change is rolled out, let the workload run through its peak usage again.
+
+In Grafana, open the **Kubernetes / Compute Resources / Namespace (Pods)** dashboard, as in [Open a Dashboard](/docs/monitoring/get-started/metrics/#open-a-dashboard), and set its **namespace** dropdown to the workload's namespace. Check that the usage of each pod stays close to its requests and below its limits.
+
+Then check that no container was killed for running out of memory, replacing `<namespace>`:
+```bash
+kubectl get pods -n <namespace> -o custom-columns='POD:.metadata.name,RESTARTS:.status.containerStatuses[*].restartCount,LAST_EXIT:.status.containerStatuses[*].lastState.terminated.reason'
+```
+
+If `LAST_EXIT` shows `OOMKilled`, the memory limit is too low: raise the memory request and limit together.
+
+Finally, open the workload in Goldilocks again. Its recommendation should now be close to the requests you set. If it isn't, repeat from [Read the Recommendation](#read-the-recommendation).
+
+To change how the recommendation is computed, see the [`vpa` Helm Chart](/docs/reference/helm_charts/right-sizing/vpa/) reference.
