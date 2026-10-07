@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
 title: How Pods Are Scheduled
 diataxis-tag: explanation
 ---
