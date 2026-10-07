@@ -2,6 +2,6 @@
 sidebar_position: 1
 ---
 
-# Monitoring
+# Monitoring & Observability
 
 Coming soon.
