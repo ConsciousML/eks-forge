@@ -97,7 +97,19 @@
     ]
   },
   "skillOverrides": {
+    "app-of-apps-integration-catalog": "off",
+    "github-workflow-catalog": "off",
     "how-to-write-docs-catalog": "off",
-    "how-to-write-docs-live": "off"
+    "inline-comments-catalog": "off",
+    "network-policies-catalog": "off",
+    "reference-docs-catalog": "off",
+    "reproducibility-catalog": "off",
+    "working-against-live-infra-catalog": "off",
+    "how-to-write-docs-live": "off",
+    "new-environment-live": "off",
+    "version-bump-live": "off",
+    "how-to-write-docs-app-of-apps": "off",
+    "wave-sync-order-app-of-apps": "off",
+    "working-against-live-cluster-app-of-apps": "off"
   }
 }
