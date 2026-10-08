@@ -108,7 +108,7 @@
     "inline-comments-live": "off",
     "version-bump-live": "off",
     "working-against-live-infra-live": "off",
-    "how-to-write-docs-app-of-apps": "off",
+    "reference-docs-app-of-apps": "off",
     "wave-sync-order-app-of-apps": "off",
     "working-against-live-cluster-app-of-apps": "off"
   }
