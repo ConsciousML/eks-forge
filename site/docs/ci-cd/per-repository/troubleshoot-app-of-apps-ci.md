@@ -50,7 +50,7 @@ Open the job's log, find the step that failed, then go to its section below.
 
 A file still contains a `TEMP:` marker, the reminder to revert a temporary change before merging. The step's log prints each file and line. To list them from the root of your app of apps fork:
 ```bash
-git grep -n "TEMP:" -- . ':!.github/workflows/ci.yaml'
+git grep -n "TEMP:" -- . ':!.github/workflows/ci.yaml' ':!docs/add-an-alert.md'
 ```
 
 Revert each temporary change with its marker, then commit and push.
