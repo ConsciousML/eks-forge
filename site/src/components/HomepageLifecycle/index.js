@@ -3,7 +3,6 @@ import {
   BookOpen,
   Rocket,
   CloudUpload,
-  Layers,
   Bot,
   Blocks,
   Package,
@@ -35,12 +34,6 @@ const Groups = [
         title: 'Deployment',
         description: <>Deploy the EKS stack to <code>staging</code> and promote it to <code>prod</code></>,
         link: '/docs/deployment/get-started',
-      },
-      {
-        icon: <Layers size={36} color="var(--ifm-color-primary-dark)" />,
-        title: 'Architecture',
-        description: 'Understand the underlying concepts to work with EKS Forge in under 5 min',
-        link: '/docs/architecture',
       },
       {
         icon: <Bot size={36} color="var(--ifm-color-primary-dark)" />,

@@ -35,7 +35,11 @@ The CI/CD is also designed for small teams shipping a few changes a day. If seve
 Review the [Features](#features) section to assess if EKS Forge is the right fit for you.
 
 ## How Does EKS Forge Work?
-EKS Forge is composed of 3 [template repositories](/docs/architecture/).
+EKS Forge is composed of 3 template repositories:
+- the [catalog](https://github.com/ConsciousML/terragrunt-template-catalog-eks): the Terraform modules, the Terragrunt units and stacks, and the `dev` environment
+- the [live repository](https://github.com/ConsciousML/terragrunt-template-live-eks): the `staging` and `prod` environments, built from the catalog's units
+- the [app of apps repository](https://github.com/ConsciousML/argocd-app-of-apps-template): the Helm charts and manifests ArgoCD deploys to the cluster
+
 In other words, it is not meant to be used in-place, but rather to be forked and extended.
 
 EKS Forge splits the platform into two halves that work together:
