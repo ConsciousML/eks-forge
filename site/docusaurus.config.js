@@ -30,20 +30,20 @@ const siteDir = path.dirname(fileURLToPath(import.meta.url));
 const submoduleLinkBases = getSubmoduleLinkBases(path.resolve(siteDir, '..'));
 
 // Catalog module READMEs (terraform-docs output) are served under Reference > Terraform Modules
-const modulesSourceDir = '_external/terragrunt-template-catalog-eks/modules';
+const modulesSourceDir = '_external/eks-forge-catalog/modules';
 const modulesRouteDir = 'reference/terraform_modules';
 const modulesAbsDir = path.join(siteDir, 'docs', modulesSourceDir);
 
 // App-of-apps chart READMEs (helm-docs output) are served under Reference > Helm Charts, keeping their charts/ path
-const chartsSourceDir = '_external/argocd-app-of-apps-template/charts';
+const chartsSourceDir = '_external/eks-forge-app-of-apps/charts';
 const chartsRouteDir = 'reference/helm_charts';
 const chartsAbsDir = path.join(siteDir, 'docs', chartsSourceDir);
 // The root `apps` chart lives outside charts/, served next to them as app-of-apps
-const appsSourceDir = '_external/argocd-app-of-apps-template/apps';
+const appsSourceDir = '_external/eks-forge-app-of-apps/apps';
 const appsAbsDir = path.join(siteDir, 'docs', appsSourceDir);
 
 // App-of-apps manifest READMEs are served under Reference > Manifests, keeping their manifests/ path
-const manifestsSourceDir = '_external/argocd-app-of-apps-template/manifests';
+const manifestsSourceDir = '_external/eks-forge-app-of-apps/manifests';
 const manifestsRouteDir = 'reference/manifests';
 const manifestsAbsDir = path.join(siteDir, 'docs', manifestsSourceDir);
 
@@ -170,14 +170,14 @@ const config = {
             '**/_*.{js,jsx,ts,tsx,md,mdx}',
             '**/*.test.{js,jsx,ts,tsx}',
             '**/__tests__/**',
-            '_external/!(terragrunt-template-catalog-eks|argocd-app-of-apps-template)/**',
-            '_external/terragrunt-template-catalog-eks/!(modules)/**',
-            '_external/terragrunt-template-catalog-eks/*',
+            '_external/!(eks-forge-catalog|eks-forge-app-of-apps)/**',
+            '_external/eks-forge-catalog/!(modules)/**',
+            '_external/eks-forge-catalog/*',
             `${modulesSourceDir}/*.md`,
             `${modulesSourceDir}/*/!(README.md)`,
             `${modulesSourceDir}/*/*/**`,
-            '_external/argocd-app-of-apps-template/!(charts|apps|manifests)/**',
-            '_external/argocd-app-of-apps-template/*',
+            '_external/eks-forge-app-of-apps/!(charts|apps|manifests)/**',
+            '_external/eks-forge-app-of-apps/*',
             `${chartsSourceDir}/**/!(README).md`,
             `${appsSourceDir}/!(README.md)`,
             `${appsSourceDir}/*/**`,

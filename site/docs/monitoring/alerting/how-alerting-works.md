@@ -35,7 +35,7 @@ This is deliberate. In a single channel, an ArgoCD sync failure and a full disk 
 | **`argocd`** | ArgoCD and the Applications it syncs |
 | **`uptime`** | The endpoints the blackbox exporter probes, and their certificates |
 
-The [routing tree](https://prometheus.io/docs/alerting/latest/configuration/#route) is a flat list of routes, under `alertmanager.config.route` in [`charts/monitoring/kube-prometheus-stack/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/monitoring/kube-prometheus-stack/values.yaml). Alertmanager reads it from top to bottom, and stops at the first route whose matchers all fit. There is one route per pair of `component` and `severity`, and no two of them match the same alert, so their order doesn't matter. Only the first two routes have to stay on top.
+The [routing tree](https://prometheus.io/docs/alerting/latest/configuration/#route) is a flat list of routes, under `alertmanager.config.route` in [`charts/monitoring/kube-prometheus-stack/values.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/charts/monitoring/kube-prometheus-stack/values.yaml). Alertmanager reads it from top to bottom, and stops at the first route whose matchers all fit. There is one route per pair of `component` and `severity`, and no two of them match the same alert, so their order doesn't matter. Only the first two routes have to stay on top.
 
 ```mermaid
 ---
@@ -58,9 +58,9 @@ Almost every published rule follows the `severity` convention, so alerts already
 
 Most alerts are the default rules of the upstream [`kube-prometheus-stack`](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) chart, which EKS Forge doesn't write. The chart can add labels to every rule of a group, so `defaultRules.additionalRuleGroupLabels` maps each group to `k8s` or `prometheus-stack`.
 
-Other charts ship alerts of their own, like Loki. When such a chart has a key that adds labels to all of its alerts, the `component` is set once there, as `monitoring.alerts.additionalRuleLabels` does in [`charts/monitoring/loki/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/monitoring/loki/values.yaml).
+Other charts ship alerts of their own, like Loki. When such a chart has a key that adds labels to all of its alerts, the `component` is set once there, as `monitoring.alerts.additionalRuleLabels` does in [`charts/monitoring/loki/values.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/charts/monitoring/loki/values.yaml).
 
-The remaining rules are written in the app of apps repository. Some are standalone `PrometheusRule` manifests, in [`charts/monitoring/prometheus-rules/`](https://github.com/ConsciousML/argocd-app-of-apps-template/tree/main/charts/monitoring/prometheus-rules). Others are values passed to a chart that renders them, like the blackbox exporter's. Each of these rules carries `component` in its own `labels`, next to `severity`.
+The remaining rules are written in the app of apps repository. Some are standalone `PrometheusRule` manifests, in [`charts/monitoring/prometheus-rules/`](https://github.com/ConsciousML/eks-forge-app-of-apps/tree/main/charts/monitoring/prometheus-rules). Others are values passed to a chart that renders them, like the blackbox exporter's. Each of these rules carries `component` in its own `labels`, next to `severity`.
 
 | Where the rule comes from | Where `component` is set | Example |
 |---|---|---|
@@ -89,7 +89,7 @@ Each environment has its own Alertmanager, but they all post to the same Slack w
 
 The prefix isn't written anywhere in the app of apps repository. Each receiver's channel starts with a placeholder, and the catalog fills it with the environment's name at deploy time (see [`appParams` Injection](/docs/applications/how-the-app-of-apps-works/#appparams-injection)). The same routing tree then serves every environment.
 
-Alertmanager posts to channels, it doesn't create them. The [Slack bootstrap](/docs/quickstart/bootstrap/slack/) does, once per environment, from a list of names without the prefix: [`pipelines/bootstrap/slack/channels.hcl`](https://github.com/ConsciousML/terragrunt-template-catalog-eks/blob/main/pipelines/bootstrap/slack/channels.hcl) in the catalog for `dev`, and [`live/bootstrap/slack/channels.hcl`](https://github.com/ConsciousML/terragrunt-template-live-eks/blob/main/live/bootstrap/slack/channels.hcl) in the live repository for `staging` and `prod`.
+Alertmanager posts to channels, it doesn't create them. The [Slack bootstrap](/docs/quickstart/bootstrap/slack/) does, once per environment, from a list of names without the prefix: [`pipelines/bootstrap/slack/channels.hcl`](https://github.com/ConsciousML/eks-forge-catalog/blob/main/pipelines/bootstrap/slack/channels.hcl) in the catalog for `dev`, and [`live/bootstrap/slack/channels.hcl`](https://github.com/ConsciousML/eks-forge-live/blob/main/live/bootstrap/slack/channels.hcl) in the live repository for `staging` and `prod`.
 
 ```mermaid
 ---

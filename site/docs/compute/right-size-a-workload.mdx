@@ -52,7 +52,7 @@ resources:
     memory: 512Mi
 ```
 
-For a complete example, see the `dashboard` key in [`charts/right-sizing/goldilocks/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/right-sizing/goldilocks/values.yaml).
+For a complete example, see the `dashboard` key in [`charts/right-sizing/goldilocks/values.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/charts/right-sizing/goldilocks/values.yaml).
 
 </TabItem>
 <TabItem value="throughput" label="Throughput">
@@ -67,7 +67,7 @@ resources:
     memory: 1Gi
 ```
 
-For a complete example, see the `recommender` key in [`charts/right-sizing/vpa/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/right-sizing/vpa/values.yaml).
+For a complete example, see the `recommender` key in [`charts/right-sizing/vpa/values.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/charts/right-sizing/vpa/values.yaml).
 
 </TabItem>
 <TabItem value="steady" label="Steady">
@@ -83,7 +83,7 @@ resources:
     memory: 100Mi
 ```
 
-For a complete example, see the `controller` key in [`charts/right-sizing/goldilocks/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/right-sizing/goldilocks/values.yaml).
+For a complete example, see the `controller` key in [`charts/right-sizing/goldilocks/values.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/charts/right-sizing/goldilocks/values.yaml).
 
 </TabItem>
 </Tabs>
@@ -102,8 +102,8 @@ Pick the tab of the repository that defines your workload:
 <TabItem value="app-of-apps" label="App of apps">
 
 Create a branch in your app of apps fork and point `dev` at it, as in [Point Dev at Your Branch](/docs/applications/add-edit-or-remove-an-app/#point-dev-at-your-branch). On that branch, edit the container's `resources`:
-- **Plain manifests**: in the workload's manifest (e.g. [`manifests/podinfo/podinfo-deployment.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/manifests/podinfo/podinfo-deployment.yaml)).
-- **A Helm chart**: in the chart's `values.yaml`, under the dependency's `name` if it wraps an upstream chart (e.g. [`charts/monitoring/blackbox-exporter/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/monitoring/blackbox-exporter/values.yaml)).
+- **Plain manifests**: in the workload's manifest (e.g. [`manifests/podinfo/podinfo-deployment.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-deployment.yaml)).
+- **A Helm chart**: in the chart's `values.yaml`, under the dependency's `name` if it wraps an upstream chart (e.g. [`charts/monitoring/blackbox-exporter/values.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/charts/monitoring/blackbox-exporter/values.yaml)).
 
 If the values must differ per environment, see [Configure an App per Environment](/docs/applications/configure-an-app-per-environment/).
 

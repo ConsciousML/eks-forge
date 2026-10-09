@@ -5,8 +5,8 @@ description: GitHub process for an EKS Forge change spanning eks-forge and its s
 
 # GitHub Workflow
 
-Repos: eks-forge and its submodules under `site/docs/_external/` (`terragrunt-template-catalog-eks`,
-`terragrunt-template-live-eks`, `argocd-app-of-apps-template`).
+Repos: eks-forge and its submodules under `site/docs/_external/` (`eks-forge-catalog`,
+`eks-forge-live`, `eks-forge-app-of-apps`).
 
 Steps marked **Wait** need the user. Never move past a wait on your own, unless the user asked to
 run the whole workflow autonomously. Then skip the waits, and replace each CI wait with

@@ -8,7 +8,7 @@ import {Settings, CloudUpload} from 'lucide-react';
 
 # Deploy Your Applications
 
-In this tutorial, you'll fork the [ArgoCD app of apps repository](https://github.com/ConsciousML/argocd-app-of-apps-template), deploy the EKS stack in the [`dev` environment](/docs/iac/#dev) from your catalog, and ship a change to your cluster through ArgoCD.
+In this tutorial, you'll fork the [ArgoCD app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps), deploy the EKS stack in the [`dev` environment](/docs/iac/#dev) from your catalog, and ship a change to your cluster through ArgoCD.
 
 Before starting, make sure you've performed the [Quickstart](/docs/quickstart).
 

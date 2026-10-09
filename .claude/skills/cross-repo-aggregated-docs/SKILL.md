@@ -1,6 +1,6 @@
 ---
 name: cross-repo-aggregated-docs
-description: Read before reading or citing docs from sibling EKS Forge repos (terragrunt-template-catalog-eks, terragrunt-template-live-eks, argocd-app-of-apps-template).
+description: Read before reading or citing docs from sibling EKS Forge repos (eks-forge-catalog, eks-forge-live, eks-forge-app-of-apps).
 ---
 
 Some sibling docs are aggregated into this site via MDX import (see `site/docs/_external/*`).

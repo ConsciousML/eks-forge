@@ -22,5 +22,5 @@ Rules 1 and 2 pick the style by whether the reader is sent away. They apply to e
 
 3. **File or directory**: when the reader is sent to a file, link text is the path in backticks,
    pointing to the file on GitHub. A term in prose that points to a file follows rule 1 instead.
-   - ``see [`charts/monitoring/alloy/values.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/charts/monitoring/alloy/values.yaml)``
+   - ``see [`charts/monitoring/alloy/values.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/charts/monitoring/alloy/values.yaml)``
    - `units, defined in the [stack file](https://github.com/.../terragrunt.stack.hcl)` (rule 1)

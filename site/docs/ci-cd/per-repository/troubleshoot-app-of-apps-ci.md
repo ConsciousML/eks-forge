@@ -100,7 +100,7 @@ prek run --all-files validate-helm
 prek run --all-files trivy
 ```
 
-Fix the misconfiguration the finding describes. If it's a trade-off you accept, add an entry to [`.trivyignore.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/.trivyignore.yaml) instead, with the finding's `id`, the file it's in, and a `statement` saying why it's safe to ignore. For example:
+Fix the misconfiguration the finding describes. If it's a trade-off you accept, add an entry to [`.trivyignore.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/.trivyignore.yaml) instead, with the finding's `id`, the file it's in, and a `statement` saying why it's safe to ignore. For example:
 ```yaml
 misconfigurations:
   - id: AVD-KSV-0041

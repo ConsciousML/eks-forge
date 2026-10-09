@@ -22,9 +22,9 @@ The catalog CI and the app of apps CI check a change without deploying it. The l
 | **App of apps** | Lint, validation, and scans of every chart | Nothing | The charts render and pass the checks |
 | **Live** | Plans of `staging` and `prod`, then [infrastructure tests](/docs/ci-cd/testing/how-the-infrastructure-tests-work/#what-the-tests-check) on `staging` | `staging`, destroyed after the tests | The whole stack deploys and works end to end |
 
-The [catalog CI](https://github.com/ConsciousML/terragrunt-template-catalog-eks/blob/main/.github/workflows/ci.yaml) plans the `dev` stack and never applies it. It sets [`TG_ENVIRONMENT`](/docs/reference/environment_variable/) to `catalog-eks-ci`, so the plan runs against its own empty state, not your `dev` environment's. An apply would build a full cluster on every pull request, which the live CI already does once per release.
+The [catalog CI](https://github.com/ConsciousML/eks-forge-catalog/blob/main/.github/workflows/ci.yaml) plans the `dev` stack and never applies it. It sets [`TG_ENVIRONMENT`](/docs/reference/environment_variable/) to `catalog-eks-ci`, so the plan runs against its own empty state, not your `dev` environment's. An apply would build a full cluster on every pull request, which the live CI already does once per release.
 
-The [app of apps CI](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/.github/workflows/ci.yaml) renders each chart on its own, without a cluster and without the values the catalog injects at deploy time. Charts that need those values ship dummy ones for CI (see [Placeholder Values](/docs/applications/how-the-app-of-apps-works/#placeholder-values)).
+The [app of apps CI](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/.github/workflows/ci.yaml) renders each chart on its own, without a cluster and without the values the catalog injects at deploy time. Charts that need those values ship dummy ones for CI (see [Placeholder Values](/docs/applications/how-the-app-of-apps-works/#placeholder-values)).
 
 The trade-off is that a green catalog or app of apps CI doesn't show the change works on a cluster. Only the live CI does, by deploying `staging` from scratch (see [Why Ephemeral Staging](/docs/ci-cd/limitations-and-improvements/#why-ephemeral-staging)).
 
@@ -51,7 +51,7 @@ flowchart TD
     skip -->|"no"| apply["Apply prod"]
 ```
 
-For the jobs themselves, see [`ci.yaml`](https://github.com/ConsciousML/terragrunt-template-live-eks/blob/main/.github/workflows/ci.yaml) and [`cd.yaml`](https://github.com/ConsciousML/terragrunt-template-live-eks/blob/main/.github/workflows/cd.yaml).
+For the jobs themselves, see [`ci.yaml`](https://github.com/ConsciousML/eks-forge-live/blob/main/.github/workflows/ci.yaml) and [`cd.yaml`](https://github.com/ConsciousML/eks-forge-live/blob/main/.github/workflows/cd.yaml).
 
 ## Why CI Commits Generated Docs
 The catalog CI runs [terraform-docs](https://terraform-docs.io/) on its modules, and the app of apps CI runs [helm-docs](https://github.com/norwoodj/helm-docs) on its charts. Each regenerates the READMEs from the code, and pushes them to the pull request's branch as a new commit. The READMEs then stay in sync with the code without anyone running the tool by hand.
@@ -79,7 +79,7 @@ Merging to `main` starts CD, which applies the change to `prod`. CD skips the ap
 
 CD doesn't apply the plan you reviewed. It computes a new one when the pull request merges, and the two can differ if `main` changed in between (see [Limitations](/docs/ci-cd/limitations-and-improvements/#limitations)).
 
-CD creates the `prod` cluster with its own IAM role, which doesn't give your IAM identity access to it. So the bootstrap stores the identity that ran it as the `EKS_LOCAL_ADMIN_ARN` secret, and CD adds it as a cluster administrator on every apply, through `access_entries` in the [`prod` stack file](https://github.com/ConsciousML/terragrunt-template-live-eks/blob/main/live/prod/eks/stack/terragrunt.stack.hcl).
+CD creates the `prod` cluster with its own IAM role, which doesn't give your IAM identity access to it. So the bootstrap stores the identity that ran it as the `EKS_LOCAL_ADMIN_ARN` secret, and CD adds it as a cluster administrator on every apply, through `access_entries` in the [`prod` stack file](https://github.com/ConsciousML/eks-forge-live/blob/main/live/prod/eks/stack/terragrunt.stack.hcl).
 
 ## Short-Lived Credentials
 The catalog and live workflows store no AWS access key and no Tailscale secret in GitHub. For AWS, a job exchanges a [GitHub OIDC](https://docs.github.com/en/actions/concepts/security/openid-connect) token for a temporary role session (see [AWS GitHub Actions Authentication](/docs/quickstart/bootstrap/aws_gh_actions_auth/)). For Tailscale, it does the same through [Workload Identity Federation](/docs/security/tailscale/#2-workload-identity-federation-wif).
