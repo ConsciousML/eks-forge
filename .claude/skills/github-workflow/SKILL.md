@@ -94,6 +94,8 @@ gh pr create --title "<title>" --body "<body>"
 - Body, in the issue's repo: `Closes #<issue>`, then one or two lines or bullets.
 - Body, in the other repos: `Part of <owner>/<repo>#<issue>`, then one or two lines or bullets.
 - The eks-forge body names the submodule PRs it bumps to as `<owner>/<repo>#<N>`.
+- A live PR that touches only docs gets the `skip-cd` and `skip-terratest` labels, so it doesn't
+  deploy or test anything: add `--label skip-cd --label skip-terratest`.
 
 Report the PR links.
 
