@@ -104,4 +104,4 @@ If you plan to host the documentation site of your private EKS Forge fork, you'l
 
 ### AI Features
 
-This project also ships [custom system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts) and [skills](https://claude.com/skills) for [Claude Code](https://claude.com/product/claude-code) to help you develop on EKS Forge. See [AI and EKS Forge](/docs/ai-eks-forge/).
+This project also ships [custom system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts) and [skills](https://claude.com/skills) for [Claude Code](https://claude.com/product/claude-code) to help you develop on EKS Forge.
