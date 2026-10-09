@@ -16,7 +16,7 @@ EKS Forge provisions infrastructure with [Terraform](https://developer.hashicorp
 
 In other words, a stack orchestrates multiple units, each deploying the resources of their respective TF module. This is what lets the catalog's stacks be reused as-is across `dev`, `staging`, and `prod` in the [live repository](https://github.com/ConsciousML/terragrunt-template-live-eks): only the `values` fed into each unit change per environment, not the units or stacks themselves.
 
-See [Catalog Architecture](/docs/architecture/#catalog-architecture) for how EKS Forge structures these layers.
+The catalog keeps each layer in its own directory: [`modules/`](https://github.com/ConsciousML/terragrunt-template-catalog-eks/tree/main/modules), [`units/`](https://github.com/ConsciousML/terragrunt-template-catalog-eks/tree/main/units), and [`stacks/`](https://github.com/ConsciousML/terragrunt-template-catalog-eks/tree/main/stacks). `stacks/` holds generic stacks that the catalog and the live repository both reuse, like the ones the [bootstrap](/docs/quickstart/bootstrap/) relies on. A stack given its `values` and ready to deploy is called a pipeline. The catalog's pipelines live under [`pipelines/`](https://github.com/ConsciousML/terragrunt-template-catalog-eks/tree/main/pipelines): `pipelines/bootstrap/` for the bootstrap, and `pipelines/dev/` for the `dev` environment.
 
 ## Terragrunt
 
