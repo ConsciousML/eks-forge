@@ -5,8 +5,8 @@ description: GitHub process for an EKS Forge change spanning eks-forge and its s
 
 # GitHub Workflow
 
-Repos: eks-forge and its submodules under `site/docs/_external/` (`terragrunt-template-catalog-eks`,
-`terragrunt-template-live-eks`, `argocd-app-of-apps-template`).
+Repos: eks-forge and its submodules under `site/docs/_external/` (`eks-forge-catalog`,
+`eks-forge-live`, `eks-forge-app-of-apps`).
 
 Steps marked **Wait** need the user. Never move past a wait on your own, unless the user asked to
 run the whole workflow autonomously. Then skip the waits, and replace each CI wait with
@@ -69,6 +69,18 @@ Implementation is not part of this skill.
   that uses them, and push.
 - Conventional Commits, subject line only (see `<commits>` in `system.xml`).
 
+Before the first push of a branch, in eks-forge and in each touched submodule, replay it on the
+latest `main`:
+```bash
+git fetch origin main
+git rebase origin/main
+```
+
+Never merge `main` into a PR branch: the merge commit ends up in `main`'s history and pollutes
+`git log --merges`. If `main` moves after the branch is pushed and the branch needs it (a
+conflict, or a file `main` removed), rebase again and push with `git push --force-with-lease`.
+Never use a plain `--force`.
+
 ## 4. Pull Requests
 
 **Wait** for the user to ask.
@@ -82,6 +94,8 @@ gh pr create --title "<title>" --body "<body>"
 - Body, in the issue's repo: `Closes #<issue>`, then one or two lines or bullets.
 - Body, in the other repos: `Part of <owner>/<repo>#<issue>`, then one or two lines or bullets.
 - The eks-forge body names the submodule PRs it bumps to as `<owner>/<repo>#<N>`.
+- A live PR that touches only docs gets the `skip-cd` and `skip-terratest` labels, so it doesn't
+  deploy or test anything: add `--label skip-cd --label skip-terratest`.
 
 Report the PR links.
 

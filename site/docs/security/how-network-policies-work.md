@@ -24,7 +24,7 @@ EKS Forge keeps the VPC CNI for pod networking because it is robust: it is AWS's
 Chaining comes with a limit. A policy can match who the peer is ([Layer 3](https://docs.cilium.io/en/stable/security/policy/layer3/)) and which port it uses ([Layer 4](https://docs.cilium.io/en/stable/security/policy/layer4/)), but not what the traffic contains ([Layer 7](https://docs.cilium.io/en/stable/security/policy/layer7/)), like an HTTP path. Rules on DNS names ([`toFQDNs`](https://docs.cilium.io/en/stable/security/policy/layer3/#dns-based)) need Layer 7 too, so they don't work either. For the full list, see Cilium's [AWS VPC CNI Chaining](https://docs.cilium.io/en/stable/installation/cni-chaining-aws-cni/).
 
 ## Why Traffic Is Denied by Default
-In the namespaces EKS Forge manages, nothing is allowed by default. [`default-deny.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/manifests/network-policies/cluster-wide/default-deny.yaml) lists them, and Cilium drops all traffic to and from every pod in them. A flow only goes through once another policy allows it.
+In the namespaces EKS Forge manages, nothing is allowed by default. [`default-deny.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/network-policies/cluster-wide/default-deny.yaml) lists them, and Cilium drops all traffic to and from every pod in them. A flow only goes through once another policy allows it.
 
 ```mermaid
 ---
@@ -46,9 +46,9 @@ Policies add up. Cilium combines every policy that selects a pod, and a flow goe
 The deny is opt-in per namespace, though. In a namespace missing from `default-deny.yaml`, a pod that no policy selects can talk to anything, so a new app's namespace has to be added to the list before any of this protects it.
 
 ## Two Kinds of Policies
-The allow rules come from two kinds of policies. A [`CiliumClusterwideNetworkPolicy`](https://docs.cilium.io/en/stable/network/kubernetes/policy/#ciliumclusterwidenetworkpolicy) covers a concern several namespaces share, like resolving DNS. There is one file per concern in [`manifests/network-policies/cluster-wide/`](https://github.com/ConsciousML/argocd-app-of-apps-template/tree/main/manifests/network-policies/cluster-wide), each listing the namespaces it applies to. Allowing DNS for a new namespace is then one line, not a rule copied into every app.
+The allow rules come from two kinds of policies. A [`CiliumClusterwideNetworkPolicy`](https://docs.cilium.io/en/stable/network/kubernetes/policy/#ciliumclusterwidenetworkpolicy) covers a concern several namespaces share, like resolving DNS. There is one file per concern in [`manifests/network-policies/cluster-wide/`](https://github.com/ConsciousML/eks-forge-app-of-apps/tree/main/manifests/network-policies/cluster-wide), each listing the namespaces it applies to. Allowing DNS for a new namespace is then one line, not a rule copied into every app.
 
-A [`CiliumNetworkPolicy`](https://docs.cilium.io/en/stable/network/kubernetes/policy/#ciliumnetworkpolicy) covers a concern specific to one component, like Prometheus scraping podinfo. It lives next to the workload it protects, as [`manifests/podinfo/podinfo-network-policy.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/manifests/podinfo/podinfo-network-policy.yaml) does, so an app and its rules change together. A chart with several components gets one policy per component, each selecting its own pods, so Loki's cache can't do what Loki itself is allowed to.
+A [`CiliumNetworkPolicy`](https://docs.cilium.io/en/stable/network/kubernetes/policy/#ciliumnetworkpolicy) covers a concern specific to one component, like Prometheus scraping podinfo. It lives next to the workload it protects, as [`manifests/podinfo/podinfo-network-policy.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-network-policy.yaml) does, so an app and its rules change together. A chart with several components gets one policy per component, each selecting its own pods, so Loki's cache can't do what Loki itself is allowed to.
 
 | | Applies to | Lives in | When to use |
 |---|---|---|---|
@@ -99,14 +99,14 @@ The trade-off is that `host` is broad. A rule allowing it for kubelet probes als
 ### The `world` Entity
 A load balancer sits inside the VPC, yet its traffic arrives as `world`. It forwards requests and health checks straight to the pod's IP, and its network interfaces aren't pods or nodes of the cluster, so Cilium has no identity for them.
 
-`world` is broad too: a rule allowing it admits any source outside the cluster. Two layers narrow it down. The node's security group only lets the load balancer in, and the pod's policy only opens the port the app serves on. For example, the first ingress rule of [`podinfo-network-policy.yaml`](https://github.com/ConsciousML/argocd-app-of-apps-template/blob/main/manifests/podinfo/podinfo-network-policy.yaml) allows `world` on port 9898 only.
+`world` is broad too: a rule allowing it admits any source outside the cluster. Two layers narrow it down. The node's security group only lets the load balancer in, and the pod's policy only opens the port the app serves on. For example, the first ingress rule of [`podinfo-network-policy.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-network-policy.yaml) allows `world` on port 9898 only.
 
 ### Pods Cilium Doesn't Manage
 Cilium only gives an identity to pods created after its agent is ready on their node. A pod started earlier still gets an IP from the VPC CNI, but no identity, so every policy sees it as `world`. Rules that select it by label don't match it, so its peers drop its traffic. Cilium also enforces nothing on the pod itself: `default-deny.yaml` doesn't apply to it, and Hubble doesn't show its flows.
 
 EKS Forge closes this gap in two places:
 - On Karpenter nodes, a startup taint holds pods off a new node until Cilium is ready there (see [The Managed Node Group](/docs/compute/how-pods-are-scheduled/#the-managed-node-group)).
-- Pods created with the cluster, like CoreDNS and metrics-server, start before Cilium exists. The [`cep_restart` unit](https://github.com/ConsciousML/terragrunt-template-catalog-eks/tree/main/units/eks/addons/cilium/cep_restart) restarts every workload with such a pod right after Cilium is installed, and again after each Cilium upgrade.
+- Pods created with the cluster, like CoreDNS and metrics-server, start before Cilium exists. The [`cep_restart` unit](https://github.com/ConsciousML/eks-forge-catalog/tree/main/units/eks/addons/cilium/cep_restart) restarts every workload with such a pod right after Cilium is installed, and again after each Cilium upgrade.
 
 ## Reaching AWS APIs
 A pod calling an AWS API, like ExternalDNS calling Route 53, isn't talking to a pod. The only entity that fits is `world`, which would also open the whole internet on port 443, and rules on DNS names aren't available. Its policy needs IPs, so the catalog gives each [interface VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html) a fixed IP in every private subnet, and passes those IPs to the app's chart as `vpcEndpointCidrs`. The policy then allows only those IPs, on port 443.

@@ -45,7 +45,7 @@ jobs:
 
       - name: Check every catalog module has a reference page
         run: |
-          expected=$(find site/docs/_external/terragrunt-template-catalog-eks/modules -mindepth 1 -maxdepth 1 -type d | wc -l)
+          expected=$(find site/docs/_external/eks-forge-catalog/modules -mindepth 1 -maxdepth 1 -type d | wc -l)
           actual=$(find site/build/docs/reference/terraform_modules -mindepth 2 -maxdepth 2 -name index.html | wc -l)
           echo "modules: $expected, pages: $actual"
           [ "$expected" -eq "$actual" ] || { echo "::error::Module count ($expected) != generated pages ($actual)"; exit 1; }
@@ -57,7 +57,7 @@ jobs:
         with:
           args: >-
             --no-progress
-            --remap "^https://github\.com/${{ github.repository_owner }}/(argocd-app-of-apps-template|terragrunt-template-catalog-eks|terragrunt-template-live-eks)/(blob|tree)/[^/]+/ file://${{ github.workspace }}/site/docs/_external/\$1/"
+            --remap "^https://github\.com/${{ github.repository_owner }}/(eks-forge-app-of-apps|eks-forge-catalog|eks-forge-live)/(blob|tree)/[^/]+/ file://${{ github.workspace }}/site/docs/_external/\$1/"
             --max-retries 5
             --retry-wait-time 5
             --host-concurrency 5

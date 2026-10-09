@@ -1,9 +1,9 @@
-[submodule "site/docs/_external/terragrunt-template-catalog-eks"]
-	path = site/docs/_external/terragrunt-template-catalog-eks
-	url = https://github.com/ConsciousML/terragrunt-template-catalog-eks.git
-[submodule "site/docs/_external/terragrunt-template-live-eks"]
-	path = site/docs/_external/terragrunt-template-live-eks
-	url = https://github.com/ConsciousML/terragrunt-template-live-eks.git
-[submodule "site/docs/_external/argocd-app-of-apps-template"]
-	path = site/docs/_external/argocd-app-of-apps-template
-	url = https://github.com/ConsciousML/argocd-app-of-apps-template.git
+[submodule "site/docs/_external/eks-forge-catalog"]
+	path = site/docs/_external/eks-forge-catalog
+	url = https://github.com/ConsciousML/eks-forge-catalog.git
+[submodule "site/docs/_external/eks-forge-live"]
+	path = site/docs/_external/eks-forge-live
+	url = https://github.com/ConsciousML/eks-forge-live.git
+[submodule "site/docs/_external/eks-forge-app-of-apps"]
+	path = site/docs/_external/eks-forge-app-of-apps
+	url = https://github.com/ConsciousML/eks-forge-app-of-apps.git

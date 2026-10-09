@@ -61,7 +61,7 @@ flowchart LR
 This is deliberate. Where a pod runs decides how often it gets disrupted and how much it costs, so that choice is made explicitly for each workload. The MNG in particular can't be left untainted: its capacity is fixed, so any pod landing there by default could fill it up and starve the components the whole cluster relies on, bringing it down.
 
 ## The Managed Node Group
-Some components can't wait for a Karpenter node, because Karpenter nodes depend on them. Karpenter can't run on the nodes it launches. [`cilium-operator`](https://docs.cilium.io/en/stable/internals/cilium_operator/) removes the startup taint that holds pods off a new Karpenter node until Cilium is ready there, so it must already be running elsewhere. The MNG gives them capacity that exists before any Karpenter node does (see [`eks_managed_node_groups`](https://github.com/ConsciousML/terragrunt-template-catalog-eks/blob/main/pipelines/dev/eks/stack/terragrunt.stack.hcl)).
+Some components can't wait for a Karpenter node, because Karpenter nodes depend on them. Karpenter can't run on the nodes it launches. [`cilium-operator`](https://docs.cilium.io/en/stable/internals/cilium_operator/) removes the startup taint that holds pods off a new Karpenter node until Cilium is ready there, so it must already be running elsewhere. The MNG gives them capacity that exists before any Karpenter node does (see [`eks_managed_node_groups`](https://github.com/ConsciousML/eks-forge-catalog/blob/main/pipelines/dev/eks/stack/terragrunt.stack.hcl)).
 
 ```mermaid
 ---
@@ -87,10 +87,10 @@ It also hosts components the cluster needs even when Karpenter is unhealthy: Cor
 Both NodePools launch nodes on demand and remove them once they're no longer needed. What sets them apart is how willing Karpenter is to [disrupt](https://karpenter.sh/docs/concepts/disruption/) your pods to save money: moving them onto fewer or cheaper nodes, a process called [consolidation](https://karpenter.sh/docs/concepts/disruption/#consolidation).
 
 ### Critical NodePool
-The [`critical` NodePool](https://github.com/ConsciousML/terragrunt-template-catalog-eks/blob/main/units/eks/addons/karpenter/node_pool/critical/terragrunt.hcl) trades cost for stability. Karpenter waits longer before consolidating its nodes, disrupts only one at a time, and gives pods time to shut down cleanly. It's for workloads where a restart at the wrong moment hurts, like ArgoCD, Prometheus, and Loki.
+The [`critical` NodePool](https://github.com/ConsciousML/eks-forge-catalog/blob/main/units/eks/addons/karpenter/node_pool/critical/terragrunt.hcl) trades cost for stability. Karpenter waits longer before consolidating its nodes, disrupts only one at a time, and gives pods time to shut down cleanly. It's for workloads where a restart at the wrong moment hurts, like ArgoCD, Prometheus, and Loki.
 
 ### Elastic NodePool
-The [`elastic` NodePool](https://github.com/ConsciousML/terragrunt-template-catalog-eks/blob/main/units/eks/addons/karpenter/node_pool/elastic/terragrunt.hcl) trades stability for cost. Karpenter consolidates its nodes as soon as they're underused, disrupts many at once, and drains them fast. It's for workloads that recover from a restart on their own, like ExternalDNS, the AWS Load Balancer Controller, and podinfo.
+The [`elastic` NodePool](https://github.com/ConsciousML/eks-forge-catalog/blob/main/units/eks/addons/karpenter/node_pool/elastic/terragrunt.hcl) trades stability for cost. Karpenter consolidates its nodes as soon as they're underused, disrupts many at once, and drains them fast. It's for workloads that recover from a restart on their own, like ExternalDNS, the AWS Load Balancer Controller, and podinfo.
 
 ### Comparison
 

@@ -91,7 +91,7 @@ gh run rerun <run-id> --failed
 make trivy-local
 ```
 
-Fix the misconfiguration the finding describes. If it's a trade-off you accept, add an entry to [`.trivyignore.yaml`](https://github.com/ConsciousML/terragrunt-template-catalog-eks/blob/main/.trivyignore.yaml) instead, with the finding's `id`, the file it's in, and a `statement` saying why it's safe to ignore. For example:
+Fix the misconfiguration the finding describes. If it's a trade-off you accept, add an entry to [`.trivyignore.yaml`](https://github.com/ConsciousML/eks-forge-catalog/blob/main/.trivyignore.yaml) instead, with the finding's `id`, the file it's in, and a `statement` saying why it's safe to ignore. For example:
 ```yaml
 misconfigurations:
   - id: AWS-0104

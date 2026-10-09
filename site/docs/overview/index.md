@@ -36,9 +36,9 @@ Review the [Features](#features) section to assess if EKS Forge is the right fit
 
 ## How Does EKS Forge Work?
 EKS Forge is composed of 3 template repositories:
-- the [catalog](https://github.com/ConsciousML/terragrunt-template-catalog-eks): the Terraform modules, the Terragrunt units and stacks, and the `dev` environment
-- the [live repository](https://github.com/ConsciousML/terragrunt-template-live-eks): the `staging` and `prod` environments, built from the catalog's units
-- the [app of apps repository](https://github.com/ConsciousML/argocd-app-of-apps-template): the Helm charts and manifests ArgoCD deploys to the cluster
+- the [catalog](https://github.com/ConsciousML/eks-forge-catalog): the Terraform modules, the Terragrunt units and stacks, and the `dev` environment
+- the [live repository](https://github.com/ConsciousML/eks-forge-live): the `staging` and `prod` environments, built from the catalog's units
+- the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps): the Helm charts and manifests ArgoCD deploys to the cluster
 
 In other words, it is not meant to be used in-place, but rather to be forked and extended.
 

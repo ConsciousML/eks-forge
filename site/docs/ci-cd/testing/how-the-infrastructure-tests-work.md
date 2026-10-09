@@ -10,7 +10,7 @@ The infrastructure tests deploy the whole `staging` stack, test it end to end, t
 For the steps to add a check, see [Add an Infrastructure Test](/docs/ci-cd/testing/add-an-infrastructure-test/).
 
 ## One Test for the Whole Stack
-The tests are written with [Terratest](https://terratest.gruntwork.io/), a [Go](https://go.dev/) library for testing infrastructure code. A Terratest test is a regular Go test, so `go test` runs it, on your machine as in CI. EKS Forge uses it to run Terragrunt on the `staging` stack. The checks themselves are plain Go: HTTP requests to the tools, and `kubectl` commands against the cluster. The tests are in the [`tests/`](https://github.com/ConsciousML/terragrunt-template-live-eks/tree/main/tests) directory of the live repository.
+The tests are written with [Terratest](https://terratest.gruntwork.io/), a [Go](https://go.dev/) library for testing infrastructure code. A Terratest test is a regular Go test, so `go test` runs it, on your machine as in CI. EKS Forge uses it to run Terragrunt on the `staging` stack. The checks themselves are plain Go: HTTP requests to the tools, and `kubectl` commands against the cluster. The tests are in the [`tests/`](https://github.com/ConsciousML/eks-forge-live/tree/main/tests) directory of the live repository.
 
 There is no test per module or per unit. The [catalog CI](/docs/ci-cd/#three-pipelines) already validates and plans them, and a unit on its own proves little: an IAM role, a DNS record, or a Helm release only shows it works once the units around it use it. So the tests are functional: a single test deploys the stack and checks what comes out of all of them together.
 
@@ -43,12 +43,12 @@ sequenceDiagram
     test->>tg: Destroys the staging stack
 ```
 
-The existing checks are the entries of `endpointChecks`, in [`tests/endpoint_checks_test.go`](https://github.com/ConsciousML/terragrunt-template-live-eks/blob/main/tests/endpoint_checks_test.go).
+The existing checks are the entries of `endpointChecks`, in [`tests/endpoint_checks_test.go`](https://github.com/ConsciousML/eks-forge-live/blob/main/tests/endpoint_checks_test.go).
 
 For what the tests can't catch, see [Limitations](/docs/ci-cd/limitations-and-improvements/#limitations).
 
 ## Why the Test Waits for ArgoCD
-A finished Terragrunt apply doesn't mean a working cluster. Terragrunt installs ArgoCD and creates its `app-of-apps` Application, then returns. Most of the tools the tests check are deployed afterwards by ArgoCD, from the [app of apps repository](https://github.com/ConsciousML/argocd-app-of-apps-template).
+A finished Terragrunt apply doesn't mean a working cluster. Terragrunt installs ArgoCD and creates its `app-of-apps` Application, then returns. Most of the tools the tests check are deployed afterwards by ArgoCD, from the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps).
 
 So the test waits before it checks anything. It watches a single Application, `app-of-apps`: ArgoCD reports it `Synced` and `Healthy` only once every application it creates is (see [The Root App and Its Children](/docs/applications/how-the-app-of-apps-works/#the-root-app-and-its-children)). A new application is then covered by the wait without any change to the tests.
 
