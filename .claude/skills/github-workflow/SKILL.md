@@ -69,6 +69,18 @@ Implementation is not part of this skill.
   that uses them, and push.
 - Conventional Commits, subject line only (see `<commits>` in `system.xml`).
 
+Before the first push of a branch, in eks-forge and in each touched submodule, replay it on the
+latest `main`:
+```bash
+git fetch origin main
+git rebase origin/main
+```
+
+Never merge `main` into a PR branch: the merge commit ends up in `main`'s history and pollutes
+`git log --merges`. If `main` moves after the branch is pushed and the branch needs it (a
+conflict, or a file `main` removed), rebase again and push with `git push --force-with-lease`.
+Never use a plain `--force`.
+
 ## 4. Pull Requests
 
 **Wait** for the user to ask.
