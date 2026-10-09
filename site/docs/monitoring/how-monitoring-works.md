@@ -10,7 +10,7 @@ EKS Forge collects three signals from your cluster: metrics, logs, and network f
 For a hands-on tour of the tools, see [Monitor Your Cluster](/docs/monitoring/get-started/).
 
 ## Overview
-[Prometheus](https://prometheus.io/) collects and stores metrics. [Alloy](https://grafana.com/docs/alloy/latest/) collects logs, and [Loki](https://grafana.com/docs/loki/latest/) stores them. [Cilium](https://cilium.io/) sees network flows, and [Hubble](https://docs.cilium.io/en/stable/observability/hubble/) shows them. [Grafana](https://grafana.com/docs/grafana/latest/) reads metrics and logs, and Hubble has its own UI.
+[Prometheus](https://prometheus.io/) collects and stores metrics. [Alloy](https://grafana.com/docs/alloy/latest/) collects logs, and [Loki](https://grafana.com/docs/loki/latest/) stores them. [Cilium](https://cilium.io/) sees network flows, and [Hubble](https://docs.cilium.io/en/stable/observability/hubble/) shows them. [Grafana](https://grafana.com/docs/grafana/latest/) queries Prometheus and Loki to show metrics and logs in dashboards. Hubble has its own UI for flows.
 
 ```mermaid
 flowchart LR
@@ -85,7 +85,7 @@ Loki deletes the logs older than its retention period on its own (see `retention
 
 Loki runs in [monolithic mode](https://grafana.com/docs/loki/latest/get-started/deployment-modes/), as several replicas spread across availability zones (see `singleBinary.replicas` in the same file). Each log line is written to more than one replica, so one can go down without losing logs or refusing new ones.
 
-The trade-off is scale. Monolithic mode is the simplest to run, but Loki's documentation places its limit at about 20GB of logs per day. Past that, one of Loki's other deployment modes is needed.
+The trade-off is scale. Monolithic mode is the simplest to run, but Loki's documentation places its limit at about 20GB of logs per day. Past that, one of Loki's other [deployment modes](https://grafana.com/docs/loki/latest/get-started/deployment-modes/) is needed.
 
 ## Why Hubble Stores No Flows
 Network flows have no dedicated collector. Cilium already sees every connection of the pods it manages, since it's what allows or drops them (see [Cilium VPC CNI Chaining](/docs/security/how-network-policies-work/#cilium-vpc-cni-chaining)). Hubble exposes what Cilium saw.
