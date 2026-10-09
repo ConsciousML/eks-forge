@@ -43,7 +43,7 @@ sequenceDiagram
     test->>tg: Destroys the staging stack
 ```
 
-The existing checks are the entries of `endpointChecks`, in [`tests/staging_stack_test.go`](https://github.com/ConsciousML/terragrunt-template-live-eks/blob/main/tests/staging_stack_test.go).
+The existing checks are the entries of `endpointChecks`, in [`tests/endpoint_checks_test.go`](https://github.com/ConsciousML/terragrunt-template-live-eks/blob/main/tests/endpoint_checks_test.go).
 
 For what the tests can't catch, see [Limitations](/docs/ci-cd/limitations-and-improvements/#limitations).
 
