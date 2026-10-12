@@ -51,7 +51,9 @@ jobs:
           [ "$expected" -eq "$actual" ] || { echo "::error::Module count ($expected) != generated pages ($actual)"; exit 1; }
 
       # GITHUB_TOKEN doesn't cover blob/tree URLs, so github.com throttles them: the remap checks
-      # sibling repo files against the submodule checkouts instead
+      # sibling repo files against the submodule checkouts instead.
+      # 503 is accepted because github.com returns it at random for third-party blob pages and
+      # lychee never retries 5xx (lycheeverse/lychee#2319). A dead link returns 404 and still fails.
       - name: Check site for broken links
         uses: lycheeverse/lychee-action@v2.9.0
         with:
@@ -61,7 +63,7 @@ jobs:
             --max-retries 5
             --retry-wait-time 5
             --host-concurrency 5
-            --accept "200..=299,403"
+            --accept "200..=299,403,503"
             --root-dir "${{ github.workspace }}/site/build"
             --exclude "^https://eks-forge\.readthedocs\.io"
             "site/build/**/*.html"
