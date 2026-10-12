@@ -206,16 +206,39 @@ A rerun applies the commit of its run. If another pull request merged after your
 
 ### `terragrunt-apply-prod`
 
+Open the job's log and find the step that failed. If it's the setup or one of the Tailscale steps, see [Setup Fails](#setup-fails). Otherwise, go to the section of the failing step below.
+
+#### The Apply Fails
+
 :::warning
 A failed apply stops halfway: the units applied before the error keep their changes, so `prod` may run a mix of the old and new configuration until the next successful apply.
 :::
 
-Open the job's log and find the step that failed. If it's the setup or one of the Tailscale steps, see [Setup Fails](#setup-fails).
-
-If it's the `Terragrunt apply on prod` step, its log is too long to search from the job's page, so open the raw one: click the gear icon at the top right of the job's log, then **View raw logs**. Search it for the error, then:
+The log of the `Terragrunt apply on prod` step is too long to search from the job's page, so open the raw one: click the gear icon at the top right of the job's log, then **View raw logs**. Search it for the error, then:
 - **`Error acquiring the state lock`**: continue at [State Is Locked](#state-is-locked).
 - **An error that isn't caused by your change**, such as an AWS API timeout: rerun the failed jobs as in [Setup Fails](#setup-fails).
 - **Any other error**: fix it in a new pull request, by following [Release a Change to Production](/docs/deployment/release-a-change-to-production/). Its CD run applies the fix on top of what the failed run applied.
+
+#### The Prod Test Fails
+
+:::warning
+The apply succeeded, and nothing rolls it back: `prod` runs your change, with a check failing on it (see [Why a Failed Prod Test Doesn't Roll Back](/docs/ci-cd/testing/how-the-infrastructure-tests-work/#why-a-failed-prod-test-doesnt-roll-back)).
+:::
+
+Open the raw log of the `Run Terratest on prod` step, as in [The Apply Fails](#the-apply-fails), and search it for the last `[ERROR]` line. Find what it shows in the table of [`terratest`](#terratest).
+
+Unlike `staging`, `prod` is still up, so inspect it directly. To run the checks again from your machine, switch to `main`, connect to Tailscale, and point `kubectl` at `prod`, replacing `<region-code>` with the region set in [`live/prod/region.hcl`](https://github.com/ConsciousML/eks-forge-live/blob/main/live/prod/region.hcl):
+```bash
+git checkout main
+git pull
+source .env
+tailscale up
+export AWS_REGION=<region-code>
+aws eks update-kubeconfig --region $AWS_REGION --name prod-cluster
+TERRATEST_TARGET_ENVIRONMENT=prod go test -v -run '^TestStackExists$' ./tests/... -timeout 10m
+```
+
+Once you've identified the error, fix it in a new pull request, by following [Release a Change to Production](/docs/deployment/release-a-change-to-production/) again.
 
 ## State Is Locked
 
