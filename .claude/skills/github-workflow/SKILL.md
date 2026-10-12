@@ -62,7 +62,7 @@ Implementation is not part of this skill.
 
 ## 3. Commit and Push
 
-**Wait** for the user to ask.
+Don't wait for the user: they review the change in the GitHub UI.
 
 - Commit inside each touched submodule first, then push it with `git push -u origin <branch>`.
 - Then commit in eks-forge with the submodule pointers staged in the same commit as the change
@@ -83,7 +83,7 @@ Never use a plain `--force`.
 
 ## 4. Pull Requests
 
-**Wait** for the user to ask.
+Open them right after the push, without waiting for the user.
 
 Open one PR per touched submodule first, then the eks-forge PR, so it can reference them:
 ```bash
