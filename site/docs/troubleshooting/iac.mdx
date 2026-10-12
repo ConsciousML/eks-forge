@@ -1,0 +1,22 @@
+---
+sidebar_position: 1
+title: Troubleshoot Infrastructure as Code
+diataxis-tag: how-to
+---
+
+import TroubleshootCatalog from '../_external/eks-forge-catalog/docs/troubleshoot-iac.md';
+import TroubleshootLive from '../_external/eks-forge-live/docs/troubleshoot-iac.md';
+
+# Troubleshoot Infrastructure as Code
+
+This guide shows you how to fix a failing apply or destroy of a [stack](/docs/iac/#stacks), run from your [catalog fork](/docs/quickstart/installation/#fork-the-eks-forge-catalog) or your [live fork](/docs/deployment/get-started/live-repository-setup/#fork-the-live-repository).
+
+If a CI job fails instead, see [Troubleshoot Catalog CI](/docs/ci-cd/per-repository/troubleshoot-catalog-ci/) or [Troubleshoot Live CI](/docs/ci-cd/per-repository/troubleshoot-live-ci/). If the error is `Error acquiring the state lock`, see [State Is Locked](/docs/ci-cd/per-repository/troubleshoot-live-ci/#state-is-locked).
+
+The commands below run from the directory of your stack, called `<stack-dir>`: `pipelines/dev/eks/stack` in your catalog fork, or `live/<env>/eks/stack` in your live fork.
+
+Go to the section of the error below.
+
+<TroubleshootCatalog />
+
+<TroubleshootLive />
