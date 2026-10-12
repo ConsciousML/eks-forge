@@ -6,7 +6,7 @@ diataxis-tag: explanation
 
 # How the Infrastructure Tests Work
 
-The infrastructure tests deploy the whole `staging` stack, test it end to end, then destroy it. This page explains how they work.
+The infrastructure tests deploy the whole `staging` stack, test it end to end, then destroy it. CD runs the same checks on `prod` after each apply. This page explains how they work.
 For the steps to add a check, see [Add an Infrastructure Test](/docs/ci-cd/testing/add-an-infrastructure-test/).
 
 ## One Test for the Whole Stack
@@ -43,6 +43,8 @@ sequenceDiagram
     test->>tg: Destroys the staging stack
 ```
 
+In CD, the `Run Terratest on prod` step runs `TestProdStack` once the `prod` apply is done. It runs steps 2 and 3 only, against `prod`: it never applies or destroys anything.
+
 The existing checks are the entries of `endpointChecks`, in [`tests/endpoint_checks_test.go`](https://github.com/ConsciousML/eks-forge-live/blob/main/tests/endpoint_checks_test.go).
 
 For what the tests can't catch, see [Limitations](/docs/ci-cd/limitations-and-improvements/#limitations).
@@ -64,12 +66,27 @@ The trade-off is depth. A check proves a tool answers, and for ArgoCD and Grafan
 ## Why Tailscale Disconnects and Reconnects
 Every tool but podinfo has a private hostname, which only resolves through Tailscale (see [Connector and Split DNS](/docs/security/tailscale/#4-connector-and-split-dns)). Those DNS records are created during the run, so the test reconnects Tailscale and flushes the machine's DNS cache before the endpoint checks. It stays disconnected during the apply and the destroy, while the cluster's Tailscale connector isn't there.
 
+The `prod` test applies and destroys nothing, so it only reconnects and flushes the DNS cache before its checks.
+
 The test runs the `tailscale` commands itself. That's why a full run on your machine asks you to leave Tailscale alone until it ends.
 
-## Two Tests, One Set of Checks
-`TestStack` and `TestStackExists` run the same checks, through the same `assertStack` function. `TestStackExists` skips everything else: it applies nothing, waits for nothing, and destroys nothing. A check added to `assertStack` then runs in CI and against a cluster you deployed yourself, with no second copy to keep in sync.
+## Existing Tests
+There are three tests, and each runs in one place:
 
-`TestStackExists` exists for writing checks. A new check rarely passes on the first attempt, and against a deployed `staging` each attempt takes minutes, not the hour of a full run. It has no use in CI, where no cluster is left between runs, so it skips itself there.
+| Test | Runs | Environment | Applies and destroys | Waits for ArgoCD |
+|---|---|---|---|---|
+| `TestStack` | In CI | `staging` | Yes | Yes |
+| `TestProdStack` | In CD | `prod` | No | Yes |
+| `TestStackExists` | On your machine | `staging` by default | No | No |
+
+All three run the same checks, through the same `assertStack` function. A check added to `assertStack` then runs in CI, in CD, and against a cluster you deployed yourself, with no second copy to keep in sync. It also means every check has to pass on `prod`, not only on `staging`.
+
+`TestStackExists` exists for writing checks. A new check rarely passes on the first attempt, and against a deployed `staging` each attempt takes minutes, not the hour of a full run. It has no use in CI, where no cluster is left between runs, so it skips itself there. It checks `staging` unless the `TERRATEST_TARGET_ENVIRONMENT` environment variable names another environment, such as `prod`.
+
+## Why a Failed Prod Test Doesn't Roll Back
+The change was already gated by CI: its pull request passed the tests on `staging` before it merged. So the `prod` test isn't a second gate. It's an alert: a failing check fails the CD run to tell you something went wrong on `prod`.
+
+When `TestProdStack` starts, the apply is already done, and nothing reverts it: `prod` keeps the change. A rollback is possible, but EKS Forge doesn't implement one by default. That leaves you free to either roll back, or fix the error by going through the release process again (see [Release a Change to Production](/docs/deployment/release-a-change-to-production/)).
 
 ## When Staging Isn't Destroyed
 The destroy runs when the test ends, whether it passed or failed. A failed run therefore leaves no cluster to inspect: its log is all that's left, and reproducing the failure means deploying `staging` again (see [Reproduce the Failure on Staging](/docs/ci-cd/per-repository/troubleshoot-live-ci/#reproduce-the-failure-on-staging)).

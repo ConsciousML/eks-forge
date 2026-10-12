@@ -49,6 +49,7 @@ flowchart TD
     merge --> skip{"skip-cd label?"}
     skip -->|"yes"| nodeploy["No deployment"]
     skip -->|"no"| apply["Apply prod"]
+    apply --> test["Test prod"]
 ```
 
 For the jobs themselves, see [`ci.yaml`](https://github.com/ConsciousML/eks-forge-live/blob/main/.github/workflows/ci.yaml) and [`cd.yaml`](https://github.com/ConsciousML/eks-forge-live/blob/main/.github/workflows/cd.yaml).
@@ -79,6 +80,8 @@ Merging to `main` starts CD, which applies the change to `prod`. CD skips the ap
 
 CD doesn't apply the plan you reviewed. It computes a new one when the pull request merges, and the two can differ if `main` changed in between (see [Limitations](/docs/ci-cd/limitations-and-improvements/#limitations)).
 
+After the apply, CD runs the infrastructure tests' checks on `prod`. A failing check fails the CD run, but `prod` keeps the change (see [Why a Failed Prod Test Doesn't Roll Back](/docs/ci-cd/testing/how-the-infrastructure-tests-work/#why-a-failed-prod-test-doesnt-roll-back)).
+
 CD creates the `prod` cluster with its own IAM role, which doesn't give your IAM identity access to it. So the bootstrap stores the identity that ran it as the `EKS_LOCAL_ADMIN_ARN` secret, and CD adds it as a cluster administrator on every apply, through `access_entries` in the [`prod` stack file](https://github.com/ConsciousML/eks-forge-live/blob/main/live/prod/eks/stack/terragrunt.stack.hcl).
 
 ## Short-Lived Credentials
@@ -91,4 +94,6 @@ Only one test run deploys `staging` at a time, and only one CD run applies `prod
 
 A new run never cancels the one in progress, and you shouldn't cancel it by hand either. Terragrunt stopped halfway leaves its [state lock](https://opentofu.org/docs/language/state/locking/) behind, and a test run stopped halfway leaves a `staging` cluster that nothing destroys.
 
-GitHub keeps one waiting run per group. When a third run arrives, it cancels the one that was waiting. For CD this changes little: the latest run applies `main`, with every change merged before it. For the tests, the cancelled pull request needs its CI run again.
+Both groups are shared by every pull request, so they set `queue: max`: up to 100 runs wait, and none is cancelled when another arrives. Without it, GitHub keeps one waiting run per group, and cancels it when the next one arrives.
+
+The CI runs of a single pull request are queued too, in a group of their own, and there the default applies. If you push several commits while a run is in progress, that run finishes, the runs waiting behind it are cancelled, and only the latest commit runs next. A run cancelled while waiting never started, so it leaves no cluster and no lock behind.

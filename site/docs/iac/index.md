@@ -251,7 +251,7 @@ flowchart TD
     user -->|"4. opens"| pr
     tag -->|"pinned by"| pr
     pr -->|"5. Terratest"| staging
-    pr -->|"6. merged, CD applies"| prod
+    pr -->|"6. merged, CD applies and tests"| prod
 ```
 
 ### `dev`
@@ -268,4 +268,4 @@ A validated `dev` change reaches `staging` and `prod` once its commit on `main` 
 
 ### `prod`
 
-`prod` is the environment running 24/7, serving real traffic, not spun up and torn down per change the way `staging` is. It also lives in the live repository, pinned to the same git tag, but the [`cd.yaml` workflow](https://github.com/ConsciousML/eks-forge-live/blob/main/.github/workflows/cd.yaml) applies it on every merge to `main`, updating the running cluster in place rather than replacing it.
+`prod` is the environment running 24/7, serving real traffic, not spun up and torn down per change the way `staging` is. It also lives in the live repository, pinned to the same git tag, but the [`cd.yaml` workflow](https://github.com/ConsciousML/eks-forge-live/blob/main/.github/workflows/cd.yaml) applies it on every merge to `main`, updating the running cluster in place rather than replacing it, then runs the [infrastructure tests](/docs/ci-cd/testing/how-the-infrastructure-tests-work/#existing-tests)' checks against it.
