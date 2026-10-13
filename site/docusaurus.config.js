@@ -115,15 +115,14 @@ const config = {
       }
       // Reading time of tutorials and explanations, counting the markdown files a wrapper page imports.
       // Pages listing their subpages with DocCards get none: their time is the one of their subpages
-      if (
-        ['tutorial', 'explanation'].includes(/** @type {string} */ (result.frontMatter['diataxis-tag'])) &&
-        !result.content.includes('<DocCards')
-      ) {
+      if (['tutorial', 'explanation'].includes(/** @type {string} */ (result.frontMatter['diataxis-tag']))) {
         const imported = [...result.content.matchAll(/from '(\.[^']+\.mdx?)'/g)].map(([, importPath]) =>
           fs.readFileSync(path.resolve(path.dirname(params.filePath), importPath), 'utf8')
         );
-        const words = [result.content, ...imported].join(' ').split(/\s+/).length;
-        result.frontMatter['reading-time'] = Math.ceil(words / 200);
+        const text = [result.content, ...imported].join(' ');
+        if (!text.includes('<DocCards')) {
+          result.frontMatter['reading-time'] = Math.ceil(text.split(/\s+/).length / 200);
+        }
       }
       return result;
     },
