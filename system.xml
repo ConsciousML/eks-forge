@@ -22,8 +22,9 @@
     </site>
 
     <documentation_map>
-        `documentation-map.csv` lists every site page: `route`, `type`, `title`, and
-        `description`. Load the `documentation-map` skill to use it.
+        `documentation-map.csv` lists every site page: `route`, `type`, `title`, `description`,
+        and `source` (the `_external` files the page imports its content from). Load the
+        `documentation-map` skill to use it.
 
         Never edit it by hand:
         - CI regenerates it from each page's front matter (`title` or the H1, `diataxis-tag`,
