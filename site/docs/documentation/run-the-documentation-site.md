@@ -9,10 +9,6 @@ description: Start the documentation site on your machine, and build it as CI do
 
 This guide shows you how to preview this documentation site on your machine, and build it as CI does before you push. It assumes you've followed [Set Up the Documentation Repository](/docs/documentation/set-up-the-documentation-repository/).
 
-:::warning
-This guide works for the EKS Forge repository itself, not for a fork of it. Forks aren't supported yet. If you need them, upvote the [fork support issue](https://github.com/ConsciousML/eks-forge/issues/134).
-:::
-
 ## Start the Dev Server
 
 From the root of the repository, install the dependencies of the site and start it:
