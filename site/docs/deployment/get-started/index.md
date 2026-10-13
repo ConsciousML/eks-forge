@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 diataxis-tag: tutorial
+description: Tutorial overview for setting up the live repository, deploying staging, and promoting to prod.
 ---
 
 import DocCards from '@site/src/components/DocCards';

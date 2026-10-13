@@ -2,6 +2,7 @@
 sidebar_position: 1
 title: How the Infrastructure Tests Work
 diataxis-tag: explanation
+description: How Terratest deploys, tests, and destroys the staging stack, and checks prod after each apply. Covers what a passing check proves, the ArgoCD wait, the Tailscale reconnect, why a failed prod test doesn't roll back, and when staging isn't destroyed.
 ---
 
 # How the Infrastructure Tests Work

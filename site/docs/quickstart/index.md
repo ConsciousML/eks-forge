@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 diataxis-tag: tutorial
+description: Tutorial overview for deploying an EKS cluster in the dev environment.
 ---
 
 import DocCards from '@site/src/components/DocCards';

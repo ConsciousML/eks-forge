@@ -2,6 +2,7 @@
 sidebar_position: 2
 sidebar_label: ArgoCD
 diataxis-tag: how-to
+description: Fix an ArgoCD hostname that doesn't resolve, a rejected admin password, or an application stuck deleting.
 ---
 
 # Troubleshoot ArgoCD
