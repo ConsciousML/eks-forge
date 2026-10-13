@@ -18,7 +18,7 @@ route,type,title,description
 /docs/ci-cd/per-repository/troubleshoot-app-of-apps-ci/,how-to,Troubleshoot App of Apps CI,Fix a failing CI job on a pull request in the app of apps fork.
 /docs/ci-cd/per-repository/troubleshoot-catalog-ci/,how-to,Troubleshoot Catalog CI,Fix a failing CI job on a pull request in the catalog fork.
 /docs/ci-cd/per-repository/troubleshoot-live-ci/,how-to,Troubleshoot Live CI,"Fix a failing CI job on a pull request in the live fork, or a failing CD run after a merge."
-/docs/ci-cd/testing/add-an-infrastructure-test/,how-to,Add an Infrastructure Test,Add an endpoint check for a tool's hostname to the Terratest infrastructure tests.
+/docs/ci-cd/testing/add-an-infrastructure-test/,how-to,Add an Infrastructure Test,"Add an endpoint check or a custom check to the Terratest infrastructure tests, and run it on staging before CI does."
 /docs/ci-cd/testing/how-the-infrastructure-tests-work/,explanation,How the Infrastructure Tests Work,"How Terratest deploys, tests, and destroys the staging stack, and checks prod after each apply. Covers what a passing check proves, the ArgoCD wait, the Tailscale reconnect, why a failed prod test doesn't roll back, and when staging isn't destroyed."
 /docs/compute/how-pods-are-scheduled/,explanation,How Pods Are Scheduled,"Why the cluster runs three kinds of tainted nodes. Covers the managed node group, the critical and elastic Karpenter NodePools, and DaemonSets."
 /docs/compute/increase-ec2-capacity/,how-to,Increase EC2 Capacity,"Raise the vCPU capacity available to the cluster, across the three limits that cap it."
@@ -65,12 +65,12 @@ route,type,title,description
 /docs/quickstart/deployment/,tutorial,Dev Deployment,Deploy the EKS stack in the dev environment.
 /docs/quickstart/,tutorial,Quickstart,Tutorial overview for deploying an EKS cluster in the dev environment.
 /docs/quickstart/installation/,tutorial,Installation,Fork the EKS Forge catalog and install its CLI tools.
-/docs/quickstart/prerequisites/,tutorial,Prerequisites,The accounts and access needed before starting the quickstart.
-/docs/reference/bootstrap/app_of_apps_deploy_key/,reference,App of Apps Deploy Key Bootstrap Reference,Inputs and outputs of the pipeline adding a write deploy key to the app of apps fork.
+/docs/quickstart/prerequisites/,tutorial,Prerequisites,"The accounts, operating system, and domain name needed before starting the quickstart."
+/docs/reference/bootstrap/app_of_apps_deploy_key/,reference,App of Apps Deploy Key Bootstrap Reference,Modules and values of the pipeline adding a write deploy key to the app of apps fork.
 /docs/reference/bootstrap/aws_billing_anomaly_detection/,reference,AWS Billing Anomaly Detection Bootstrap Reference,Inputs and outputs of the stack creating the AWS Cost Anomaly Detection monitor and its email subscription.
 /docs/reference/bootstrap/aws_billing_budgets/,reference,AWS Billing Budgets Bootstrap Reference,Inputs and outputs of the stack creating the actual and forecasted monthly spend budgets.
 /docs/reference/bootstrap/aws_ec2_quotas/,reference,AWS EC2 Quotas Bootstrap Reference,Inputs and outputs of the stack requesting EC2 On-Demand and Spot vCPU quota increases.
-/docs/reference/bootstrap/aws_gh_actions_auth/,reference,AWS GitHub Actions Authentication Bootstrap Reference,Inputs and outputs of the stack creating the OIDC trust between GitHub Actions and AWS.
+/docs/reference/bootstrap/aws_gh_actions_auth/,reference,AWS GitHub Actions Authentication Bootstrap Reference,"Inputs of the stack creating the OIDC trust between GitHub Actions and AWS, with its OIDC provider and setup action notes."
 /docs/reference/bootstrap/,reference,Bootstrap Pipelines Reference,Index of the bootstrap pipeline reference pages.
 /docs/reference/bootstrap/setup_dns/,reference,Setup DNS Bootstrap Reference,Inputs and outputs of the stack creating an environment's public Route 53 hosted zone.
 /docs/reference/bootstrap/slack_channels/,reference,Slack Channels Bootstrap Reference,Inputs and outputs of the stack creating an environment's Slack alert channels.
