@@ -1,4 +1,4 @@
-![EKS Forge](site/static/img/social-card.png)
+![EKS Forge](site/static/img/readme-banner.png)
 
 # EKS Forge
 
