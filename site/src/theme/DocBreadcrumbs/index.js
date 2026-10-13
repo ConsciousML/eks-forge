@@ -1,6 +1,6 @@
 import DocBreadcrumbs from '@theme-original/DocBreadcrumbs';
 import {useDoc} from '@docusaurus/plugin-content-docs/client';
-import {Clock} from 'lucide-react';
+import {Clock, Hourglass} from 'lucide-react';
 import styles from './styles.module.css';
 
 // Shows the estimated time on the breadcrumbs row: `reading-time` is computed in docusaurus.config.js,
@@ -15,11 +15,18 @@ export default function DocBreadcrumbsWrapper(props) {
     <div className={styles.row}>
       <DocBreadcrumbs {...props} />
       {readingTime && (
-        <span className={styles.estimatedTime}>
-          <Clock size={16} />
-          {`${readingTime} min read`}
-          {waitTime && ` | ${waitTime} min wait`}
-        </span>
+        <div className={styles.times}>
+          <span className={styles.time}>
+            <Clock size={16} />
+            {`${readingTime} min read`}
+          </span>
+          {waitTime && (
+            <span className={styles.time}>
+              <Hourglass size={16} />
+              {`${waitTime} min wait`}
+            </span>
+          )}
+        </div>
       )}
     </div>
   );
