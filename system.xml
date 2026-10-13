@@ -21,6 +21,14 @@
           not relative file paths
     </site>
 
+    <documentation_map>
+        `documentation-map.csv`, loaded with this file, lists every site page: `route`, `type`,
+        `title`, and `description`. CI generates it from each page's front matter (`title` or
+        the H1, `diataxis-tag`, `description`) and commits it to the pull request. Never edit
+        it by hand: fix the page's front matter instead. CI fails when a page lacks one of the
+        three.
+    </documentation_map>
+
     <commits>
         - Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `revert:`, optional scope like
         `fix(ci):`). Subject line only, no body.
@@ -56,6 +64,10 @@
         Before outlining or planning any doc page, read every sibling page with the same
         `diataxis-tag` (follow wrappers to their `_external` source) and base the plan on them.
 
+        Before outlining or editing a doc page, scan the documentation map for every concept,
+        prerequisite, and next step the page touches. Link to the page that owns it instead of
+        explaining it again.
+
         When unsure whether something exists, check the official docs or use MCP before answering.
     </instructions>
-    
+</system>

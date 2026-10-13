@@ -60,7 +60,19 @@ git -C site/docs/_external/<repo> checkout -b <branch>
 
 Implementation is not part of this skill.
 
-## 3. Commit and Push
+## 3. Update the Documentation Map
+
+Skip if the change doesn't add or re-scope a site page.
+
+CI generates `documentation-map.csv` from each page's front matter and fails when a page lacks a
+`title` (or an H1), a `diataxis-tag`, or a `description`. For each such page, set them, in the
+wrapper when the page is sourced from a submodule. The `description` is one sentence saying what
+the page covers. Never edit the CSV. Check the front matter with:
+```bash
+python3 .github/scripts/documentation-map.py > /dev/null
+```
+
+## 4. Commit and Push
 
 Don't wait for the user: they review the change in the GitHub UI.
 
@@ -76,12 +88,15 @@ git fetch origin main
 git rebase origin/main
 ```
 
+CI pushes a `docs: update the documentation map` commit to the eks-forge branch when the map
+changed. Run `git pull --rebase` before pushing to that branch again.
+
 Never merge `main` into a PR branch: the merge commit ends up in `main`'s history and pollutes
 `git log --merges`. If `main` moves after the branch is pushed and the branch needs it (a
 conflict, or a file `main` removed), rebase again and push with `git push --force-with-lease`.
 Never use a plain `--force`.
 
-## 4. Pull Requests
+## 5. Pull Requests
 
 Open them right after the push, without waiting for the user.
 
@@ -99,7 +114,7 @@ gh pr create --title "<title>" --body "<body>"
 
 Report the PR links.
 
-## 5. Merge the Submodule PRs
+## 6. Merge the Submodule PRs
 
 **Wait** for the user to say the submodule CI passed. Then, from each submodule's directory:
 ```bash
@@ -108,7 +123,7 @@ gh pr merge <N> --merge --subject "<PR title> #<N>" --body "" --delete-branch
 
 Merge commit (not squash), subject `<PR title> #<N>`, empty body, head branch deleted.
 
-## 6. Bump the Submodules
+## 7. Bump the Submodules
 
 Point each merged submodule at its `main`:
 ```bash
@@ -118,7 +133,7 @@ git -C site/docs/_external/<repo> pull
 
 Commit in eks-forge as `docs: bump submodules` and push to the eks-forge PR branch.
 
-## 7. Merge the eks-forge PR
+## 8. Merge the eks-forge PR
 
 **Wait** for the user to say the eks-forge CI passed. Check no submodule still points at a branch
 commit (each must print `ok`):
@@ -126,7 +141,7 @@ commit (each must print `ok`):
 git submodule foreach -q 'git fetch -q origin main && git merge-base --is-ancestor HEAD origin/main && echo "$name ok"'
 ```
 
-Then merge with the same command and style as step 5, and pull `main`.
+Then merge with the same command and style as step 6, and pull `main`.
 
 If the work was done in a worktree, `main` is checked out elsewhere, so skip the pull there.
 **Wait** for the user to confirm the worktree can go, then leave it with the `ExitWorktree` tool

@@ -6,6 +6,30 @@ on:
       - main
 
 jobs:
+  # The map tells the agent which pages exist, so it is generated here and never written by hand
+  documentation-map:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      # Fails when a page has no title, diataxis-tag, or description
+      - name: Generate the documentation map
+        run: python3 .github/scripts/documentation-map.py > documentation-map.csv
+
+      - name: Push the documentation map back to the PR if it changed
+        run: |
+          git add documentation-map.csv
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: update the documentation map"
+          git push
+
   # A submodule pinned to a branch commit breaks the site once that branch is deleted
   submodules-on-main:
     runs-on: ubuntu-24.04
