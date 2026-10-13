@@ -4,6 +4,7 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
+import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import 'dotenv/config';
@@ -111,6 +112,17 @@ const config = {
         result.frontMatter.sidebar_label = path.basename(manifestPath);
         // The aggregation note is an HTML comment, which MDX rejects
         result.frontMatter.mdx = {format: 'md'};
+      }
+      // Reading time of tutorials and explanations, counting the markdown files a wrapper page imports.
+      // Pages listing their subpages with DocCards get none: their time is the one of their subpages
+      if (['tutorial', 'explanation'].includes(/** @type {string} */ (result.frontMatter['diataxis-tag']))) {
+        const imported = [...result.content.matchAll(/from '(\.[^']+\.mdx?)'/g)].map(([, importPath]) =>
+          fs.readFileSync(path.resolve(path.dirname(params.filePath), importPath), 'utf8')
+        );
+        const text = [result.content, ...imported].join(' ');
+        if (!text.includes('<DocCards')) {
+          result.frontMatter['reading-time'] = Math.ceil(text.split(/\s+/).length / 200);
+        }
       }
       return result;
     },

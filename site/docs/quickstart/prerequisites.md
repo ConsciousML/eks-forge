@@ -2,6 +2,7 @@
 sidebar_position: 2
 title: Prerequisites
 diataxis-tag: tutorial
+hands-on-time: 10
 ---
 
 ## AWS Account
