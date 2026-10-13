@@ -43,12 +43,6 @@ Four tutorials walk you through the platform, in order:
 3. [Deploy Your Applications](https://eks-forge.readthedocs.io/latest/docs/applications/get-started/): ship a change to the cluster through ArgoCD
 4. [Production Deployment](https://eks-forge.readthedocs.io/latest/docs/deployment/get-started/): test on `staging`, then promote a release to `prod`
 
-## When Not to Use It
-
-- You don't have a platform or DevOps team
-- Your stack relies on other tools (e.g. FluxCD instead of ArgoCD, Datadog instead of Prometheus)
-- Several teams deploy to the same environments (see [Limitations & Improvements](https://eks-forge.readthedocs.io/latest/docs/ci-cd/limitations-and-improvements/))
-
 ## License
 
 EKS Forge is licensed under the [Apache License 2.0](LICENSE).
