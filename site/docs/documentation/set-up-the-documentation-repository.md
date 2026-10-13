@@ -7,7 +7,11 @@ description: Install the tools of the documentation repository, fetch its submod
 
 # How to Set Up the Documentation Repository
 
-This guide shows you how to set up the [EKS Forge repository](https://github.com/ConsciousML/eks-forge), or your fork of it, to work on this documentation site: its tools, its submodules, and its CI.
+This guide shows you how to set up the [EKS Forge repository](https://github.com/ConsciousML/eks-forge) to work on this documentation site: its tools, its submodules, and its CI.
+
+:::warning
+This guide works for the EKS Forge repository itself, not for a fork of it. Forks aren't supported yet. If you need them, upvote the [fork support issue](https://github.com/ConsciousML/eks-forge/issues/134).
+:::
 
 ## Install the Tools
 
@@ -37,7 +41,7 @@ git submodule update --init --recursive
 
 CI generates [`documentation-map.csv`](https://github.com/ConsciousML/eks-forge/blob/main/documentation-map.csv) from the front matter of the pages, and pushes it back to your pull request. It pushes with a deploy key, for the same reason as the catalog and app of apps CI (see [Why CI Commits Generated Docs](/docs/ci-cd/#why-ci-commits-generated-docs)).
 
-Create the key once per repository, or once in your fork. You need the [GitHub CLI](https://cli.github.com/) and admin access to the repository.
+Create the key once for the repository. You need the [GitHub CLI](https://cli.github.com/) and admin access to the repository.
 
 First, generate a key pair without a passphrase:
 ```bash

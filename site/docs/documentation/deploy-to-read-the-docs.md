@@ -7,7 +7,11 @@ description: Host the documentation site on readthedocs.io from your repository.
 
 # How to Deploy to Read the Docs
 
-This guide shows you how to host this documentation site on [Read the Docs](https://about.readthedocs.com/), at `https://<project>.readthedocs.io`, built from your repository on each push. You need it when you forked the EKS Forge repository and want your own copy of the site online.
+This guide shows you how to host this documentation site on [Read the Docs](https://about.readthedocs.com/), at `https://<project>.readthedocs.io`, built from your repository on each push.
+
+:::warning
+This guide works for the EKS Forge repository itself, not for a fork of it. Forks aren't supported yet. If you need them, upvote the [fork support issue](https://github.com/ConsciousML/eks-forge/issues/134).
+:::
 
 It assumes the site builds on your machine, as in [Build the Site](/docs/documentation/run-the-documentation-site/#build-the-site). You need admin access to your repository, which must be public: the free Read the Docs Community doesn't connect to private repositories.
 
