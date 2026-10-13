@@ -25,21 +25,21 @@ EKS Forge offers a production-grade platform that you can understand, extend, an
 
 ## What's Inside
 
-- [infrastructure as code](https://eks-forge.readthedocs.io/latest/docs/iac/) with OpenTofu and Terragrunt
-- `dev`, `staging`, and `prod` environments
+- [Infrastructure as code](https://eks-forge.readthedocs.io/latest/docs/iac/) with OpenTofu and Terragrunt
+- Multiple environments (`dev`, `staging`, and `prod`)
 - GitOps with ArgoCD
-- node autoscaling with Karpenter
-- [monitoring](https://eks-forge.readthedocs.io/latest/docs/monitoring/how-monitoring-works/) and alerting with Prometheus, Grafana, and Loki
-- [network policies](https://eks-forge.readthedocs.io/latest/docs/security/how-network-policies-work/) with Cilium
+- Node autoscaling with Karpenter
+- [Monitoring](https://eks-forge.readthedocs.io/latest/docs/monitoring/how-monitoring-works/) and alerting with Prometheus, Grafana, and Loki
+- [Network policies](https://eks-forge.readthedocs.io/latest/docs/security/how-network-policies-work/) with Cilium
 - [CI/CD](https://eks-forge.readthedocs.io/latest/docs/ci-cd/) with GitHub Actions
 
 For the full list, see [Features](https://eks-forge.readthedocs.io/latest/docs/overview/#features).
 
 ## When Not to Use It
 
-- you don't have a platform or DevOps team
-- your stack relies on other tools (e.g. FluxCD instead of ArgoCD, Datadog instead of Prometheus)
-- several teams deploy to the same environments (see [Limitations & Improvements](https://eks-forge.readthedocs.io/latest/docs/ci-cd/limitations-and-improvements/))
+- You don't have a platform or DevOps team
+- Your stack relies on other tools (e.g. FluxCD instead of ArgoCD, Datadog instead of Prometheus)
+- Several teams deploy to the same environments (see [Limitations & Improvements](https://eks-forge.readthedocs.io/latest/docs/ci-cd/limitations-and-improvements/))
 
 ## License
 
