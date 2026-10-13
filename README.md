@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  An open-source platform for building and operating EKS clusters
+  An open-source platform for building and operating Kubernetes on AWS
 </p>
 
 <p align="center">
