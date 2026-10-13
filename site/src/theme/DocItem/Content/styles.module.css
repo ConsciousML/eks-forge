@@ -1,0 +1,8 @@
+.estimatedTime {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.9rem;
+}
