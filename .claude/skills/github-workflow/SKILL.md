@@ -64,13 +64,8 @@ Implementation is not part of this skill.
 
 Skip if the change doesn't add or re-scope a site page.
 
-CI generates `documentation-map.csv` from each page's front matter and fails when a page lacks a
-`title` (or an H1), a `diataxis-tag`, or a `description`. For each such page, set them, in the
-wrapper when the page is sourced from a submodule. The `description` is one sentence saying what
-the page covers. Never edit the CSV. Check the front matter with:
-```bash
-python3 .github/scripts/documentation-map.py > /dev/null
-```
+Set `title`, `diataxis-tag`, and `description` in the front matter of each such page (the wrapper's
+when the page is sourced from a submodule).
 
 ## 4. Commit and Push
 
