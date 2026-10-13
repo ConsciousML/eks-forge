@@ -5,17 +5,22 @@ on:
     branches:
       - main
 
+# The documentation map push starts a new run on its commit, which cancels this one
+concurrency:
+  group: ci-${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   # The map tells the agent which pages exist, so it is generated here and never written by hand
   documentation-map:
     runs-on: ubuntu-24.04
-    permissions:
-      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v6.0.2
         with:
           ref: ${{ github.event.pull_request.head.ref }}
+          # A push made with GITHUB_TOKEN triggers no workflow, so the new commit would get no CI
+          ssh-key: ${{ secrets.DOCUMENTATION_MAP_DEPLOY_KEY }}
 
       # Fails when a page has no title, diataxis-tag, or description
       - name: Generate the documentation map

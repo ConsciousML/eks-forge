@@ -24,15 +24,25 @@ GENERATED = [
 ]
 
 
+def parse_value(raw):
+    """Return a front matter value, or None when reading it takes a real YAML parser."""
+    raw = raw.strip()
+    if raw[:1] in ("'", '"'):
+        closed = len(raw) > 1 and raw[-1] == raw[0]
+        return raw[1:-1] if closed and raw[0] not in raw[1:-1] and "\\" not in raw else None
+    return None if raw[:1] in (">", "|") or " #" in raw else raw
+
+
 def read_page(path):
     """Return the page's front matter fields, and its H1 as `title` when it sets none."""
     # Flat `key: value` lines only, which is all the site's front matter uses
     front, _, body = path.read_text().removeprefix("---\n").partition("\n---\n")
-    fields = dict(re.findall(r"^([\w-]+):[ \t]*(.*)$", front, re.M))
-    if not fields.get("title"):
+    lines = re.findall(r"^([\w-]+):[ \t]*(.*)$", front, re.M)
+    fields = {key: parse_value(raw) for key, raw in lines}
+    if "title" not in fields:
         h1 = re.search(r"^# (.+)$", body, re.M)
-        fields["title"] = h1.group(1) if h1 else ""
-    return {key: value.strip().strip("'\"") for key, value in fields.items()}
+        fields["title"] = h1.group(1).strip() if h1 else ""
+    return fields
 
 
 def route(path):
@@ -43,11 +53,16 @@ def route(path):
 
 def main():
     rows, errors = [], []
-    for page in sorted(p for p in DOCS.rglob("*.md*") if "_external" not in p.parts):
+    # Docusaurus doesn't route `_`-prefixed files and directories: partials and `_external`
+    for page in sorted(p for p in DOCS.rglob("*.md*")
+                       if not any(part.startswith("_") for part in p.relative_to(DOCS).parts)):
         fields = read_page(page)
         file = page.relative_to(ROOT)
         for key in ("title", "diataxis-tag", "description"):
-            if not fields.get(key):
+            if fields.get(key) is None and key in fields:
+                errors.append(f"::error file={file}::{file} has a `{key}` this script can't read: "
+                              "write it on one line, without an inline comment or an escaped quote")
+            elif not fields.get(key):
                 errors.append(f"::error file={file}::{file} has no `{key}` in its front matter")
         if fields.get("diataxis-tag") and fields["diataxis-tag"] not in TYPES:
             errors.append(f"::error file={file}::{file} has an unknown `diataxis-tag`: "
