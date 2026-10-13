@@ -36,7 +36,9 @@ def parse_value(raw):
 def read_page(path):
     """Return the page's front matter fields, and its H1 as `title` when it sets none."""
     # Flat `key: value` lines only, which is all the site's front matter uses
-    front, _, body = path.read_text().removeprefix("---\n").partition("\n---\n")
+    text = path.read_text()
+    # Without the guard, a page with no front matter gets parsed up to its first horizontal rule
+    front, _, body = text[4:].partition("\n---\n") if text.startswith("---\n") else ("", "", text)
     lines = re.findall(r"^([\w-]+):[ \t]*(.*)$", front, re.M)
     fields = {key: parse_value(raw) for key, raw in lines}
     if "title" not in fields:
@@ -64,6 +66,9 @@ def main():
                               "write it on one line, without an inline comment or an escaped quote")
             elif not fields.get(key):
                 errors.append(f"::error file={file}::{file} has no `{key}` in its front matter")
+        if "slug" in fields:
+            errors.append(f"::error file={file}::{file} sets a `slug`, which this script doesn't "
+                          "follow: its route in the map would be wrong")
         if fields.get("diataxis-tag") and fields["diataxis-tag"] not in TYPES:
             errors.append(f"::error file={file}::{file} has an unknown `diataxis-tag`: "
                           f"{fields['diataxis-tag']} (expected one of {', '.join(TYPES)})")
