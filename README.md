@@ -21,7 +21,7 @@
   <a href="http://makeapullrequest.com"><img alt="PR's Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat"></a>
 </p>
 
-EKS Forge offers a production-ready [EKS](https://aws.amazon.com/eks/) platform that you can fork and extend.
+EKS Forge offers a production-grade platform that you can understand, extend, and operate yourself. It covers the whole development lifecycle of [EKS](https://aws.amazon.com/eks/), and you can get started in about a day.
 
 ## What's Inside
 
