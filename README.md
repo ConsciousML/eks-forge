@@ -21,7 +21,7 @@
   <a href="http://makeapullrequest.com"><img alt="PR's Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat"></a>
 </p>
 
-EKS Forge offers a production-grade platform for EKS that you can understand, extend, and operate yourself. You can bootstrap it in about a day.
+EKS Forge offers a production-grade platform for EKS that you can understand, extend, and operate yourself. It's a template you fork, not a dependency you install, and you can bootstrap the platform in about a day.
 
 ## What's Inside
 
@@ -42,6 +42,10 @@ Four tutorials walk you through the platform, in order:
 2. [Monitor Your Cluster](https://eks-forge.readthedocs.io/latest/docs/monitoring/get-started/): explore its metrics, logs, network flows, and alerts
 3. [Deploy Your Applications](https://eks-forge.readthedocs.io/latest/docs/applications/get-started/): ship a change to the cluster through ArgoCD
 4. [Production Deployment](https://eks-forge.readthedocs.io/latest/docs/deployment/get-started/): test on `staging`, then promote a release to `prod`
+
+## Support
+
+Support is provided on a best-effort basis. If you have feedback, feature ideas, or wish to report a bug, please use the [issues](https://github.com/ConsciousML/eks-forge/issues) of this repository.
 
 ## License
 
