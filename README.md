@@ -38,7 +38,7 @@ For the full list, see [Features](https://eks-forge.readthedocs.io/latest/docs/o
 ## Get Started
 
 Four tutorials walk you through the platform, in order:
-1. [Quickstart](https://eks-forge.readthedocs.io/latest/docs/quickstart/): deploy an EKS cluster in the `dev` environment
+1. [Quickstart](https://eks-forge.readthedocs.io/latest/docs/quickstart/): deploy a [fully-fledged](https://eks-forge.readthedocs.io/latest/docs/overview/#cluster-features) EKS cluster in the `dev` environment
 2. [Monitor Your Cluster](https://eks-forge.readthedocs.io/latest/docs/monitoring/get-started/): explore its metrics, logs, network flows, and alerts
 3. [Deploy Your Applications](https://eks-forge.readthedocs.io/latest/docs/applications/get-started/): ship a change to the cluster through ArgoCD
 4. [Production Deployment](https://eks-forge.readthedocs.io/latest/docs/deployment/get-started/): deploy `staging`, then promote a release to `prod`
