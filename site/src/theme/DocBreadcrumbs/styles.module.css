@@ -12,7 +12,12 @@
   margin-left: auto;
   /* Matches the breadcrumbs container, so both sit on the same line */
   margin-bottom: 0.8rem;
-  color: var(--ifm-color-emphasis-700);
-  font-size: 0.9rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 999px;
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-color-emphasis-800);
+  font-size: 0.85rem;
+  font-weight: 500;
   white-space: nowrap;
 }

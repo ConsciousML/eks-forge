@@ -113,8 +113,12 @@ const config = {
         // The aggregation note is an HTML comment, which MDX rejects
         result.frontMatter.mdx = {format: 'md'};
       }
-      // Reading time of tutorials and explanations, counting the markdown files a wrapper page imports
-      if (['tutorial', 'explanation'].includes(/** @type {string} */ (result.frontMatter['diataxis-tag']))) {
+      // Reading time of tutorials and explanations, counting the markdown files a wrapper page imports.
+      // Pages listing their subpages with DocCards get none: their time is the one of their subpages
+      if (
+        ['tutorial', 'explanation'].includes(/** @type {string} */ (result.frontMatter['diataxis-tag'])) &&
+        !result.content.includes('<DocCards')
+      ) {
         const imported = [...result.content.matchAll(/from '(\.[^']+\.mdx?)'/g)].map(([, importPath]) =>
           fs.readFileSync(path.resolve(path.dirname(params.filePath), importPath), 'utf8')
         );
