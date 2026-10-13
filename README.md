@@ -88,3 +88,8 @@ Finally, delete the local copy of the key:
 ```bash
 rm /tmp/documentation-map-key /tmp/documentation-map-key.pub
 ```
+
+A pull request from a fork can't read the secret, so CI can't push to it. CI fails when the fork's map is out of date. Regenerate it with the script and commit the result, never edit the file by hand:
+```bash
+python3 .github/scripts/documentation-map.py > documentation-map.csv
+```
