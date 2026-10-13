@@ -26,9 +26,9 @@ EKS Forge offers a production-grade platform that you can understand, extend, an
 ## What's Inside
 
 - [Infrastructure as code](https://eks-forge.readthedocs.io/latest/docs/iac/) with OpenTofu and Terragrunt
-- Multiple environments (`dev`, `staging`, and `prod`)
-- GitOps with ArgoCD
-- Node autoscaling with Karpenter
+- Deploy the same stack across multiple [environments](https://eks-forge.readthedocs.io/latest/docs/iac/#environments) (`dev`, `staging`, and `prod`)
+- GitOps with ArgoCD using the [app of apps pattern](https://eks-forge.readthedocs.io/latest/docs/applications/how-the-app-of-apps-works/)
+- [Node autoscaling](https://eks-forge.readthedocs.io/latest/docs/compute/how-pods-are-scheduled/) with Karpenter
 - [Monitoring](https://eks-forge.readthedocs.io/latest/docs/monitoring/how-monitoring-works/) and alerting with Prometheus, Grafana, and Loki
 - [Network policies](https://eks-forge.readthedocs.io/latest/docs/security/how-network-policies-work/) with Cilium
 - [CI/CD](https://eks-forge.readthedocs.io/latest/docs/ci-cd/) with GitHub Actions
