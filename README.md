@@ -62,3 +62,29 @@ To build a static production bundle:
 ```bash
 npm run build
 ```
+
+### CI Setup
+
+CI generates `documentation-map.csv` from the pages' front matter and pushes it back to the pull request. It pushes with a deploy key, because a push made with the default `GITHUB_TOKEN` doesn't trigger a workflow and the new commit would get no CI.
+
+Run this once per repository (or fork). It needs the [GitHub CLI](https://cli.github.com/) and admin access to the repository.
+
+First, generate a key pair without a passphrase:
+```bash
+ssh-keygen -t ed25519 -N "" -C documentation-map -f /tmp/documentation-map-key
+```
+
+Next, add the public key as a deploy key with write access:
+```bash
+gh repo deploy-key add /tmp/documentation-map-key.pub --allow-write --title documentation-map
+```
+
+Then, store the private key as the `DOCUMENTATION_MAP_DEPLOY_KEY` secret:
+```bash
+gh secret set DOCUMENTATION_MAP_DEPLOY_KEY < /tmp/documentation-map-key
+```
+
+Finally, delete the local copy of the key:
+```bash
+rm /tmp/documentation-map-key /tmp/documentation-map-key.pub
+```
