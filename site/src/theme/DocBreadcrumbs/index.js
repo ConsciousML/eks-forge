@@ -17,9 +17,8 @@ export default function DocBreadcrumbsWrapper(props) {
       {readingTime && (
         <span className={styles.estimatedTime}>
           <Clock size={16} />
-          {waitTime
-            ? `${readingTime + waitTime} min (${readingTime} min read + ${waitTime} min wait)`
-            : `${readingTime} min read`}
+          {`${readingTime} min read`}
+          {waitTime && ` (${waitTime} min wait)`}
         </span>
       )}
     </div>
