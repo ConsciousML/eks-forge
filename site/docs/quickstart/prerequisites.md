@@ -3,6 +3,7 @@ sidebar_position: 2
 title: Prerequisites
 diataxis-tag: tutorial
 hands-on-time: 10
+description: The accounts, operating system, and domain name needed before starting the quickstart.
 ---
 
 ## AWS Account

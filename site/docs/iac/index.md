@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 diataxis-tag: explanation
+description: How Terraform modules, Terragrunt units, stacks, and pipelines build the dev, staging, and prod environments.
 ---
 
 # Infrastructure as Code

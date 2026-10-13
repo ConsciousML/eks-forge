@@ -1,5 +1,7 @@
 ---
 sidebar_position: 3
+diataxis-tag: reference
+description: The GitHub ruleset protecting main in the live repository.
 ---
 
 # Branch Protection

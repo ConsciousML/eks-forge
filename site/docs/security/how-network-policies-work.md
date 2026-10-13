@@ -2,6 +2,7 @@
 sidebar_position: 1
 title: How Network Policies Work
 diataxis-tag: explanation
+description: Why traffic is denied by default and how the Cilium policies fit together. Covers VPC CNI chaining, the two kinds of policies, why both ends need a rule, identities, the host and world entities, reaching AWS APIs, and avoiding a lockout.
 ---
 
 # How Network Policies Work

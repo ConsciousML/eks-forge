@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 diataxis-tag: how-to
+description: Fix a failing CI job on a pull request in the catalog fork.
 ---
 
 # Troubleshoot Catalog CI

@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
 diataxis-tag: how-to
+description: Fix a failing CI job on a pull request in the app of apps fork.
 ---
 
 # Troubleshoot App of Apps CI

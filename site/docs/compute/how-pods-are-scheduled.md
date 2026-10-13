@@ -2,6 +2,7 @@
 sidebar_position: 1
 title: How Pods Are Scheduled
 diataxis-tag: explanation
+description: Why the cluster runs three kinds of tainted nodes. Covers the managed node group, the critical and elastic Karpenter NodePools, and DaemonSets.
 ---
 
 # How Pods Are Scheduled

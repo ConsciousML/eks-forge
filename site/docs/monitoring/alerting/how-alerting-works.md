@@ -2,6 +2,7 @@
 sidebar_position: 1
 title: How Alerting Works
 diataxis-tag: explanation
+description: How an alert goes from a rule to a Slack message. Covers routing by component then severity, the unrouted channel, Watchdog, and environment-prefixed channels.
 ---
 
 # How Alerting Works

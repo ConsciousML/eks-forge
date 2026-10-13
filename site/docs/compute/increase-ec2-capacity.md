@@ -2,6 +2,7 @@
 sidebar_position: 2
 title: Increase EC2 Capacity
 diataxis-tag: how-to
+description: Raise the vCPU capacity available to the cluster, across the three limits that cap it.
 ---
 
 # How to Increase EC2 Capacity

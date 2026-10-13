@@ -2,6 +2,7 @@
 sidebar_position: 2
 title: How Monitoring Works
 diataxis-tag: explanation
+description: How the tools collecting metrics, logs, and network flows fit together. Covers Prometheus monitors and CRDs, per-replica storage, Grafana, Alloy, Loki on S3, Hubble, and what AWS covers for the control plane.
 ---
 
 # How Monitoring Works

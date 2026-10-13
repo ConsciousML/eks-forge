@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 diataxis-tag: explanation
+description: What EKS Forge is, why and when not to use it, how it works, and its feature list.
 ---
 
 # Overview

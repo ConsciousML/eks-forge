@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 diataxis-tag: explanation
+description: Why each repository has its own CI and only the live repository has a CD. Covers the three pipelines, the live flow, generated docs commits, the image scan, the Terratest label, how a change reaches prod, short-lived credentials, and queued runs.
 ---
 
 # CI/CD
