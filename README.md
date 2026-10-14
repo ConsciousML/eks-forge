@@ -45,48 +45,26 @@ Four tutorials walk you through the platform, in order:
 
 ## Architecture
 
-Three repositories deploy the same stack to `dev`, `staging`, and `prod`: Terragrunt provisions AWS and the cluster, and ArgoCD deploys what runs inside it. For how the pieces fit together, see [Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/).
+Terragrunt provisions AWS and the cluster, and ArgoCD deploys the tools that run inside it:
 
 ```mermaid
 ---
-title: EKS Forge architecture
+title: The cluster side
 ---
 flowchart TB
     eng(["Platform engineer"])
     users(["Users"])
     slack["Slack"]
     tailnet["Tailscale"]
+    tg["Terragrunt"]
 
-    subgraph github["GitHub"]
-        catalog["catalog<br/>modules, units, dev stack"]
-        live["live<br/>staging and prod stacks"]
-        aoa["app of apps<br/>charts and manifests"]
-        gha["GitHub Actions<br/>CI/CD"]
-    end
-
-    subgraph envs["Environments"]
-        dev["dev<br/>deployed from your machine"]
-        staging["staging<br/>created, tested, destroyed"]
-        prod["prod<br/>updated in place"]
-    end
-
-    eng -->|"pushes"| github
-    catalog -->|"tag pinned by"| live
-    live -->|"triggers"| gha
-    eng -->|"terragrunt apply"| dev
-    gha -->|"Terratest on pull request"| staging
-    gha -->|"CD on merge"| prod
-
-    subgraph env["One environment"]
-        tg["OpenTofu + Terragrunt"]
-        subgraph aws["AWS"]
-            r53["Route 53"]
-            acm["ACM"]
-            alb["ALB<br/>public and private"]
-            sm["Secrets Manager"]
-            s3["S3"]
-            ec2["EC2"]
-        end
+    subgraph aws["AWS"]
+        r53["Route 53"]
+        acm["ACM"]
+        alb["ALB<br/>public and private"]
+        sm["Secrets Manager"]
+        s3["S3"]
+        ec2["EC2"]
         subgraph eks["EKS cluster"]
             argocd["ArgoCD"]
             karpenter["Karpenter"]
@@ -103,13 +81,12 @@ flowchart TB
         end
     end
 
-    envs -.->|"each runs"| env
+    eng -->|"terragrunt apply"| tg
     tg -->|"creates"| aws
     tg -->|"installs"| argocd
     tg -->|"installs"| karpenter
     tg -->|"installs"| cilium
-    aoa -->|"synced by"| argocd
-    argocd -->|"deploys the rest"| eks
+    argocd -.->|"deploys the other tools"| eks
     karpenter -->|"launches nodes"| ec2
     lbc -->|"creates"| alb
     acm -->|"certificate"| alb
@@ -128,6 +105,39 @@ flowchart TB
     tailnet --> tsop
     tsop -->|"VPC route"| alb
 ```
+
+Three repositories deploy that same cluster to `dev`, `staging`, and `prod`:
+
+```mermaid
+---
+title: The platform side
+---
+flowchart LR
+    eng(["Platform engineer"])
+
+    subgraph github["GitHub"]
+        catalog["catalog<br/>modules, units, dev stack"]
+        live["live<br/>staging and prod stacks"]
+        aoa["app of apps<br/>charts and manifests"]
+        gha["GitHub Actions"]
+    end
+
+    subgraph envs["Environments, one cluster each"]
+        dev["dev"]
+        staging["staging<br/>created, tested, destroyed"]
+        prod["prod<br/>updated in place"]
+    end
+
+    eng -->|"pushes"| github
+    catalog -->|"tag pinned by"| live
+    live -->|"runs"| gha
+    eng -->|"Terragrunt, from the catalog"| dev
+    gha -->|"Terragrunt, on pull request"| staging
+    gha -->|"Terragrunt, on merge"| prod
+    aoa -->|"synced by ArgoCD"| envs
+```
+
+For how the pieces fit together, see [Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/).
 
 ## Support
 
