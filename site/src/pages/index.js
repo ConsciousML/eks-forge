@@ -49,6 +49,15 @@ function HomepageHeader() {
             to="/docs/quickstart">
             Get Started
           </Link>
+          <Link
+            className={clsx(
+              'button button--outline button--secondary button--lg',
+              styles.githubButton,
+            )}
+            href="https://github.com/ConsciousML/eks-forge">
+            <span className={styles.githubIcon} aria-hidden="true" />
+            GitHub
+          </Link>
         </div>
       </div>
     </header>

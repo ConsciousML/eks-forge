@@ -21,7 +21,7 @@
   <a href="http://makeapullrequest.com"><img alt="PR's Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat"></a>
 </p>
 
-EKS Forge offers a production-grade platform for EKS that you can understand, extend, and operate yourself. It's a template you fork, not a dependency you install, and you can bootstrap the platform in about a day.
+EKS Forge is a production-ready EKS platform that you can understand, extend, and operate yourself. It's a template you fork, not a dependency you install, and you can have it running in about a day.
 
 ## What's Inside
 
