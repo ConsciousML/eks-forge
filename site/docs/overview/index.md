@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 diataxis-tag: explanation
-description: What EKS Forge is, why and when not to use it, how it works, and its feature list.
+description: What EKS Forge is, why and when not to use it, a summary of how it works, and its feature list.
 ---
 
 # Overview
@@ -36,24 +36,9 @@ The CI/CD is also designed for small teams shipping a few changes a day. If seve
 Review the [Features](#features) section to assess if EKS Forge is the right fit for you.
 
 ## How Does EKS Forge Work?
-EKS Forge is composed of 3 template repositories:
-- the [catalog](https://github.com/ConsciousML/eks-forge-catalog): the Terraform modules, the Terragrunt units and stacks, and the `dev` environment
-- the [live repository](https://github.com/ConsciousML/eks-forge-live): the `staging` and `prod` environments, built from the catalog's units
-- the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps): the Helm charts and manifests ArgoCD deploys to the cluster
+EKS Forge is composed of 3 template repositories, the [catalog](https://github.com/ConsciousML/eks-forge-catalog), the [live repository](https://github.com/ConsciousML/eks-forge-live), and the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps). It is not meant to be used in-place, but rather to be forked and extended.
 
-In other words, it is not meant to be used in-place, but rather to be forked and extended.
-
-EKS Forge splits the platform into two halves that work together:
-- IaC provisions the [AWS](https://aws.amazon.com/) resources (the cluster, VPC, IAM, etc.)
-- GitOps deploys everything that runs inside the cluster ([Helm](https://helm.sh/) charts and plain manifests)
-
-Everything is wired together as pipelines, so you can deploy a [fully featured](#features) environment with only a few CLI commands.
-These pipelines are modular and can be deployed across multiple [environments](/docs/iac/#environments):
-- `dev` for developing a new feature or fix
-- `staging` to test the infrastructure before production
-- `prod` for the actual production infrastructure
-
-You can also diverge environment configurations. For example, you can use smaller (and/or spot) [EC2](https://aws.amazon.com/ec2/) instances in `dev` to cut cloud costs, while `prod` keeps larger instances for reliability.
+[IaC](/docs/iac/) provisions the [AWS](https://aws.amazon.com/) resources, and GitOps deploys everything that runs inside the cluster. Both are wired together as pipelines, which deploy the same stack to `dev`, `staging`, and `prod`, so you can deploy a [fully featured](#features) environment with only a few CLI commands. For how these pieces fit together, see [Architecture](/docs/architecture/).
 
 EKS Forge has been designed with automation in mind. Some manual bootstrap steps are inevitable: add nameservers to your DNS registrar, create a Slack bot token for alerting, and create a [Tailscale](https://tailscale.com/) account for accessing VPC internal endpoints. However, everything that can be automated is handled by reproducible pipelines.
 
