@@ -68,7 +68,7 @@ EKS Forge routes traffic with [Gateway API](https://gateway-api.sigs.k8s.io/), n
 title: Gateway API resources
 ---
 flowchart LR
-    class["GatewayClass<br/>aws-alb"]
+    gwclass["GatewayClass<br/>aws-alb"]
     lbc["AWS LBC"]
     subgraph gw["gateway namespace"]
         pub["Gateway<br/>public-alb"]
@@ -80,9 +80,9 @@ flowchart LR
     subgraph argocd["argocd namespace"]
         r2["HTTPRoute<br/>argocd-server"] --> s2["Service<br/>argocd-server"]
     end
-    lbc -->|"implements"| class
-    class --> pub
-    class --> priv
+    lbc -->|"implements"| gwclass
+    gwclass --> pub
+    gwclass --> priv
     pub -->|"one ALB, internet-facing"| r1
     priv -->|"one ALB, internal"| r2
 ```
