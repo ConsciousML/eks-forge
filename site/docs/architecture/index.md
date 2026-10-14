@@ -132,29 +132,6 @@ Most of them also need AWS resources: an IAM role, an S3 bucket, a secret, or a 
 Each part of the diagram has a page of its own:
 - **Compute**: Karpenter launches the nodes your pods run on (see [How Pods Are Scheduled](/docs/compute/how-pods-are-scheduled/)).
 - **Network security**: Cilium denies all traffic by default, and allows each flow a pod needs (see [How Network Policies Work](/docs/security/how-network-policies-work/)).
-- **Private access**: Tailscale lets developers reach the internal tools (see [Tailscale](/docs/security/tailscale/)).
+- **Ingress**: Route 53, the public and private ALBs, and ExternalDNS route a hostname to your app (see [How Ingress Works](/docs/networking/how-ingress-works/)).
+- **Private access**: Tailscale lets developers reach the internal tools (see [Tailscale](/docs/networking/tailscale/)).
 - **Observability**: Prometheus collects metrics, Alloy ships logs to Loki, Hubble shows the flows Cilium sees, and Alertmanager sends alerts to Slack (see [How Monitoring Works](/docs/monitoring/how-monitoring-works/) and [How Alerting Works](/docs/monitoring/alerting/how-alerting-works/)).
-
-### How an External Request Flows Through the Cluster
-A request to one of your apps goes through several tools of the diagram. Each one sets up a single link of the chain:
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant user as User
-    participant r53 as Route 53
-    participant alb as Public ALB
-    participant cilium as Cilium
-    participant pod as podinfo pod
-    user->>r53: Resolves podinfo's hostname
-    r53-->>user: The ALB's address, from the record ExternalDNS wrote
-    user->>alb: HTTPS request, TLS with the ACM certificate
-    alb->>cilium: Forwards it to the pod's IP, as its HTTPRoute says
-    cilium->>pod: Delivered, the pod's policy allows world on its port
-```
-
-- The AWS Load Balancer Controller creates the ALB from the public `Gateway`, with the ACM certificate the catalog issued.
-- An app's `HTTPRoute` attaches it to that `Gateway` under its hostname, and ExternalDNS writes that hostname into Route 53.
-- The ALB sends the request straight to the pod's IP. Cilium sees it come from outside the cluster, so the pod's network policy has to allow `world` on its port (see [The `world` Entity](/docs/security/how-network-policies-work/#the-world-entity)).
-
-The internal tools, like ArgoCD, Grafana, and Hubble, follow the same chain through the private `Gateway`. Its ALB is internal, and its hostnames sit in a private Route 53 zone, so neither can be reached from the internet. Developers reach them over Tailscale: the operator's connector advertises the VPC as a route of the tailnet, and split DNS resolves the private hostnames (see [Connector and Split DNS](/docs/security/tailscale/#4-connector-and-split-dns)).

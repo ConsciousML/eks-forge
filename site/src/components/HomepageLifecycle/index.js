@@ -9,6 +9,11 @@ import {
   Cpu,
   Activity,
   Shield,
+  Layers,
+  Network,
+  Wrench,
+  Library,
+  FileText,
 } from 'lucide-react';
 import styles from './styles.module.css';
 
@@ -27,6 +32,12 @@ const Groups = [
         title: 'Quickstart',
         description: <>Deploy your first fully-featured cluster in the <code>dev</code> environment</>,
         link: '/docs/quickstart',
+      },
+      {
+        icon: <Layers size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Architecture',
+        description: 'See how the repositories, pipelines, AWS resources, and in-cluster tools fit together',
+        link: '/docs/architecture',
       },
       {
         icon: <CloudUpload size={36} color="var(--ifm-color-primary-dark)" />,
@@ -63,6 +74,12 @@ const Groups = [
     title: 'Operate',
     stages: [
       {
+        icon: <Network size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Networking',
+        description: 'Expose your apps through public and private gateways, and reach the internal tools over Tailscale',
+        link: '/docs/networking/how-ingress-works',
+      },
+      {
         icon: <Shield size={36} color="var(--ifm-color-primary-dark)" />,
         title: 'Security',
         description: 'Harden the security of your cluster with Network Policies, Pod Security Standards, and more',
@@ -79,6 +96,29 @@ const Groups = [
         title: 'Monitoring & Observability',
         description: 'Explore the metrics, logs, and pod-to-pod network traffic of your cluster, and get notified on Slack before things break',
         link: '/docs/monitoring/get-started',
+      },
+    ],
+  },
+  {
+    title: 'Look Up & Fix',
+    stages: [
+      {
+        icon: <Wrench size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Troubleshooting',
+        description: 'Fix common failures in the infrastructure, ArgoCD, Tailscale, and monitoring',
+        link: '/docs/troubleshooting/iac',
+      },
+      {
+        icon: <Library size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Reference',
+        description: 'Look up the environment variables, HCL configuration, Terraform modules, Helm charts, and manifests',
+        link: '/docs/reference/environment_variable',
+      },
+      {
+        icon: <FileText size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Documentation',
+        description: 'Run this documentation site locally, and deploy your own copy to Read the Docs',
+        link: '/docs/documentation/set-up-the-documentation-repository',
       },
     ],
   },

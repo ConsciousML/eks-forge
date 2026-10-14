@@ -65,7 +65,7 @@ The tests hardcode no hostname and no password. They read each hostname from the
 The trade-off is depth. A check proves a tool answers, and for ArgoCD and Grafana that it accepts its password, not that it does its job: Prometheus can answer `Healthy` while scraping nothing.
 
 ## Why Tailscale Disconnects and Reconnects
-Every tool but podinfo has a private hostname, which only resolves through Tailscale (see [Connector and Split DNS](/docs/security/tailscale/#4-connector-and-split-dns)). Those DNS records are created during the run, so the test reconnects Tailscale and flushes the machine's DNS cache before the endpoint checks. It stays disconnected during the apply and the destroy, while the cluster's Tailscale connector isn't there.
+Every tool but podinfo has a private hostname, which only resolves through Tailscale (see [Connector and Split DNS](/docs/networking/tailscale/#4-connector-and-split-dns)). Those DNS records are created during the run, so the test reconnects Tailscale and flushes the machine's DNS cache before the endpoint checks. It stays disconnected during the apply and the destroy, while the cluster's Tailscale connector isn't there.
 
 The `prod` test applies and destroys nothing, so it only reconnects and flushes the DNS cache before its checks.
 
