@@ -76,6 +76,7 @@ flowchart TB
     eng -->|"3. tags a release"| catalog
     eng -->|"4. bumps the tag"| live
     live -->|"pins a tag of"| catalog
+    live -->|"pins a tag of"| aoa
     live -->|"5. runs"| gha
     gha -->|"6. Terragrunt, on pull request"| staging
     gha -->|"7. Terragrunt, on merge"| prod
@@ -127,6 +128,7 @@ flowchart TB
     tg -->|"installs"| argocd
     tg -->|"installs"| karpenter
     tg -->|"installs"| cilium
+    tg -->|"installs"| hubble
     argocd -.->|"deploys the other tools"| eks
     karpenter -->|"launches nodes"| ec2
     lbc -->|"creates"| alb
@@ -134,6 +136,7 @@ flowchart TB
     extdns -->|"writes records"| r53
     eso -->|"reads secrets"| sm
     eso -->|"syncs into"| k8ssecret
+    alloy -->|"collects logs"| eks
     alloy -->|"ships logs"| loki
     loki -->|"stores"| s3
     grafana -->|"queries"| prom

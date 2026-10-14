@@ -40,6 +40,7 @@ flowchart TB
     eng -->|"3. tags a release"| catalog
     eng -->|"4. bumps the tag"| live
     live -->|"pins a tag of"| catalog
+    live -->|"pins a tag of"| aoa
     live -->|"5. runs"| gha
     gha -->|"6. Terragrunt, on pull request"| staging
     gha -->|"7. Terragrunt, on merge"| prod
@@ -94,6 +95,7 @@ flowchart TB
     tg -->|"installs"| argocd
     tg -->|"installs"| karpenter
     tg -->|"installs"| cilium
+    tg -->|"installs"| hubble
     argocd -.->|"deploys the other tools"| eks
     karpenter -->|"launches nodes"| ec2
     lbc -->|"creates"| alb
@@ -101,6 +103,7 @@ flowchart TB
     extdns -->|"writes records"| r53
     eso -->|"reads secrets"| sm
     eso -->|"syncs into"| k8ssecret
+    alloy -->|"collects logs"| eks
     alloy -->|"ships logs"| loki
     loki -->|"stores"| s3
     grafana -->|"queries"| prom
@@ -119,9 +122,8 @@ flowchart TB
 
 Terragrunt runs first: it creates the AWS resources and the cluster, then installs the few components ArgoCD can't deploy itself:
 - ArgoCD, and its root Application, which points at the app of apps repository.
-- Cilium, since no pod should start before it can enforce network policies (see [Pods Cilium Doesn't Manage](/docs/security/how-network-policies-work/#pods-cilium-doesnt-manage)).
-- Karpenter, since ArgoCD's applications need its nodes to run on (see [The Managed Node Group](/docs/compute/how-pods-are-scheduled/#the-managed-node-group)).
-- The Prometheus CRDs, since ArgoCD's own chart creates a `ServiceMonitor` (see [Why the Catalog Installs the CRDs](/docs/monitoring/how-monitoring-works/#why-the-catalog-installs-the-crds)).
+- Cilium, with Hubble, so Cilium manages every pod ArgoCD deploys, and Karpenter nodes can drop their startup taint (see [Pods Cilium Doesn't Manage](/docs/security/how-network-policies-work/#pods-cilium-doesnt-manage)).
+- Karpenter, since ArgoCD itself runs on its `critical` nodes (see [Three Kinds of Nodes](/docs/compute/how-pods-are-scheduled/#three-kinds-of-nodes)).
 
 ArgoCD then deploys everything else from the app of apps repository: the AWS Load Balancer Controller, ExternalDNS, the External Secrets Operator, the monitoring stack, the Tailscale operator, and your apps.
 
@@ -131,7 +133,7 @@ Each part of the diagram has a page of its own:
 - **Compute**: Karpenter launches the nodes your pods run on (see [How Pods Are Scheduled](/docs/compute/how-pods-are-scheduled/)).
 - **Network security**: Cilium denies all traffic by default, and allows each flow a pod needs (see [How Network Policies Work](/docs/security/how-network-policies-work/)).
 - **Private access**: Tailscale lets developers reach the internal tools (see [Tailscale](/docs/security/tailscale/)).
-- **Observability**: Prometheus, Loki, and Hubble collect metrics, logs, and network flows, and Alertmanager sends alerts to Slack (see [How Monitoring Works](/docs/monitoring/how-monitoring-works/) and [How Alerting Works](/docs/monitoring/alerting/how-alerting-works/)).
+- **Observability**: Prometheus collects metrics, Alloy ships logs to Loki, Hubble shows the flows Cilium sees, and Alertmanager sends alerts to Slack (see [How Monitoring Works](/docs/monitoring/how-monitoring-works/) and [How Alerting Works](/docs/monitoring/alerting/how-alerting-works/)).
 
 ### How an External Request Flows Through the Cluster
 A request to one of your apps goes through several tools of the diagram. Each one sets up a single link of the chain:
