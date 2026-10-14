@@ -9,6 +9,8 @@ import {
   Cpu,
   Activity,
   Shield,
+  Layers,
+  Network,
 } from 'lucide-react';
 import styles from './styles.module.css';
 
@@ -27,6 +29,12 @@ const Groups = [
         title: 'Quickstart',
         description: <>Deploy your first fully-featured cluster in the <code>dev</code> environment</>,
         link: '/docs/quickstart',
+      },
+      {
+        icon: <Layers size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Architecture',
+        description: 'See how the repositories, pipelines, AWS resources, and in-cluster tools fit together',
+        link: '/docs/architecture',
       },
       {
         icon: <CloudUpload size={36} color="var(--ifm-color-primary-dark)" />,
@@ -63,6 +71,12 @@ const Groups = [
     title: 'Operate',
     stages: [
       {
+        icon: <Network size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Networking',
+        description: 'Expose your apps through public and private gateways, and reach the internal tools over Tailscale',
+        link: '/docs/networking/how-ingress-works',
+      },
+      {
         icon: <Shield size={36} color="var(--ifm-color-primary-dark)" />,
         title: 'Security',
         description: 'Harden the security of your cluster with Network Policies, Pod Security Standards, and more',
@@ -89,7 +103,7 @@ export default function HomepageLifecycle() {
     <section className={styles.lifecycle}>
       <div className="container">
         {Groups.map((group, idx) => (
-          <DocCards key={idx} title={group.title} items={group.stages} />
+          <DocCards key={idx} title={group.title} items={group.stages} columns={group.stages.length === 4 ? 2 : 3} />
         ))}
       </div>
     </section>
