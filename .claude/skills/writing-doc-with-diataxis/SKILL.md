@@ -220,3 +220,4 @@ When applying Diataxis:
 - Cite which documentation type you're applying and why
 - If reviewing docs, be specific about what type it should be and how to improve it
 - Use US English spelling throughout
+- Never hardcode values copied from config that drift when the code changes (sync wave numbers, intervals and timings, exhaustive lists of tools). Describe the relationship instead ("syncs after the AWS LBC"), give one or two examples ("like ArgoCD and Grafana"), and link to the reference page or source for the exact values. Stable identifiers like resource names and namespaces are fine.
