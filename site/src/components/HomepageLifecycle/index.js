@@ -11,6 +11,9 @@ import {
   Shield,
   Layers,
   Network,
+  Wrench,
+  Library,
+  FileText,
 } from 'lucide-react';
 import styles from './styles.module.css';
 
@@ -96,6 +99,29 @@ const Groups = [
       },
     ],
   },
+  {
+    title: 'Look Up & Fix',
+    stages: [
+      {
+        icon: <Wrench size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Troubleshooting',
+        description: 'Fix common failures in the infrastructure, ArgoCD, Tailscale, and monitoring',
+        link: '/docs/troubleshooting/iac',
+      },
+      {
+        icon: <Library size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Reference',
+        description: 'Look up the environment variables, HCL configuration, Terraform modules, Helm charts, and manifests',
+        link: '/docs/reference/environment_variable',
+      },
+      {
+        icon: <FileText size={36} color="var(--ifm-color-primary-dark)" />,
+        title: 'Documentation',
+        description: 'Run this documentation site locally, and deploy your own copy to Read the Docs',
+        link: '/docs/documentation/set-up-the-documentation-repository',
+      },
+    ],
+  },
 ];
 
 export default function HomepageLifecycle() {
@@ -103,7 +129,7 @@ export default function HomepageLifecycle() {
     <section className={styles.lifecycle}>
       <div className="container">
         {Groups.map((group, idx) => (
-          <DocCards key={idx} title={group.title} items={group.stages} columns={group.stages.length === 4 ? 2 : 3} />
+          <DocCards key={idx} title={group.title} items={group.stages} />
         ))}
       </div>
     </section>
