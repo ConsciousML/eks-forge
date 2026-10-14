@@ -50,8 +50,8 @@ function HomepageHeader() {
             Get Started
           </Link>
           <iframe
-            src="https://ghbtns.com/github-btn.html?user=ConsciousML&repo=eks-forge&type=star&count=true&size=large"
-            width="170"
+            src="https://ghbtns.com/github-btn.html?user=ConsciousML&repo=eks-forge&type=star&size=large"
+            width="80"
             height="30"
             title="GitHub"
             frameBorder="0"
