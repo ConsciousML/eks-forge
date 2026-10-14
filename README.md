@@ -43,6 +43,92 @@ Four tutorials walk you through the platform, in order:
 3. [Deploy Your Applications](https://eks-forge.readthedocs.io/latest/docs/applications/get-started/): ship a change to the cluster through ArgoCD
 4. [Production Deployment](https://eks-forge.readthedocs.io/latest/docs/deployment/get-started/): test on `staging`, then promote a release to `prod`
 
+## Architecture
+
+Three repositories deploy the same stack to `dev`, `staging`, and `prod`: Terragrunt provisions AWS and the cluster, and ArgoCD deploys what runs inside it. For how the pieces fit together, see [Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/).
+
+```mermaid
+---
+title: EKS Forge architecture
+---
+flowchart TB
+    eng(["Platform engineer"])
+    users(["Users"])
+    slack["Slack"]
+    tailnet["Tailscale"]
+
+    subgraph github["GitHub"]
+        catalog["catalog<br/>modules, units, dev stack"]
+        live["live<br/>staging and prod stacks"]
+        aoa["app of apps<br/>charts and manifests"]
+        gha["GitHub Actions<br/>CI/CD"]
+    end
+
+    subgraph envs["Environments"]
+        dev["dev<br/>deployed from your machine"]
+        staging["staging<br/>created, tested, destroyed"]
+        prod["prod<br/>updated in place"]
+    end
+
+    eng -->|"pushes"| github
+    catalog -->|"tag pinned by"| live
+    live -->|"triggers"| gha
+    eng -->|"terragrunt apply"| dev
+    gha -->|"Terratest on pull request"| staging
+    gha -->|"CD on merge"| prod
+
+    subgraph env["One environment"]
+        tg["OpenTofu + Terragrunt"]
+        subgraph aws["AWS"]
+            r53["Route 53"]
+            acm["ACM"]
+            alb["ALB<br/>public and private"]
+            sm["Secrets Manager"]
+            s3["S3"]
+            ec2["EC2"]
+        end
+        subgraph eks["EKS cluster"]
+            argocd["ArgoCD"]
+            karpenter["Karpenter"]
+            cilium["Cilium + Hubble"]
+            lbc["AWS LBC<br/>Gateway API"]
+            extdns["ExternalDNS"]
+            eso["External Secrets"]
+            tsop["Tailscale operator"]
+            prom["Prometheus<br/>Alertmanager"]
+            alloy["Alloy"]
+            loki["Loki"]
+            grafana["Grafana"]
+            app["Your apps"]
+        end
+    end
+
+    envs -.->|"each runs"| env
+    tg -->|"creates"| aws
+    tg -->|"installs"| argocd
+    tg -->|"installs"| karpenter
+    tg -->|"installs"| cilium
+    aoa -->|"synced by"| argocd
+    argocd -->|"deploys the rest"| eks
+    karpenter -->|"launches nodes"| ec2
+    lbc -->|"creates"| alb
+    acm -->|"certificate"| alb
+    extdns -->|"writes records"| r53
+    eso -->|"reads secrets"| sm
+    alloy -->|"ships logs"| loki
+    loki -->|"stores"| s3
+    prom -->|"queried by"| grafana
+    loki -->|"queried by"| grafana
+    prom -->|"alerts"| slack
+    cilium -->|"filters traffic"| app
+    users --> r53
+    r53 --> alb
+    alb --> app
+    eng -->|"VPN"| tailnet
+    tailnet --> tsop
+    tsop -->|"VPC route"| alb
+```
+
 ## Support
 
 Support is provided on a best-effort basis. If you have feedback, feature ideas, or wish to report a bug, please use the [issues](https://github.com/ConsciousML/eks-forge/issues) of this repository.
