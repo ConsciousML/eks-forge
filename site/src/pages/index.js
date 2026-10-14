@@ -49,14 +49,15 @@ function HomepageHeader() {
             to="/docs/quickstart">
             Get Started
           </Link>
-          <iframe
-            src="https://ghbtns.com/github-btn.html?user=ConsciousML&repo=eks-forge&type=star&size=large"
-            width="80"
-            height="30"
-            title="GitHub"
-            frameBorder="0"
-            scrolling="0"
-          />
+          <Link
+            className={clsx(
+              'button button--outline button--secondary button--lg',
+              styles.githubButton,
+            )}
+            href="https://github.com/ConsciousML/eks-forge">
+            <span className={styles.githubIcon} aria-hidden="true" />
+            GitHub
+          </Link>
         </div>
       </div>
     </header>
