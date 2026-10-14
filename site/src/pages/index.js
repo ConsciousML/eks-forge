@@ -49,6 +49,11 @@ function HomepageHeader() {
             to="/docs/quickstart">
             Get Started
           </Link>
+          <Link
+            className="button button--outline button--secondary button--lg"
+            href="https://github.com/ConsciousML/eks-forge">
+            GitHub
+          </Link>
         </div>
       </div>
     </header>
