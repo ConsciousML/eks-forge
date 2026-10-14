@@ -43,6 +43,118 @@ Four tutorials walk you through the platform, in order:
 3. [Deploy Your Applications](https://eks-forge.readthedocs.io/latest/docs/applications/get-started/): ship a change to the cluster through ArgoCD
 4. [Production Deployment](https://eks-forge.readthedocs.io/latest/docs/deployment/get-started/): test on `staging`, then promote a release to `prod`
 
+## Platform Architecture
+
+Three repositories deploy the same stack to `dev`, `staging`, and `prod`:
+
+```mermaid
+flowchart TB
+    eng(["Platform engineer"])
+
+    subgraph catalog["Catalog repository"]
+        devstack["dev stack"]
+        units["Terragrunt units"]
+        modules["Terraform modules"]
+    end
+    live["Live repository"]
+    gha["GitHub Actions"]
+    subgraph aoa["App of apps repository"]
+        charts["Helm charts"]
+        manifests["Manifests"]
+    end
+
+    subgraph envs["Environments, one cluster each"]
+        dev["dev"]
+        staging["staging<br/>created, tested, destroyed"]
+        prod["prod<br/>updated in place"]
+    end
+
+    eng -->|"1. terragrunt apply"| devstack
+    devstack -->|"composes"| units
+    units -->|"wrap"| modules
+    devstack -->|"2. deploys"| dev
+    eng -->|"3. tags a release"| catalog
+    eng -->|"4. bumps the tag"| live
+    live -->|"pins a tag of"| catalog
+    live -->|"pins a tag of"| aoa
+    live -->|"5. runs"| gha
+    gha -->|"6. Terragrunt, on pull request"| staging
+    gha -->|"7. Terragrunt, on merge"| prod
+    aoa -->|"ArgoCD deploys to"| envs
+```
+
+For how the repositories and pipelines fit together, see [Platform Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/#platform-architecture).
+
+## Infrastructure Architecture
+
+In each environment, Terragrunt provisions AWS and the cluster, and ArgoCD deploys the tools that run inside it:
+
+```mermaid
+flowchart TB
+    eng(["Platform engineer"])
+    users(["Users"])
+    slack["Slack"]
+    tailnet["Tailscale"]
+    tg["Terragrunt"]
+
+    subgraph aws["AWS"]
+        r53["Route 53"]
+        acm["ACM"]
+        alb["ALB<br/>public and private"]
+        sm["Secrets Manager"]
+        s3["S3"]
+        ec2["EC2"]
+        subgraph eks["EKS cluster"]
+            argocd["ArgoCD"]
+            karpenter["Karpenter"]
+            cilium["Cilium"]
+            hubble["Hubble"]
+            lbc["AWS LBC<br/>Gateway API"]
+            extdns["ExternalDNS"]
+            eso["External Secrets"]
+            k8ssecret["Kubernetes Secrets"]
+            tsop["Tailscale operator"]
+            prom["Prometheus"]
+            am["Alertmanager"]
+            alloy["Alloy"]
+            loki["Loki"]
+            grafana["Grafana"]
+            app["Your apps"]
+        end
+    end
+
+    eng -->|"terragrunt apply"| tg
+    tg -->|"creates"| aws
+    tg -->|"installs"| argocd
+    tg -->|"installs"| karpenter
+    tg -->|"installs"| cilium
+    tg -->|"installs"| hubble
+    argocd -.->|"deploys the other tools"| eks
+    karpenter -->|"launches nodes"| ec2
+    lbc -->|"creates"| alb
+    acm -->|"certificate"| alb
+    extdns -->|"writes records"| r53
+    eso -->|"reads secrets"| sm
+    eso -->|"syncs into"| k8ssecret
+    alloy -->|"collects logs"| eks
+    alloy -->|"ships logs"| loki
+    loki -->|"stores"| s3
+    grafana -->|"queries"| prom
+    grafana -->|"queries"| loki
+    prom -->|"sends alerts"| am
+    am -->|"posts"| slack
+    cilium -->|"filters traffic"| eks
+    hubble -->|"reads flows"| cilium
+    users --> r53
+    r53 --> alb
+    alb --> app
+    eng -->|"VPN"| tailnet
+    tailnet --> tsop
+    tsop -->|"VPC route"| alb
+```
+
+For how the AWS resources and the tools fit together, see [Infrastructure Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/#infrastructure-architecture).
+
 ## Support
 
 Support is provided on a best-effort basis. If you have feedback, feature ideas, or wish to report a bug, please use the [issues](https://github.com/ConsciousML/eks-forge/issues) of this repository.
