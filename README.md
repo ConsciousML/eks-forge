@@ -43,14 +43,52 @@ Four tutorials walk you through the platform, in order:
 3. [Deploy Your Applications](https://eks-forge.readthedocs.io/latest/docs/applications/get-started/): ship a change to the cluster through ArgoCD
 4. [Production Deployment](https://eks-forge.readthedocs.io/latest/docs/deployment/get-started/): test on `staging`, then promote a release to `prod`
 
-## Architecture
+## Platform Architecture
 
-Terragrunt provisions AWS and the cluster, and ArgoCD deploys the tools that run inside it:
+Three repositories deploy the same stack to `dev`, `staging`, and `prod`:
 
 ```mermaid
----
-title: The cluster side
----
+flowchart TB
+    eng(["Platform engineer"])
+
+    subgraph catalog["Catalog repository"]
+        devstack["dev stack"]
+        units["Terragrunt units"]
+        modules["Terraform modules"]
+    end
+    live["Live repository"]
+    gha["GitHub Actions"]
+    subgraph aoa["App of apps repository"]
+        charts["Helm charts"]
+        manifests["Manifests"]
+    end
+
+    subgraph envs["Environments, one cluster each"]
+        dev["dev"]
+        staging["staging<br/>created, tested, destroyed"]
+        prod["prod<br/>updated in place"]
+    end
+
+    eng -->|"1. terragrunt apply"| devstack
+    devstack -->|"composes"| units
+    units -->|"wrap"| modules
+    devstack -->|"2. deploys"| dev
+    eng -->|"3. tags a release"| catalog
+    eng -->|"4. bumps the tag"| live
+    live -->|"pins a tag of"| catalog
+    live -->|"5. runs"| gha
+    gha -->|"6. Terragrunt, on pull request"| staging
+    gha -->|"7. Terragrunt, on merge"| prod
+    aoa -->|"ArgoCD deploys to"| envs
+```
+
+For how the repositories and pipelines fit together, see [Platform Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/#platform-architecture).
+
+## Infrastructure Architecture
+
+In each environment, Terragrunt provisions AWS and the cluster, and ArgoCD deploys the tools that run inside it:
+
+```mermaid
 flowchart TB
     eng(["Platform engineer"])
     users(["Users"])
@@ -68,12 +106,15 @@ flowchart TB
         subgraph eks["EKS cluster"]
             argocd["ArgoCD"]
             karpenter["Karpenter"]
-            cilium["Cilium + Hubble"]
+            cilium["Cilium"]
+            hubble["Hubble"]
             lbc["AWS LBC<br/>Gateway API"]
             extdns["ExternalDNS"]
             eso["External Secrets"]
+            k8ssecret["Kubernetes Secrets"]
             tsop["Tailscale operator"]
-            prom["Prometheus<br/>Alertmanager"]
+            prom["Prometheus"]
+            am["Alertmanager"]
             alloy["Alloy"]
             loki["Loki"]
             grafana["Grafana"]
@@ -92,12 +133,15 @@ flowchart TB
     acm -->|"certificate"| alb
     extdns -->|"writes records"| r53
     eso -->|"reads secrets"| sm
+    eso -->|"syncs into"| k8ssecret
     alloy -->|"ships logs"| loki
     loki -->|"stores"| s3
-    prom -->|"queried by"| grafana
-    loki -->|"queried by"| grafana
-    prom -->|"alerts"| slack
-    cilium -->|"filters traffic"| app
+    grafana -->|"queries"| prom
+    grafana -->|"queries"| loki
+    prom -->|"sends alerts"| am
+    am -->|"posts"| slack
+    cilium -->|"filters traffic"| eks
+    hubble -->|"reads flows"| cilium
     users --> r53
     r53 --> alb
     alb --> app
@@ -106,38 +150,7 @@ flowchart TB
     tsop -->|"VPC route"| alb
 ```
 
-Three repositories deploy that same cluster to `dev`, `staging`, and `prod`:
-
-```mermaid
----
-title: The platform side
----
-flowchart LR
-    eng(["Platform engineer"])
-
-    subgraph github["GitHub"]
-        catalog["catalog<br/>modules, units, dev stack"]
-        live["live<br/>staging and prod stacks"]
-        aoa["app of apps<br/>charts and manifests"]
-        gha["GitHub Actions"]
-    end
-
-    subgraph envs["Environments, one cluster each"]
-        dev["dev"]
-        staging["staging<br/>created, tested, destroyed"]
-        prod["prod<br/>updated in place"]
-    end
-
-    eng -->|"pushes"| github
-    catalog -->|"tag pinned by"| live
-    live -->|"runs"| gha
-    eng -->|"Terragrunt, from the catalog"| dev
-    gha -->|"Terragrunt, on pull request"| staging
-    gha -->|"Terragrunt, on merge"| prod
-    aoa -->|"synced by ArgoCD"| envs
-```
-
-For how the pieces fit together, see [Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/).
+For how the AWS resources and the tools fit together, see [Infrastructure Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/#infrastructure-architecture).
 
 ## Support
 
