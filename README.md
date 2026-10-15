@@ -55,69 +55,7 @@ For how the repositories and pipelines fit together, see [Platform Architecture]
 
 In each environment, Terragrunt provisions AWS and the cluster, and ArgoCD deploys the tools that run inside it:
 
-```mermaid
-flowchart TB
-    eng(["Platform engineer"])
-    users(["Users"])
-    slack["Slack"]
-    tailnet["Tailscale"]
-    tg["Terragrunt"]
-
-    subgraph aws["AWS"]
-        r53["Route 53"]
-        acm["ACM"]
-        alb["ALB<br/>public and private"]
-        sm["Secrets Manager"]
-        s3["S3"]
-        ec2["EC2"]
-        subgraph eks["EKS cluster"]
-            argocd["ArgoCD"]
-            karpenter["Karpenter"]
-            cilium["Cilium"]
-            hubble["Hubble"]
-            lbc["AWS LBC<br/>Gateway API"]
-            extdns["ExternalDNS"]
-            eso["External Secrets"]
-            k8ssecret["Kubernetes Secrets"]
-            tsop["Tailscale operator"]
-            prom["Prometheus"]
-            am["Alertmanager"]
-            alloy["Alloy"]
-            loki["Loki"]
-            grafana["Grafana"]
-            app["Your apps"]
-        end
-    end
-
-    eng -->|"terragrunt apply"| tg
-    tg -->|"creates"| aws
-    tg -->|"installs"| argocd
-    tg -->|"installs"| karpenter
-    tg -->|"installs"| cilium
-    tg -->|"installs"| hubble
-    argocd -.->|"deploys the other tools"| eks
-    karpenter -->|"launches nodes"| ec2
-    lbc -->|"creates"| alb
-    acm -->|"certificate"| alb
-    extdns -->|"writes records"| r53
-    eso -->|"reads secrets"| sm
-    eso -->|"syncs into"| k8ssecret
-    alloy -->|"collects logs"| eks
-    alloy -->|"ships logs"| loki
-    loki -->|"stores"| s3
-    grafana -->|"queries"| prom
-    grafana -->|"queries"| loki
-    prom -->|"sends alerts"| am
-    am -->|"posts"| slack
-    cilium -->|"filters traffic"| eks
-    hubble -->|"reads flows"| cilium
-    users --> r53
-    r53 --> alb
-    alb --> app
-    eng -->|"VPN"| tailnet
-    tailnet --> tsop
-    tsop -->|"VPC route"| alb
-```
+![EKS Forge infrastructure architecture: Terragrunt provisions AWS and the EKS cluster, ArgoCD deploys the tools inside it, and users reach your apps through Route 53 and the ALB](site/static/img/infrastructure-architecture.png)
 
 For how the AWS resources and the tools fit together, see [Infrastructure Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/#infrastructure-architecture).
 
