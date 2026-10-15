@@ -47,41 +47,7 @@ Four tutorials walk you through the platform, in order:
 
 Three repositories deploy the same stack to `dev`, `staging`, and `prod`:
 
-```mermaid
-flowchart TB
-    eng(["Platform engineer"])
-
-    subgraph catalog["Catalog repository"]
-        devstack["dev stack"]
-        units["Terragrunt units"]
-        modules["Terraform modules"]
-    end
-    live["Live repository"]
-    gha["GitHub Actions"]
-    subgraph aoa["App of apps repository"]
-        charts["Helm charts"]
-        manifests["Manifests"]
-    end
-
-    subgraph envs["Environments, one cluster each"]
-        dev["dev"]
-        staging["staging<br/>created, tested, destroyed"]
-        prod["prod<br/>updated in place"]
-    end
-
-    eng -->|"1. terragrunt apply"| devstack
-    devstack -->|"composes"| units
-    units -->|"wrap"| modules
-    devstack -->|"2. deploys"| dev
-    eng -->|"3. tags a release"| catalog
-    eng -->|"4. bumps the tag"| live
-    live -->|"pins a tag of"| catalog
-    live -->|"pins a tag of"| aoa
-    live -->|"5. runs"| gha
-    gha -->|"6. Terragrunt, on pull request"| staging
-    gha -->|"7. Terragrunt, on merge"| prod
-    aoa -->|"ArgoCD deploys to"| envs
-```
+![EKS Forge platform architecture: the catalog, live, and app of apps repositories, GitHub Actions, and the dev, staging, and prod environments](site/static/img/platform-architecture.png)
 
 For how the repositories and pipelines fit together, see [Platform Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/#platform-architecture).
 

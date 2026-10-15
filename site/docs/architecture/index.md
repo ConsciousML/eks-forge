@@ -11,41 +11,7 @@ EKS Forge has two sides: the platform, with the repositories and pipelines that 
 
 ## Platform Architecture
 
-```mermaid
-flowchart TB
-    eng(["Platform engineer"])
-
-    subgraph catalog["Catalog repository"]
-        devstack["dev stack"]
-        units["Terragrunt units"]
-        modules["Terraform modules"]
-    end
-    live["Live repository"]
-    gha["GitHub Actions"]
-    subgraph aoa["App of apps repository"]
-        charts["Helm charts"]
-        manifests["Manifests"]
-    end
-
-    subgraph envs["Environments, one cluster each"]
-        dev["dev"]
-        staging["staging<br/>created, tested, destroyed"]
-        prod["prod<br/>updated in place"]
-    end
-
-    eng -->|"1. terragrunt apply"| devstack
-    devstack -->|"composes"| units
-    units -->|"wrap"| modules
-    devstack -->|"2. deploys"| dev
-    eng -->|"3. tags a release"| catalog
-    eng -->|"4. bumps the tag"| live
-    live -->|"pins a tag of"| catalog
-    live -->|"pins a tag of"| aoa
-    live -->|"5. runs"| gha
-    gha -->|"6. Terragrunt, on pull request"| staging
-    gha -->|"7. Terragrunt, on merge"| prod
-    aoa -->|"ArgoCD deploys to"| envs
-```
+![EKS Forge platform architecture: the catalog, live, and app of apps repositories, GitHub Actions, and the dev, staging, and prod environments](/img/platform-architecture.png)
 
 Each part of the diagram has a page of its own:
 - **Repositories**: the catalog provisions AWS, the app of apps repository holds what runs in the cluster, and the live repository pins both for `staging` and `prod` (see [Who Owns What](/docs/applications/how-the-app-of-apps-works/#who-owns-what)).
