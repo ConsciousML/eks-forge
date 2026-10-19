@@ -37,5 +37,5 @@ Each part of the diagram has a page of its own:
 - **Compute**: Karpenter launches the nodes your pods run on (see [How Pods Are Scheduled](/docs/compute/how-pods-are-scheduled/)).
 - **Network security**: Cilium denies all traffic by default, and allows each flow a pod needs (see [How Network Policies Work](/docs/security/how-network-policies-work/)).
 - **Ingress**: Route 53, the public and private ALBs, and ExternalDNS route a hostname to your app (see [How Ingress Works](/docs/networking/how-ingress-works/)).
-- **Private access**: Tailscale lets developers reach the internal tools (see [Tailscale](/docs/networking/tailscale/)).
+- **Private access**: Tailscale lets developers reach the internal tools (see [How Tailscale Works](/docs/networking/tailscale/)).
 - **Observability**: Prometheus collects metrics, Alloy ships logs to Loki, Hubble shows the flows Cilium sees, and Alertmanager sends alerts to Slack (see [How Monitoring Works](/docs/monitoring/how-monitoring-works/) and [How Alerting Works](/docs/monitoring/alerting/how-alerting-works/)).
