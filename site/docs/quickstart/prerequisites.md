@@ -21,7 +21,7 @@ ssh -T git@github.com
 You should see `Hi <your-username>! You've successfully authenticated`.
 
 ## Operating System
-A Unix-like shell is required. Make sure you're on one these operating systems:
+A Unix-like shell is required. Make sure you're on one of these operating systems:
 - Linux distros ([Ubuntu](https://ubuntu.com/download), [Debian](https://www.debian.org/distrib/), etc.)
 - [MacOS](https://www.apple.com/macos/)
 - [Windows WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
