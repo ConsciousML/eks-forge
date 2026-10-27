@@ -46,7 +46,7 @@ Find what failed in the table below, and check that its secrets are in the list:
 
 | What fails | Secrets | Bootstrap pipeline |
 |------------|---------|--------------------|
-| `webfactory/ssh-agent` | `DEPLOY_KEY_TG_LIVE`, `DEPLOY_KEY_TG_CATALOG` | `live/bootstrap/aws_gh_actions_auth` |
+| `webfactory/ssh-agent` | `DEPLOY_KEY_TG_CATALOG` | `live/bootstrap/aws_gh_actions_auth` |
 | `Configure AWS Credentials` | `AWS_ROLE_ARN`, `AWS_REGION` | `live/bootstrap/aws_gh_actions_auth` |
 | `Get Tailscale identity token` or `Connect to Tailscale` | `TS_OAUTH_CLIENT_ID`, `TS_AUDIENCE`, `TS_TAGS` | `live/bootstrap/tailscale` |
 | `Request Tailscale API token using WIF credentials` or `Create temporary Tailscale OAuth client` | `TS_OAUTH_CLIENT_ID`, `TS_AUDIENCE`, `TS_TAGS` | `live/bootstrap/tailscale` |
