@@ -36,9 +36,9 @@ The CI/CD is also designed for small teams shipping a few changes a day. If seve
 Review the [Features](#features) section to assess if EKS Forge is the right fit for you.
 
 ## How Does EKS Forge Work?
-EKS Forge is composed of 3 template repositories, the [catalog](https://github.com/ConsciousML/eks-forge-catalog), the [live repository](https://github.com/ConsciousML/eks-forge-live), and the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps). It is not meant to be used in-place, but rather to be forked and extended.
+EKS Forge is composed of 3 template repositories, the [catalog](https://github.com/ConsciousML/eks-forge-catalog), the [live repository](https://github.com/ConsciousML/eks-forge-live), and the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps) (see [Platform Architecture](/docs/architecture/#platform-architecture)). It is not meant to be used in-place, but rather to be forked and extended.
 
-[IaC](/docs/iac/) provisions the [AWS](https://aws.amazon.com/) resources, and GitOps deploys everything that runs inside the cluster. Both are wired together as pipelines, which deploy the same stack to `dev`, `staging`, and `prod`, so you can deploy a [fully featured](#features) environment with only a few CLI commands. For how these pieces fit together, see [Architecture](/docs/architecture/).
+[IaC](/docs/iac/) provisions the [AWS](https://aws.amazon.com/) resources, and GitOps deploys everything that runs inside the cluster. Both are wired together as pipelines, which deploy the same stack to `dev`, `staging`, and `prod`, so you can deploy a [fully featured](#features) environment with only a few CLI commands.
 
 EKS Forge has been designed with automation in mind. Some manual bootstrap steps are inevitable: add nameservers to your DNS registrar, create a Slack bot token for alerting, and create a [Tailscale](https://tailscale.com/) account for accessing VPC internal endpoints. However, everything that can be automated is handled by reproducible pipelines.
 
@@ -47,6 +47,8 @@ It also comes with a precise development workflow to enforce guardrails through 
 - automated infrastructure testing on `staging`
 - approval gates before deploying to `prod`
 - automated deployment to `prod` on PR merge
+
+To see how the repositories, pipelines, and cluster tools fit together, read [Architecture](/docs/architecture/).
 
 ## Features
 
@@ -77,6 +79,8 @@ To decide whether EKS Forge suits your needs, here's a list of its features and 
 - [fck-nat](https://fck-nat.dev/v1.4.0/) to remove [NAT Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) costs on `dev`
 - [VPC Endpoints](https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html) to keep AWS API traffic off the NAT gateway
 - [podinfo](https://github.com/stefanprodan/podinfo) for showcasing how to deploy and publicly expose an EKS microservice
+
+For how these tools fit together in the cluster, see [Infrastructure Architecture](/docs/architecture/#infrastructure-architecture).
 
 ### Platform Features
 

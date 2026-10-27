@@ -47,7 +47,7 @@ Four tutorials walk you through the platform, in order:
 
 Three repositories deploy the same stack to `dev`, `staging`, and `prod`:
 
-![EKS Forge platform architecture: the catalog, live, and app of apps repositories, GitHub Actions, and the dev, staging, and prod environments](site/static/img/platform-architecture.png)
+![EKS Forge platform architecture: the catalog, live, and app of apps repositories, GitHub Actions, ArgoCD deploying through GitOps, and the dev, staging, and prod environments](site/static/img/platform-architecture.png)
 
 For how the repositories and pipelines fit together, see [Platform Architecture](https://eks-forge.readthedocs.io/latest/docs/architecture/#platform-architecture).
 
