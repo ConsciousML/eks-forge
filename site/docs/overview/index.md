@@ -48,6 +48,8 @@ It also comes with a precise development workflow to enforce guardrails through 
 - approval gates before deploying to `prod`
 - automated deployment to `prod` on PR merge
 
+To see how the repositories, pipelines, and cluster tools fit together, read [Architecture](/docs/architecture/).
+
 ## Features
 
 Although EKS Forge aims to provide a starting platform that fits most teams, some design decisions are inevitable (ArgoCD or FluxCD? [Cloudflare](https://www.cloudflare.com/) or Tailscale? etc.).
