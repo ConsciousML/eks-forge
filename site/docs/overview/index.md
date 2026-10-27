@@ -36,7 +36,7 @@ The CI/CD is also designed for small teams shipping a few changes a day. If seve
 Review the [Features](#features) section to assess if EKS Forge is the right fit for you.
 
 ## How Does EKS Forge Work?
-EKS Forge is composed of 3 template repositories, the [catalog](https://github.com/ConsciousML/eks-forge-catalog), the [live repository](https://github.com/ConsciousML/eks-forge-live), and the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps). It is not meant to be used in-place, but rather to be forked and extended.
+EKS Forge is composed of 3 template repositories, the [catalog](https://github.com/ConsciousML/eks-forge-catalog), the [live repository](https://github.com/ConsciousML/eks-forge-live), and the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps). It is not meant to be used in-place, but rather to be forked and extended. See [Platform Architecture](/docs/architecture/#platform-architecture).
 
 [IaC](/docs/iac/) provisions the [AWS](https://aws.amazon.com/) resources, and GitOps deploys everything that runs inside the cluster. Both are wired together as pipelines, which deploy the same stack to `dev`, `staging`, and `prod`, so you can deploy a [fully featured](#features) environment with only a few CLI commands. For how these pieces fit together, see [Architecture](/docs/architecture/).
 
@@ -55,6 +55,8 @@ Although EKS Forge aims to provide a starting platform that fits most teams, som
 To decide whether EKS Forge suits your needs, here's a list of its features and the tools it's built around.
 
 ### Cluster Features
+
+See [Infrastructure Architecture](/docs/architecture/#infrastructure-architecture).
 
 - node autoscaling with [Karpenter](https://karpenter.sh/docs/)
 - GitOps via [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) following the [App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern-alternative)
