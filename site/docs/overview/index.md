@@ -38,7 +38,7 @@ Review the [Features](#features) section to assess if EKS Forge is the right fit
 ## How Does EKS Forge Work?
 EKS Forge is composed of 3 template repositories, the [catalog](https://github.com/ConsciousML/eks-forge-catalog), the [live repository](https://github.com/ConsciousML/eks-forge-live), and the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps) (see [Platform Architecture](/docs/architecture/#platform-architecture)). It is not meant to be used in-place, but rather to be forked and extended.
 
-[IaC](/docs/iac/) provisions the [AWS](https://aws.amazon.com/) resources, and GitOps deploys everything that runs inside the cluster. Both are wired together as pipelines, which deploy the same stack to `dev`, `staging`, and `prod`, so you can deploy a [fully featured](#features) environment with only a few CLI commands. For how these pieces fit together, see [Architecture](/docs/architecture/).
+[IaC](/docs/iac/) provisions the [AWS](https://aws.amazon.com/) resources, and GitOps deploys everything that runs inside the cluster. Both are wired together as pipelines, which deploy the same stack to `dev`, `staging`, and `prod`, so you can deploy a [fully featured](#features) environment with only a few CLI commands.
 
 EKS Forge has been designed with automation in mind. Some manual bootstrap steps are inevitable: add nameservers to your DNS registrar, create a Slack bot token for alerting, and create a [Tailscale](https://tailscale.com/) account for accessing VPC internal endpoints. However, everything that can be automated is handled by reproducible pipelines.
 
