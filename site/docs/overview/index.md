@@ -56,8 +56,6 @@ To decide whether EKS Forge suits your needs, here's a list of its features and 
 
 ### Cluster Features
 
-See [Infrastructure Architecture](/docs/architecture/#infrastructure-architecture).
-
 - node autoscaling with [Karpenter](https://karpenter.sh/docs/)
 - GitOps via [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) following the [App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern-alternative)
 - [EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) to bind IAM roles to Kubernetes service accounts
@@ -79,6 +77,8 @@ See [Infrastructure Architecture](/docs/architecture/#infrastructure-architectur
 - [fck-nat](https://fck-nat.dev/v1.4.0/) to remove [NAT Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) costs on `dev`
 - [VPC Endpoints](https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html) to keep AWS API traffic off the NAT gateway
 - [podinfo](https://github.com/stefanprodan/podinfo) for showcasing how to deploy and publicly expose an EKS microservice
+
+For how these tools fit together in the cluster, see [Infrastructure Architecture](/docs/architecture/#infrastructure-architecture).
 
 ### Platform Features
 
