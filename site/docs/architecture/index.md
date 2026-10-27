@@ -11,7 +11,7 @@ EKS Forge has two sides: the platform, with the repositories and pipelines that 
 
 ## Platform Architecture
 
-![EKS Forge platform architecture: the catalog, live, and app of apps repositories, GitHub Actions, and the dev, staging, and prod environments](/img/platform-architecture.png)
+![EKS Forge platform architecture: the catalog, live, and app of apps repositories, GitHub Actions, ArgoCD deploying through GitOps, and the dev, staging, and prod environments](/img/platform-architecture.png)
 
 Each part of the diagram has a page of its own:
 - **Repositories**: the catalog provisions AWS, the app of apps repository holds what runs in the cluster, and the live repository pins both for `staging` and `prod` (see [Who Owns What](/docs/applications/how-the-app-of-apps-works/#who-owns-what)).
