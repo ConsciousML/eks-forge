@@ -64,7 +64,7 @@ route,type,title,description,source
 /docs/quickstart/bootstrap/aws_gh_actions_auth/,tutorial,AWS GitHub Actions Authentication,Authenticate GitHub Actions with AWS so the CI of the catalog fork can run.,site/docs/_external/eks-forge-catalog/pipelines/bootstrap/aws_gh_actions_auth/README.md
 /docs/quickstart/bootstrap/aws_service_quotas/,tutorial,AWS Service Quotas,Check the EC2 vCPU quotas of the AWS account and request more if needed.,site/docs/_external/eks-forge-catalog/pipelines/bootstrap/aws_service_quotas/README.md
 /docs/quickstart/bootstrap/,tutorial,Bootstrap,"The bootstrap pipelines that configure AWS, Tailscale, Slack, and PagerDuty before the first deployment.",site/docs/_external/eks-forge-catalog/pipelines/bootstrap/README.md
-/docs/quickstart/bootstrap/pagerduty/,tutorial,PagerDuty,Set up PagerDuty to page the on-call engineer on prod alerts.,site/docs/_external/eks-forge-catalog/pipelines/bootstrap/pagerduty/README.md
+/docs/quickstart/bootstrap/pagerduty/,tutorial,PagerDuty,Set up PagerDuty to page you on prod alerts.,site/docs/_external/eks-forge-catalog/pipelines/bootstrap/pagerduty/README.md
 /docs/quickstart/bootstrap/setup_dns/,tutorial,Setup DNS,Set up the domain used to expose the cluster's apps.,site/docs/_external/eks-forge-catalog/pipelines/bootstrap/setup_dns/README.md
 /docs/quickstart/bootstrap/slack/,tutorial,Slack,Set up Slack to receive the cluster's alerts.,site/docs/_external/eks-forge-catalog/pipelines/bootstrap/slack/README.md
 /docs/quickstart/bootstrap/tailscale/,tutorial,Tailscale,Set up Tailscale to reach the cluster's private endpoints.,site/docs/_external/eks-forge-catalog/pipelines/bootstrap/tailscale/README.md
