@@ -11,7 +11,7 @@ Podinfo has two service level objectives (SLOs), one for availability and one fo
 To watch one fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
 ## Service Level Indicator (SLI)
-A service level indicator (SLI) measures how well a service does, from its users' side. Sloth writes it as a ratio: the bad events over all the events, in a time window. For podinfo's availability, that's the requests that failed with a `5xx` over every request. The SLI is then an error ratio, between `0` (nothing failed) and `1` (everything did).
+A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) measures how well a service does, from its users' side. Sloth writes it as a ratio: the bad events over all the events, in a time window. For podinfo's availability, that's the requests that failed with a `5xx` over every request. The SLI is then an error ratio, between `0` (nothing failed) and `1` (everything did).
 
 A ratio, not a count, because a count grows with traffic. Fifty failed requests are an outage at a hundred requests a minute, and noise at a hundred thousand. A ratio means the same thing at any traffic.
 
@@ -27,17 +27,17 @@ sli:
 
 Both queries leave out `/healthz`, `/readyz`, and `/metrics`. The kubelet probes and Prometheus call them all the time, and they always answer fast with a `200`. Counting them would add good events no user made, and both SLIs would look better than what users see.
 
-For more on choosing what to measure, see [Indicators](https://sre.google/sre-book/service-level-objectives/#indicators) in Google's SRE book.
+For more on choosing what to measure, see [Indicators](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) in Google's SRE book.
 
 ## Service Level Objective (SLO)
-An SLO is the target the SLI must meet over a period. Podinfo's availability SLO reads: 99% of requests return something other than a `5xx`, over 30 days. Sloth's `objective: 99` is the share of good events, so the error ratio over the period must stay at or under 1%.
+An [SLO](https://sre.google/sre-book/service-level-objectives/#objectives-g0s1tdcz) is the target the SLI must meet over a period. Podinfo's availability SLO reads: 99% of requests return something other than a `5xx`, over 30 days. Sloth's `objective: 99` is the share of good events, so the error ratio over the period must stay at or under 1%.
 
 The period is 30 days, Sloth's default, and it rolls: at any moment, it's the last 30 days. A long period smooths out a bad minute, and comes closer to how users judge a service: by how it has behaved lately, not in the last five minutes.
 
 The objective is never 100%. No service gets there: a node goes down, a deployment restarts a pod, a network hop drops a packet. Aiming for it would mean freezing every change, for a gain users can't tell apart from 99.9%. Google's SRE book makes this case in [Embracing Risk](https://sre.google/sre-book/embracing-risk/), and the SRE workbook covers picking a target in [Implementing SLOs](https://sre.google/workbook/implementing-slos/).
 
 ## Error Budget
-The error budget is what's left once the objective is met: `1 - objective`. For a 99% SLO, it's 1% of the requests over 30 days. At a million requests a month, 10,000 of them may fail without breaking the SLO.
+The [error budget](https://sre.google/sre-book/embracing-risk/#forming-your-error-budget-vJs8iDio) is what's left once the objective is met: `1 - objective`. For a 99% SLO, it's 1% of the requests over 30 days. At a million requests a month, 10,000 of them may fail without breaking the SLO.
 
 A budget turns "be reliable" into an amount you can spend. A risky release, an experiment, or an incident each spends some of it. While budget is left, the team can keep shipping. Once it's gone, reliability work comes first. The SRE workbook writes this down as an [Error Budget Policy](https://sre.google/workbook/error-budget-policy/).
 
@@ -55,7 +55,7 @@ For podinfo's 99% SLO, an hour in which 14.4% of the requests failed gives `0.14
 The alerts watch the burn rate, not the error rate, because an error rate means nothing without its SLO. A 2% error rate burns a 99% SLO at `2`: it'll last two weeks. It burns a 99.9% SLO at `20`: it'll be gone in a day and a half. The burn rate puts every SLO on the same scale, so the same thresholds fit them all.
 
 ## Multi-Window Multi-Burn-Rate Alerts
-The simplest alert fires when the burn rate goes over a threshold in one window. Whatever the window, it gets something wrong. A short window reacts fast, but pages for a minute of errors that cost almost no budget. A long window only fires on real problems, but late, and keeps firing for hours after the errors stop. The SRE workbook goes through this trade-off one attempt at a time, in [Alerting on SLOs](https://sre.google/workbook/alerting-on-slos/), and ends on the design Sloth uses: multiple windows, and multiple burn rates.
+The simplest alert fires when the burn rate goes over a threshold in one window. Whatever the window, it gets something wrong. A short window reacts fast, but pages for a minute of errors that cost almost no budget. A long window only fires on real problems, but late, and keeps firing for hours after the errors stop. The SRE workbook goes through this trade-off one attempt at a time, in [Alerting on SLOs](https://sre.google/workbook/alerting-on-slos/), and ends on the design Sloth uses: [multiple windows, and multiple burn rates](https://sre.google/workbook/alerting-on-slos/#6-multiwindow-multi-burn-rate-alerts).
 
 Multiple burn rates, because failures come at different speeds. An outage burns the budget at a high rate: a high threshold over a short window catches it within minutes. A slow leak, like a small share of requests failing for days, never reaches that threshold, yet spends the budget just the same. A low threshold over a long window catches it.
 
