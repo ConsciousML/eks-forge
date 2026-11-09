@@ -40,7 +40,7 @@ EKS Forge is composed of 3 template repositories, the [catalog](https://github.c
 
 [IaC](/docs/iac/) provisions the [AWS](https://aws.amazon.com/) resources, and GitOps deploys everything that runs inside the cluster. Both are wired together as pipelines, which deploy the same stack to `dev`, `staging`, and `prod`, so you can deploy a [fully featured](#features) environment with only a few CLI commands.
 
-EKS Forge has been designed with automation in mind. Some manual bootstrap steps are inevitable: add nameservers to your DNS registrar, create a Slack bot token for alerting, and create a [Tailscale](https://tailscale.com/) account for accessing VPC internal endpoints. However, everything that can be automated is handled by reproducible pipelines.
+EKS Forge has been designed with automation in mind. Some manual bootstrap steps are inevitable: add nameservers to your DNS registrar, create a Slack bot token for alerting, create a PagerDuty API key for paging, and create a [Tailscale](https://tailscale.com/) account for accessing VPC internal endpoints. However, everything that can be automated is handled by reproducible pipelines.
 
 It also comes with a precise development workflow to enforce guardrails through CI/CD:
 - code quality and security checks on PR in `dev`
@@ -71,7 +71,7 @@ To decide whether EKS Forge suits your needs, here's a list of its features and 
 - [Alloy](https://grafana.com/docs/alloy/latest/) to collect and ship logs to Loki
 - cluster and workload metrics aggregation with [Prometheus](https://prometheus.io/docs/introduction/overview/)
 - observability through [Grafana](https://grafana.com/docs/grafana/latest/) dashboards
-- [Alertmanager](https://prometheus.io/docs/alerting/latest/overview/) to send alerts to [Slack](https://slack.com/intl/en-gb/)
+- [Alertmanager](https://prometheus.io/docs/alerting/latest/overview/) to send alerts to [Slack](https://slack.com/intl/en-gb/), and to page the on-call engineer through [PagerDuty](https://www.pagerduty.com/) on `prod`
 - workload resource-sizing recommendations via the [VPA](https://kubernetes.io/docs/concepts/workloads/autoscaling/vertical-pod-autoscale/) recommender and [Goldilocks](https://goldilocks.docs.fairwinds.com/)
 - [Cilium](https://docs.cilium.io/en/stable/) in [CNI-chaining mode](https://docs.cilium.io/en/stable/installation/cni-chaining-aws-cni/) for [Network Policy](https://kubernetes.io/docs/concepts/services-networking/network-policies/) enforcement
 - [Hubble](https://docs.cilium.io/en/stable/observability/hubble/) for pod-to-pod network flow visibility
