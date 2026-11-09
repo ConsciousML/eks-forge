@@ -11,28 +11,16 @@ Podinfo has two service level objectives (SLOs), one for availability and one fo
 To watch one fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
 ## Service Level Indicator (SLI)
-A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) measures how well a service does, from its users' side. Sloth writes it as a ratio: the bad events over all the events, in a time window. For podinfo's availability, that's the requests that failed with a `5xx` over every request. The SLI is then an error ratio, between `0` (nothing failed) and `1` (everything did).
+A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) measures how well a service does, from its users' side. It's written as a ratio: the bad events over all the events, in a time window. For podinfo's availability, that's the requests that failed with a `5xx` over every request. The SLI is then an error ratio, between `0` (nothing failed) and `1` (everything did).
 
 A ratio, not a count, because a count grows with traffic. Fifty failed requests are an outage at a hundred requests a minute, and noise at a hundred thousand. A ratio means the same thing at any traffic.
-
-Each SLO gives Sloth the two halves of the ratio as PromQL queries, `errorQuery` and `totalQuery`, in [`manifests/podinfo/podinfo-slo.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-slo.yaml) for podinfo:
-```yaml
-sli:
-  events:
-    errorQuery: sum(rate(http_request_duration_seconds_count{namespace="podinfo", path!~"healthz|readyz|metrics", status=~"5.."}[{{.window}}]))
-    totalQuery: sum(rate(http_request_duration_seconds_count{namespace="podinfo", path!~"healthz|readyz|metrics"}[{{.window}}]))
-```
-
-`{{.window}}` isn't a fixed duration. Sloth fills it in once per window it needs, from five minutes to thirty days, so one query gives the SLI over every window the alerts look at.
-
-Both queries leave out `/healthz`, `/readyz`, and `/metrics`. The kubelet probes and Prometheus call them all the time, and they always answer fast with a `200`. Counting them would add good events no user made, and both SLIs would look better than what users see.
 
 For more on choosing what to measure, see [Indicators](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) in Google's SRE book.
 
 ## Service Level Objective (SLO)
-An [SLO](https://sre.google/sre-book/service-level-objectives/#objectives-g0s1tdcz) is the target the SLI must meet over a period. Podinfo's availability SLO reads: 99% of requests return something other than a `5xx`, over 30 days. Sloth's `objective: 99` is the share of good events, so the error ratio over the period must stay at or under 1%.
+An [SLO](https://sre.google/sre-book/service-level-objectives/#objectives-g0s1tdcz) is the target the SLI must meet over a period. Podinfo's availability SLO reads: 99% of requests return something other than a `5xx`, over 30 days. The objective is the share of good events, so the error ratio over the period must stay at or under 1%.
 
-The period is 30 days, Sloth's default, and it rolls: at any moment, it's the last 30 days. A long period smooths out a bad minute, and comes closer to how users judge a service: by how it has behaved lately, not in the last five minutes.
+Podinfo's period is 30 days, and it rolls: at any moment, it's the last 30 days. A long period smooths out a bad minute, and comes closer to how users judge a service: by how it has behaved lately, not in the last five minutes.
 
 The objective is never 100%. No service gets there: a node goes down, a deployment restarts a pod, a network hop drops a packet. Aiming for it would mean freezing every change, for a gain users can't tell apart from 99.9%. Google's SRE book makes this case in [Embracing Risk](https://sre.google/sre-book/embracing-risk/), and the SRE workbook covers picking a target in [Implementing SLOs](https://sre.google/workbook/implementing-slos/).
 
@@ -93,10 +81,22 @@ A ticket carries `severity: warning`. It fires on the two slow conditions, at a 
 
 While a page fires, its ticket is muted. Both alerts of an SLO share the same `alertname`, and the [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) that `kube-prometheus-stack` ships by default mute a `warning` while a `critical` with the same `alertname` fires. The ticket would only repeat what the page already said.
 
-## How Sloth Generates the Rules
+## Sloth
 Written by hand, each SLO would take a recording rule per window to compute its SLI, and two alerts that combine eight of them against thresholds derived from the objective. A typo in one window breaks an alert without a sign. [Sloth](https://sloth.dev/) generates all of them from a short spec, the same way for every SLO.
 
-The spec is a `PrometheusServiceLevel`, a custom resource. The Sloth controller watches them, and writes a [`PrometheusRule`](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PrometheusRule) next to each one, in the same namespace. Prometheus loads it like any other rule.
+The spec is a `PrometheusServiceLevel`, a custom resource. Each SLO in it gives the two halves of the SLI as PromQL queries, `errorQuery` and `totalQuery`, and the objective as the share of good events. For podinfo's availability, in [`manifests/podinfo/podinfo-slo.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-slo.yaml):
+```yaml
+- name: requests-availability
+  objective: 99
+  sli:
+    events:
+      errorQuery: sum(rate(http_request_duration_seconds_count{namespace="podinfo", path!~"healthz|readyz|metrics", status=~"5.."}[{{.window}}]))
+      totalQuery: sum(rate(http_request_duration_seconds_count{namespace="podinfo", path!~"healthz|readyz|metrics"}[{{.window}}]))
+```
+
+`{{.window}}` isn't a fixed duration. Sloth fills it in once per window it needs, from five minutes to thirty days, so one query gives the SLI over every window the alerts look at. The period isn't in the spec either: it's Sloth's default of 30 days.
+
+The Sloth controller watches the `PrometheusServiceLevel`s, and writes a [`PrometheusRule`](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PrometheusRule) next to each one, in the same namespace. Prometheus loads it like any other rule.
 
 ```mermaid
 flowchart LR
@@ -121,6 +121,8 @@ Every SLO labels its alerts `component: slo`, whatever app it's about. SLO alert
 Podinfo has two SLOs, both at 99% over 30 days:
 - **`requests-availability`**: requests that don't fail with a `5xx`. Its alert is `PodinfoAvailabilityBudgetBurn`.
 - **`requests-latency`**: requests that complete in 100ms or less. Its alert is `PodinfoLatencyBudgetBurn`.
+
+Both SLIs leave out `/healthz`, `/readyz`, and `/metrics`. The kubelet probes and Prometheus call them all the time, and they always answer fast with a `200`. Counting them would add good events no user made, and both SLIs would look better than what users see.
 
 The latency SLI counts slow requests by subtraction: all requests, minus those in the `le="0.1"` bucket of the `http_request_duration_seconds` histogram. A Prometheus histogram only counts requests under each of its bucket boundaries, so the threshold has to be one of them. Moving it from 100ms means picking another boundary podinfo already exposes, not any duration.
 
