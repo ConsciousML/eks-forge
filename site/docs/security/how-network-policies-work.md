@@ -110,7 +110,9 @@ EKS Forge closes this gap in two places:
 - Pods created with the cluster, like CoreDNS and metrics-server, start before Cilium exists. The [`cep_restart` unit](https://github.com/ConsciousML/eks-forge-catalog/tree/main/units/eks/addons/cilium/cep_restart) restarts every workload with such a pod right after Cilium is installed, and again after each Cilium upgrade.
 
 ## Reaching AWS APIs
-A pod calling an AWS API, like ExternalDNS calling Route 53, isn't talking to a pod. The only entity that fits is `world`, which would also open the whole internet on port 443, and rules on DNS names aren't available. Its policy needs IPs, so the catalog gives each [interface VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html) a fixed IP in every private subnet, and passes those IPs to the app's chart as `vpcEndpointCidrs`. The policy then allows only those IPs, on port 443.
+A pod calling an AWS API, like ExternalDNS calling Route 53, isn't talking to a pod. The only entity that fits is `world`, which would also open the whole internet on port 443, and rules on DNS names aren't available. Its policy needs IPs, so the catalog gives each [interface VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html) a fixed IP in each private subnet it uses, and passes those IPs to the app's chart as `vpcEndpointCidrs`. The policy then allows only those IPs, on port 443.
+
+The number of those subnets is set per stack by `endpoint_az_count` (every private subnet when unset): `dev` uses 1 and `staging` and `prod` use 2. The endpoints and the policies read the same list of IPs, so an environment with fewer subnets needs no network policy of its own.
 
 ```mermaid
 ---
