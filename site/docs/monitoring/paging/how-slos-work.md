@@ -10,7 +10,7 @@ description: How podinfo's SLOs turn failed requests into page and ticket alerts
 Podinfo has two service level objectives (SLOs), one for availability and one for latency. [Sloth](https://sloth.dev/) turns each one into two alerts: a page, for when someone must act now, and a ticket, for when it can wait. This page explains the model behind them, and the maths that decides when each one fires.
 To watch one fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
-## Service Level Indicator: A Ratio of Bad Events
+## Service Level Indicator
 A service level indicator (SLI) measures how well a service does, from its users' side. Sloth writes it as a ratio: the bad events over all the events, in a time window. For podinfo's availability, that's the requests that failed with a `5xx` over every request. The SLI is then an error ratio, between `0` (nothing failed) and `1` (everything did).
 
 A ratio, not a count, because a count grows with traffic. Fifty failed requests are an outage at a hundred requests a minute, and noise at a hundred thousand. A ratio means the same thing at any traffic.
@@ -29,14 +29,14 @@ Both queries leave out `/healthz`, `/readyz`, and `/metrics`. The kubelet probes
 
 For more on choosing what to measure, see [Indicators](https://sre.google/sre-book/service-level-objectives/#indicators) in Google's SRE book.
 
-## Service Level Objective: A Threshold on the SLI
+## Service Level Objective
 An SLO is the target the SLI must meet over a period. Podinfo's availability SLO reads: 99% of requests return something other than a `5xx`, over 30 days. Sloth's `objective: 99` is the share of good events, so the error ratio over the period must stay at or under 1%.
 
 The period is 30 days, Sloth's default, and it rolls: at any moment, it's the last 30 days. A long period smooths out a bad minute, and comes closer to how users judge a service: by how it has behaved lately, not in the last five minutes.
 
 The objective is never 100%. No service gets there: a node goes down, a deployment restarts a pod, a network hop drops a packet. Aiming for it would mean freezing every change, for a gain users can't tell apart from 99.9%. Google's SRE book makes this case in [Embracing Risk](https://sre.google/sre-book/embracing-risk/), and the SRE workbook covers picking a target in [Implementing SLOs](https://sre.google/workbook/implementing-slos/).
 
-## Error Budget: What the SLO Lets Fail
+## Error Budget
 The error budget is what's left once the objective is met: `1 - objective`. For a 99% SLO, it's 1% of the requests over 30 days. At a million requests a month, 10,000 of them may fail without breaking the SLO.
 
 A budget turns "be reliable" into an amount you can spend. A risky release, an experiment, or an incident each spends some of it. While budget is left, the team can keep shipping. Once it's gone, reliability work comes first. The SRE workbook writes this down as an [Error Budget Policy](https://sre.google/workbook/error-budget-policy/).
