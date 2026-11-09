@@ -38,3 +38,12 @@ You'll need a [Tailscale](https://tailscale.com/) account to reach private devel
 
 ## Slack Workspace
 You'll need a Slack Workspace to receive [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) notifications about on-going issues in your cluster. If you don't have one, follow Slack's [getting started guide](https://slack.com/intl/en-gb/help/articles/217626298-Getting-started-for-workspace-creators).
+
+## PagerDuty Account
+You'll need a [PagerDuty](https://www.pagerduty.com/) account to page the on-call engineer when a `prod` alert needs action right away. If you don't have one, [sign up](https://www.pagerduty.com/sign-up/).
+
+:::warning
+The free trial rejects some personal email domains, such as `gmail.com`, `yahoo.com`, and `icloud.com`. Sign up with a work email or another provider.
+
+You also choose the account's service region (USA or EU) at signup, and you can't change it later.
+:::

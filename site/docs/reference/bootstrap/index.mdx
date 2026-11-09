@@ -6,7 +6,7 @@ description: Index of the bootstrap pipeline reference pages.
 ---
 
 import DocCards from '@site/src/components/DocCards';
-import {DollarSign, TrendingUp, GitBranch, KeyRound, Lock, Gauge, Globe, MessageSquare, Network, ShieldCheck, Vault} from 'lucide-react';
+import {DollarSign, TrendingUp, GitBranch, KeyRound, Lock, Gauge, Globe, MessageSquare, Network, ShieldCheck, Siren, Vault} from 'lucide-react';
 
 # Bootstrap Pipelines Reference
 
@@ -54,6 +54,18 @@ Inputs and outputs of each [bootstrap pipeline](/docs/quickstart/bootstrap/):
     title: 'Slack Channels',
     description: 'Alert channels prefixed with the environment name',
     link: '/docs/reference/bootstrap/slack_channels',
+  },
+  {
+    icon: <Siren size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'PagerDuty Service',
+    description: 'PagerDuty service per environment, with its integration key in Secrets Manager',
+    link: '/docs/reference/bootstrap/pagerduty_service',
+  },
+  {
+    icon: <Lock size={36} color="var(--ifm-color-primary-dark)" />,
+    title: 'PagerDuty GitHub Secrets',
+    description: 'PAGERDUTY_SERVICE_REGION stored as a GitHub Actions secret',
+    link: '/docs/reference/bootstrap/pagerduty_github_secrets',
   },
   {
     icon: <Network size={36} color="var(--ifm-color-primary-dark)" />,

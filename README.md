@@ -29,7 +29,7 @@ EKS Forge is a production-ready EKS platform that you can understand, extend, an
 - Deploy the same stack across multiple IaC [environments](https://eks-forge.readthedocs.io/latest/docs/iac/#environments) (`dev`, `staging`, and `prod`)
 - GitOps with ArgoCD using the [App of Apps pattern](https://eks-forge.readthedocs.io/latest/docs/applications/how-the-app-of-apps-works/)
 - [Node autoscaling](https://eks-forge.readthedocs.io/latest/docs/compute/how-pods-are-scheduled/) with Karpenter
-- [Monitoring](https://eks-forge.readthedocs.io/latest/docs/monitoring/how-monitoring-works/) and alerting with Prometheus, Grafana, and Loki
+- [Monitoring](https://eks-forge.readthedocs.io/latest/docs/monitoring/how-monitoring-works/) and alerting with Prometheus, Grafana, and Loki, with on-call paging through PagerDuty
 - [Network policies](https://eks-forge.readthedocs.io/latest/docs/security/how-network-policies-work/) with Cilium
 - [CI/CD](https://eks-forge.readthedocs.io/latest/docs/ci-cd/) with GitHub Actions
 
