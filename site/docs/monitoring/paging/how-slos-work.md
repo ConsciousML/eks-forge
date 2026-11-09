@@ -10,7 +10,7 @@ description: How podinfo's SLOs turn failed requests into page and ticket alerts
 Podinfo has two service level objectives (SLOs), one for availability and one for latency. [Sloth](https://sloth.dev/) turns each one into two alerts: a page, for when someone must act now, and a ticket, for when it can wait. This page explains the model behind them, and the maths that decides when each one fires.
 To watch one fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
-## Service Level Indicator
+## Service Level Indicator (SLI)
 A service level indicator (SLI) measures how well a service does, from its users' side. Sloth writes it as a ratio: the bad events over all the events, in a time window. For podinfo's availability, that's the requests that failed with a `5xx` over every request. The SLI is then an error ratio, between `0` (nothing failed) and `1` (everything did).
 
 A ratio, not a count, because a count grows with traffic. Fifty failed requests are an outage at a hundred requests a minute, and noise at a hundred thousand. A ratio means the same thing at any traffic.
@@ -29,7 +29,7 @@ Both queries leave out `/healthz`, `/readyz`, and `/metrics`. The kubelet probes
 
 For more on choosing what to measure, see [Indicators](https://sre.google/sre-book/service-level-objectives/#indicators) in Google's SRE book.
 
-## Service Level Objective
+## Service Level Objective (SLO)
 An SLO is the target the SLI must meet over a period. Podinfo's availability SLO reads: 99% of requests return something other than a `5xx`, over 30 days. Sloth's `objective: 99` is the share of good events, so the error ratio over the period must stay at or under 1%.
 
 The period is 30 days, Sloth's default, and it rolls: at any moment, it's the last 30 days. A long period smooths out a bad minute, and comes closer to how users judge a service: by how it has behaved lately, not in the last five minutes.
