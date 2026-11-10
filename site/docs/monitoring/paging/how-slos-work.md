@@ -7,7 +7,7 @@ description: How podinfo's SLOs turn failed requests into page and ticket alerts
 
 # How SLOs Work
 
-EKS Forge alerts on podinfo's service level objectives (SLOs) through [Sloth](https://sloth.dev/), which turns each SLO into a page alert and a ticket alert. This page explains the concepts behind them, from the SLI to the burn rate, and how Sloth applies them.
+EKS Forge alerts on service level objectives (SLOs) through [Sloth](https://sloth.dev/), which turns each SLO into a page alert and a ticket alert. Its only SLOs are those of [podinfo](https://github.com/stefanprodan/podinfo), the sample app it deploys. They show the pattern to follow when you add SLOs for your own app. This page explains the concepts behind them, from the SLI to the burn rate, and how Sloth applies them.
 To see a page alert fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
 ## Pages and Tickets
@@ -128,7 +128,7 @@ The trade-off is coverage. The SLIs come from podinfo's own metrics, so they onl
 
 The latency SLI counts slow requests as all requests minus those in the `le="0.1"` bucket of the `http_request_duration_seconds` histogram. A Prometheus histogram only counts requests at or below each of its bucket boundaries, so the latency threshold must be one of them. Changing it from 100ms means picking another boundary that podinfo exposes.
 
-Podinfo is a sample app, so its SLOs are examples. A fork writes its own SLOs, next to its apps' manifests. For podinfo's files, see the [`podinfo` Manifests](/docs/reference/manifests/podinfo/) reference.
+To add SLOs for your own app, follow the same pattern: write a `PrometheusServiceLevel` with an SLI that fits it, next to its manifests. For podinfo's files, see the [`podinfo` Manifests](/docs/reference/manifests/podinfo/) reference.
 
 ## The SLO Dashboards
 Grafana's **SLOs** folder holds two community dashboards for Sloth. [High level Sloth SLOs](https://grafana.com/grafana/dashboards/14643-high-level-sloth-slos/) gives an overview of every SLO. [SLO / Detail](https://grafana.com/grafana/dashboards/14348-slo-detail/) shows one SLO at a time, with its SLI, its burn rate, and its remaining error budget.
