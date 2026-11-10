@@ -1,6 +1,6 @@
 ---
 name: drafting-doc-page
-description: Workflow for drafting a single EKS Forge doc page with the user, from design discussion to outline to writing it one bullet per edit. Use when asked to write, draft, or fill in a doc page on the site, including pages sourced from sibling repos under site/docs/_external/.
+description: Workflow for drafting a single EKS Forge doc page with the user, from design discussion to outline to writing it one bullet per edit, then reviewing it against the reference pages. Use when asked to write, draft, or fill in a doc page on the site, including pages sourced from sibling repos under site/docs/_external/.
 ---
 
 # Drafting a Doc Page
@@ -26,6 +26,24 @@ Write pages with the user, not for them. The user reviews every change through e
 - If the page is sourced from a sibling repo, create its wrapper under `site/docs/` first,
   so the user can watch each edit live on the dev server.
 - Make one Edit per outline bullet, in order.
+- Write only what the bullet says. Don't add trade-offs or discussions the outline doesn't have.
+- Take definitions and claims from the code or a cited reference, not your own framing. When a
+  reference defines a term, follow its wording.
 - An accepted edit means continue: go straight to the next bullet without commenting.
 - A rejected edit comes with feedback: apply it, then resume.
 - Stop to talk only for a meaningful design decision.
+
+## 5. Review against the references
+Once every bullet is written, and before committing:
+- Re-read the tagged examples of the page's type, starting with the siblings in the same category.
+- Compare the page to them, section by section:
+  - Sentence shape: subject and verb first, no fragments, no sentence opening on a bare noun
+    phrase ("A ratio, not a count, ...").
+  - Recurring markers: "This page explains ...", "The trade-off is ...", "That's why ...",
+    "(see [link])".
+  - Vocabulary: one term per concept across the page.
+  - Intro, headings, and link style.
+- Check that every claim traces to the code or to a cited reference. Quote the reference's
+  wording, or cut the claim.
+- Report the findings to the user as `section: issue, fix`, then apply the accepted ones, one
+  Edit per finding.
