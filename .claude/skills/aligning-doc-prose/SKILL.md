@@ -9,6 +9,4 @@ Your first pass is never aligned, even if you wrote it in the references' style.
 every page you wrote or edited, before any build or commit:
 - Read the closest tagged examples again now, starting with the siblings in the same category.
 - Go through the page bullet by bullet, in order, and align each one with its closest reference
-  passage, with one Edit per bullet. Keep its content.
-- Leaving a bullet as is is the exception. Name the reference section each one you leave already
-  matches, in the end-of-pass summary.
+  passage, with one Edit per bullet. Keep its content. Every bullet gets an Edit.
