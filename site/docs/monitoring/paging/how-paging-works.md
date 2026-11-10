@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 title: How Paging Works
 diataxis-tag: explanation
 description: Why only SLO page alerts page, and how they reach PagerDuty. Covers opt-in paging per environment, the routing key from the bootstrap to Alertmanager, the service region, and incidents that open and close themselves.
