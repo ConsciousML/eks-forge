@@ -57,7 +57,7 @@ Your `dev` cluster keeps costing around $5 per day in `us-east-1` while it runs.
   {
     icon: <Siren size={36} color="var(--ifm-color-primary-dark)" />,
     title: '7. Paging',
-    description: 'Get paged in PagerDuty when podinfo fails',
+    description: 'Get paged in PagerDuty',
     link: '/docs/monitoring/get-started/paging',
   },
 ]} />
