@@ -28,10 +28,6 @@ For how to pick what to measure, see [Indicators in Practice](https://sre.google
 ## Service Level Objective (SLO)
 An [SLO](https://sre.google/sre-book/service-level-objectives/#objectives-g0s1tdcz) is a target value for an SLI, measured over a time window. Podinfo's availability SLO is 99%: at least 99% of its requests must succeed over 30 days, so its SLI must stay at or below 1%.
 
-The window is either rolling, like the last 30 days, or aligned on the calendar, like a month. Podinfo's SLOs use a 30-day rolling window. The SRE workbook prefers rolling windows, because they match what users experience: an outage on the last day of a month still counts on the first day of the next (see [Choosing an Appropriate Time Window](https://sre.google/workbook/implementing-slos/#choosing-an-appropriate-time-window)).
-
-The trade-off is weekends. A 30-day window holds four or five of them, so the SLI can shift when weekend traffic differs from weekday traffic. The workbook recommends a whole number of weeks for that reason, like four.
-
 The objective is never 100%. Past a point, users can't tell a more reliable service from a less reliable one, while each extra nine costs more and slows down changes (see [Embracing Risk](https://sre.google/sre-book/embracing-risk/)). For how to pick a target, see [Implementing SLOs](https://sre.google/workbook/implementing-slos/).
 
 ## Error Budget
