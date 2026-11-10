@@ -13,8 +13,6 @@ To see a page alert fire, follow [Get Your First Page](/docs/monitoring/paging/g
 ## Pages and Tickets
 A [page](https://sre.google/sre-book/monitoring-distributed-systems/#alert) is an alert that notifies the person [on call](https://sre.google/sre-book/being-on-call/) right away, by phone or push notification, at any hour. It's for a problem that needs someone now. A ticket is an alert that waits for someone to pick it up during working hours.
 
-Each SLO has one page alert, with `severity: critical`, and one ticket alert, with `severity: warning`. While the page alert fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
-
 ## Service Level Indicator (SLI)
 A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) measures one aspect of the service that is provided, like the share of requests that succeed or how fast they complete. The SRE workbook recommends writing it as the ratio of good events over total events. SLO alerts use its complement, the error ratio:
 
@@ -78,6 +76,8 @@ Sloth uses the four conditions the SRE workbook recommends for a 30-day SLO (see
 | Ticket | 1 | 3 days | 6 hours | 10% |
 
 Each alert fires when either of its two conditions is true. These values are Sloth's defaults, listed in the [`sloth` Helm Chart](/docs/reference/helm_charts/monitoring/sloth/) reference.
+
+Each SLO has one page alert, with `severity: critical`, and one ticket alert, with `severity: warning`. While the page alert fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
 
 ## Sloth
 An SLO alert needs a recording rule for the SLI over each window, and alert rules that compare eight of them to thresholds computed from the objective. Writing them by hand for each SLO is repetitive and error-prone. [Sloth](https://sloth.dev/) generates them from a short spec, the same way for every SLO.
