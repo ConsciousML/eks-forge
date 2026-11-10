@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 title: How SLO Alerting Works
 diataxis-tag: explanation
 description: How podinfo's SLOs turn failed requests into page and ticket alerts. Covers SLIs, SLOs, error budgets, burn rates, multi-window multi-burn-rate alerts, page and ticket severities, Sloth, and the SLO dashboards.
@@ -11,7 +11,7 @@ EKS Forge alerts on service level objectives (SLOs) through [Sloth](https://slot
 To see a page alert fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
 ## Pages and Tickets
-A [page](https://sre.google/sre-book/monitoring-distributed-systems/#alert) is an alert that notifies the person [on call](https://sre.google/sre-book/being-on-call/) right away, at any hour. It's for a problem that needs someone now. A ticket is an alert that waits for someone to pick it up during working hours.
+A [page](https://sre.google/sre-book/monitoring-distributed-systems/#alert) is an alert that notifies the person [on call](https://sre.google/sre-book/being-on-call/) right away, at any hour. It's for a problem that needs someone immediately. A ticket is an alert that waits for someone to pick it up during working hours.
 
 ## Service Level Indicator (SLI)
 A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) measures one aspect of the service that is provided, like the share of requests that succeed or how fast they complete. The SRE workbook recommends writing it as the ratio of good events over total events. SLO alerts use its complement, the error ratio:
