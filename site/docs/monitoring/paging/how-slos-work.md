@@ -117,18 +117,8 @@ Each app ships its `PrometheusServiceLevel` with its own manifests, like podinfo
 
 Every SLO labels its alerts `component: slo`, whatever app it covers. An SLO alert reports a symptom users notice, not the component that caused it, so SLO alerts have routes of their own (see [Routing by Component, Then Severity](/docs/monitoring/alerting/how-alerting-works/#routing-by-component-then-severity)).
 
-## Choosing the SLIs
-Podinfo's SLOs show the choices to make when you write SLOs for your own app. They're set in [`manifests/podinfo/podinfo-slo.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-slo.yaml), both at 99% over 30 days.
-
-The first choice is what to measure. Start with what users notice: for a service that answers requests, that's whether a request succeeds and how fast it completes. The SRE workbook names availability and latency as the most common SLOs (see [SLIs for Different Types of Services](https://sre.google/workbook/implementing-slos/#slis-for-different-types-of-services)). Podinfo has one of each. `requests-availability` counts the requests that fail with a `5xx`, and `requests-latency` counts the requests that take more than 100ms.
-
-The second choice is which requests to count. Only the requests users make belong in an SLI. Podinfo's queries exclude `/healthz`, `/readyz`, and `/metrics`, which the kubelet and Prometheus call constantly, and which always answer fast with a `200`. Counting them would add good events no user made, and make both SLIs look better than they are.
-
-The third choice is where to measure, and it comes with a trade-off: an SLI built from an app's own metrics only counts the requests that reach the app. A podinfo request that fails earlier, on DNS, on the certificate, or with a `502` from the load balancer, isn't counted. The workbook calls this the coverage of an SLI (see [Moving from SLI Specification to SLI Implementation](https://sre.google/workbook/implementing-slos/#moving-from-sli-specification-to-sli-implementation)). The [blackbox exporter](https://github.com/prometheus/blackbox_exporter) covers part of that gap. It probes podinfo's public hostname through the same DNS, certificate, and load balancer as users, and fires an `uptime` alert when the probe fails (see [Routing by Component, Then Severity](/docs/monitoring/alerting/how-alerting-works/#routing-by-component-then-severity)). Its probes don't count toward the SLOs, since they're synthetic requests, not users'.
-
-The last choice is the latency threshold, and the app's metrics limit it. A Prometheus histogram only counts requests at or below each of its bucket boundaries, so the threshold must be one of them. Podinfo's latency SLI counts slow requests as all requests minus those in the `le="0.1"` bucket of `http_request_duration_seconds`, which sets the threshold at 100ms. For your own app, pick the threshold among the buckets it exposes.
-
-For podinfo's other files, see the [`podinfo` Manifests](/docs/reference/manifests/podinfo/) reference.
+## Podinfo's SLOs
+Podinfo's two SLOs, one for availability and one for latency, are an example pattern for a service that answers requests. They're set in [`manifests/podinfo/podinfo-slo.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-slo.yaml), and the [`podinfo` Manifests](/docs/reference/manifests/podinfo/) reference lists the other files. To choose the SLIs of your own app, see [What to Measure Using SLIs](https://sre.google/workbook/implementing-slos/#what-to-measure-using-slis) in the SRE workbook.
 
 ## The SLO Dashboards
 Grafana's **SLOs** folder holds two community dashboards for Sloth. [High level Sloth SLOs](https://grafana.com/grafana/dashboards/14643-high-level-sloth-slos/) gives an overview of every SLO. [SLO / Detail](https://grafana.com/grafana/dashboards/14348-slo-detail/) shows one SLO at a time, with its SLI, its burn rate, and its remaining error budget.
