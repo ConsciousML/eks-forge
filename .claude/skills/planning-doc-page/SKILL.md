@@ -25,6 +25,12 @@ Follow steps 1 to 3 of the `drafting-doc-page` skill: gather context, settle the
 with the user, then write the outline as the page's headings with one bullet per paragraph, idea,
 or code block.
 
+Then plan steps 4 and 5 of `drafting-doc-page` as the implementation that part 1 points to:
+- Step 4: the files to create (the wrapper first, if the source is in a sibling repo), and the
+  order of the edits, one per outline bullet, including the edits to other pages.
+- Step 5: the reference pages the prose is aligned with, in order, starting with the siblings in
+  the same category, and which edited pages the pass covers.
+
 Also give:
 - The Diataxis type and why.
 - Where the page lives: its source file, and its wrapper if the source is in a sibling repo.
