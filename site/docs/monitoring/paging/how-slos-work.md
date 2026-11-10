@@ -75,9 +75,9 @@ Sloth uses the four conditions the SRE workbook recommends for a 30-day SLO (see
 Each alert fires when either of its two conditions is true. These values are Sloth's defaults, listed in the [`sloth` Helm Chart](/docs/reference/helm_charts/monitoring/sloth/) reference.
 
 ## Page and Ticket Severities
-A page alert carries `severity: critical`. It fires on the two fastest conditions, with a burn rate of `14.4` or `6`, when the budget would run out within days. It needs a response right away, at any hour.
+A page alert carries `severity: critical`. It needs a response right away, at any hour.
 
-A ticket alert carries `severity: warning`. It fires on the two slowest conditions, with a burn rate of `3` or `1`, when the budget would last ten days or more. It can wait for working hours.
+A ticket alert carries `severity: warning`. It can wait for working hours.
 
 While the page alert of an SLO fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
 
