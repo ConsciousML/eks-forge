@@ -71,7 +71,7 @@ To decide whether EKS Forge suits your needs, here's a list of its features and 
 - [Alloy](https://grafana.com/docs/alloy/latest/) to collect and ship logs to Loki
 - cluster and workload metrics aggregation with [Prometheus](https://prometheus.io/docs/introduction/overview/)
 - observability through [Grafana](https://grafana.com/docs/grafana/latest/) dashboards
-- [Alertmanager](https://prometheus.io/docs/alerting/latest/overview/) to send alerts to [Slack](https://slack.com/intl/en-gb/), and to page the on-call engineer through [PagerDuty](https://www.pagerduty.com/) on `prod`
+- [Alertmanager](https://prometheus.io/docs/alerting/latest/overview/) to send alerts to [Slack](https://slack.com/intl/en-gb/), and to page the on-call engineer through [PagerDuty](https://www.pagerduty.com/) on `prod` (see [How Paging Works](/docs/monitoring/paging/how-paging-works/))
 - workload resource-sizing recommendations via the [VPA](https://kubernetes.io/docs/concepts/workloads/autoscaling/vertical-pod-autoscale/) recommender and [Goldilocks](https://goldilocks.docs.fairwinds.com/)
 - [Cilium](https://docs.cilium.io/en/stable/) in [CNI-chaining mode](https://docs.cilium.io/en/stable/installation/cni-chaining-aws-cni/) for [Network Policy](https://kubernetes.io/docs/concepts/services-networking/network-policies/) enforcement
 - [Hubble](https://docs.cilium.io/en/stable/observability/hubble/) for pod-to-pod network flow visibility

@@ -77,7 +77,7 @@ Podinfo's SLOs use the four conditions the SRE workbook recommends for a 30-day 
 
 Each alert fires when either of its two conditions is true.
 
-Each SLO has one page alert and one ticket alert. The page alert carries `severity: critical`: it's meant to notify the person on call right away. The ticket alert carries `severity: warning`: when it fires, it waits for someone to pick it up during working hours.
+Each SLO has one page alert and one ticket alert. The page alert carries `severity: critical`: it's meant to notify the person on call right away (see [How Paging Works](/docs/monitoring/paging/how-paging-works/)). The ticket alert carries `severity: warning`: when it fires, it waits for someone to pick it up during working hours.
 
 While the page alert fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
 
@@ -113,7 +113,7 @@ The `PrometheusRule` holds three kinds of rules:
 
 Every rule carries the `sloth_service` and `sloth_slo` labels, which identify its SLO. For the full list of rules, see Sloth's [SLI rules](https://sloth.dev/slo-plugins/core/sli_rules_v1/), [metadata rules](https://sloth.dev/slo-plugins/core/metadata_rules_v1/), and [alert rules](https://sloth.dev/slo-plugins/core/alert_rules_v1/) plugins.
 
-Each app ships its `PrometheusServiceLevel` with its own manifests, like podinfo's `podinfo-slo.yaml`. Its SLOs are then deployed, updated, and removed with the app, and adding one needs no change to the `sloth` app. That's why the CRD isn't installed by the `sloth` chart, but by the `crds-sloth` application, which syncs before the apps (see [Sync Waves](/docs/applications/how-the-app-of-apps-works/#sync-waves)). Otherwise, an app's `PrometheusServiceLevel` would fail to apply until the `sloth` app had synced.
+Each app ships its `PrometheusServiceLevel` with its own manifests, like podinfo's `podinfo-slo.yaml`. Its SLOs are then deployed, updated, and removed with the app, and adding one needs no change to the `sloth` app. That's why the CRD isn't installed by the `sloth` chart, but by the [`crds-sloth` application](/docs/reference/manifests/crds/sloth/), which syncs before the apps (see [Sync Waves](/docs/applications/how-the-app-of-apps-works/#sync-waves)). Otherwise, an app's `PrometheusServiceLevel` would fail to apply until the `sloth` app had synced.
 
 Every SLO labels its alerts `component: slo`, whatever app it covers, and Alertmanager routes them on it (see [Routing by Component, Then Severity](/docs/monitoring/alerting/how-alerting-works/#routing-by-component-then-severity)).
 
