@@ -33,4 +33,25 @@ Write pages with the user, not for them. The user reviews every change through e
 
 ## 5. Align the prose with the references (required)
 Once every bullet is written, spawn a subagent to run the `aligning-doc-prose` skill. Don't run it
-yourself.
+yourself. Spawn it with `subagent_type: general-purpose` and `model: sonnet`, and this prompt,
+filling in the brackets:
+
+```text
+Run the `aligning-doc-prose` skill (load it with the Skill tool) on the EKS Forge repo at
+<repo root>.
+
+Pages to align:
+- <source path> (<diataxis type>), wrapper <wrapper path>
+- <other edited file>: only the hunks in `git -C <repo> diff -- <file>`
+
+References to read first (don't search for others):
+- <sibling source path>
+- ...
+
+Keep these unchanged: <headings or anchors other pages link to>.
+
+Don't commit, push, or build.
+```
+
+List as references the sources of the siblings with the same `diataxis-tag` in the page's
+category, which you read in step 1. After it reports, review its edits before committing.
