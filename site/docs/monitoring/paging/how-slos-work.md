@@ -10,8 +10,13 @@ description: How podinfo's SLOs turn failed requests into page and ticket alerts
 EKS Forge alerts on podinfo's service level objectives (SLOs) through [Sloth](https://sloth.dev/), which turns each SLO into a page alert and a ticket alert. This page explains the concepts behind them, from the SLI to the burn rate, and how Sloth applies them.
 To see a page alert fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
+## Pages and Tickets
+A page is an alert that notifies the person on call right away, by phone or push notification, at any hour. It's for a problem that needs someone now. A ticket is an alert that waits for someone to pick it up during working hours.
+
+Each SLO has one page alert, with `severity: critical`, and one ticket alert, with `severity: warning`. While the page alert fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
+
 ## Service Level Indicator (SLI)
-A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) measures one aspect of the service that is provided, like the share of requests that succeed or how fast they complete. The SRE workbook recommends writing it as the ratio of good events over total events. The alerts on this page use its complement, the error ratio:
+A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) measures one aspect of the service that is provided, like the share of requests that succeed or how fast they complete. The SRE workbook recommends writing it as the ratio of good events over total events. SLO alerts use its complement, the error ratio:
 
 ```text
 SLI = bad events / total events
@@ -73,13 +78,6 @@ Sloth uses the four conditions the SRE workbook recommends for a 30-day SLO (see
 | Ticket | 1 | 3 days | 6 hours | 10% |
 
 Each alert fires when either of its two conditions is true. These values are Sloth's defaults, listed in the [`sloth` Helm Chart](/docs/reference/helm_charts/monitoring/sloth/) reference.
-
-## Page and Ticket Severities
-A page alert carries `severity: critical`. It needs a response right away, at any hour.
-
-A ticket alert carries `severity: warning`. It can wait for working hours.
-
-While the page alert of an SLO fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
 
 ## Sloth
 An SLO alert needs a recording rule for the SLI over each window, and alert rules that compare eight of them to thresholds computed from the objective. Writing them by hand for each SLO is repetitive and error-prone. [Sloth](https://sloth.dev/) generates them from a short spec, the same way for every SLO.
