@@ -11,7 +11,7 @@ EKS Forge alerts on podinfo's service level objectives (SLOs) through [Sloth](ht
 To see a page alert fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
 ## Pages and Tickets
-A page is an alert that notifies the person on call right away, by phone or push notification, at any hour. It's for a problem that needs someone now. A ticket is an alert that waits for someone to pick it up during working hours.
+A [page](https://sre.google/sre-book/monitoring-distributed-systems/#alert) is an alert that notifies the person [on call](https://sre.google/sre-book/being-on-call/) right away, by phone or push notification, at any hour. It's for a problem that needs someone now. A ticket is an alert that waits for someone to pick it up during working hours.
 
 Each SLO has one page alert, with `severity: critical`, and one ticket alert, with `severity: warning`. While the page alert fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
 
