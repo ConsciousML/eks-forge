@@ -44,9 +44,9 @@ The [burn rate](https://sre.google/workbook/alerting-on-slos/#4-alert-on-burn-ra
 burn rate = error rate / error budget
 ```
 
-A burn rate of `1` consumes the whole budget in exactly 30 days. A burn rate of `2` consumes it in 15 days, and a burn rate of `14.4` in about 50 hours. For podinfo's 99% SLO, an hour in which 14.4% of the requests failed gives a burn rate of `0.144 / 0.01 = 14.4`.
+A burn rate of `1` consumes the budget in exactly 30 days, and a burn rate of `2` in 15 days. For podinfo's 99% SLO, an hour in which 2% of the requests failed gives a burn rate of `0.02 / 0.01 = 2`.
 
-The alerts use the burn rate, not the error rate, because the same error rate means different things for different SLOs. A 2% error rate gives a burn rate of `2` on a 99% SLO, and of `20` on a 99.9% SLO. The burn rate puts every SLO on the same scale, so the same thresholds work for all of them.
+The alerts use the burn rate, not the error rate, because the same error rate means different things for different SLOs: 2% of failed requests is a burn rate of `2` on a 99% SLO, but of `20` on a 99.9% SLO. The burn rate puts every SLO on the same scale, so the same thresholds work for all of them.
 
 ## Multi-Window Multi-Burn-Rate Alerts
 The SRE workbook rates an SLO alert on four attributes (see [Alerting Considerations](https://sre.google/workbook/alerting-on-slos/#alerting-considerations)):
