@@ -11,7 +11,7 @@ EKS Forge sends each alert to a Slack channel named after its environment, its c
 For the steps to add your own alert, see [Add an Alert](/docs/monitoring/alerting/add-an-alert/). If you've never seen an alert reach Slack, follow [Follow an Alert](/docs/monitoring/get-started/alerts/) first.
 
 ## From a Rule to a Slack Message
-An alert is defined as a rule in a [`PrometheusRule`](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PrometheusRule). [Prometheus](https://prometheus.io/) checks each rule against its metrics, and sends the ones that fire to [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/). Alertmanager doesn't look at metrics. It only reads the labels of each alert, and picks a [receiver](https://prometheus.io/docs/alerting/latest/configuration/#receiver) from them. The receiver then posts the message to a Slack channel, and the one of SLO page alerts can also page PagerDuty.
+An alert is defined as a rule in a [`PrometheusRule`](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PrometheusRule). [Prometheus](https://prometheus.io/) checks each rule against its metrics, and sends the ones that fire to [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/). Alertmanager doesn't look at metrics. It only reads the labels of each alert, and picks a [receiver](https://prometheus.io/docs/alerting/latest/configuration/#receiver) from them. The receiver then posts the message to a Slack channel, and can also page PagerDuty for an SLO page alert.
 
 ```mermaid
 flowchart LR
@@ -39,7 +39,7 @@ This is deliberate. In a single channel, an ArgoCD sync failure and a full disk 
 
 The [routing tree](https://prometheus.io/docs/alerting/latest/configuration/#route) is a flat list of routes, under `alertmanager.config.route` in [`charts/monitoring/kube-prometheus-stack/values.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/charts/monitoring/kube-prometheus-stack/values.yaml). Alertmanager reads it from top to bottom, and stops at the first route whose matchers all fit. There is one route per pair of `component` and `severity`, and no two of them match the same alert, so their order doesn't matter. Only the first two routes have to stay on top.
 
-One route picks its receiver per environment. The `slo` alerts with `severity: critical` go to `#<environment>-slo-critical`, and also page PagerDuty where `pagerduty.enabled` is on (see [Paging Is Opt-In per Environment](/docs/monitoring/paging/how-paging-works/#paging-is-opt-in-per-environment)).
+Only one route changes its receiver per environment. The route of the `slo` alerts with `severity: critical` posts to `#<environment>-slo-critical`, and also pages PagerDuty where `pagerduty.enabled` is on (see [Paging Is Opt-In per Environment](/docs/monitoring/paging/how-paging-works/#paging-is-opt-in-per-environment)).
 
 ```mermaid
 ---
