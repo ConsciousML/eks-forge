@@ -49,17 +49,7 @@ A burn rate of `1` consumes the budget in exactly 30 days, and a burn rate of `2
 The alerts use the burn rate, not the error rate, because the same error rate means different things for different SLOs: 2% of failed requests is a burn rate of `2` on a 99% SLO, but of `20` on a 99.9% SLO. The burn rate puts every SLO on the same scale, so the same thresholds work for all of them.
 
 ## Multi-Window Multi-Burn-Rate Alerts
-The SRE workbook rates an SLO alert on four attributes (see [Alerting Considerations](https://sre.google/workbook/alerting-on-slos/#alerting-considerations)):
-- **Precision**: the share of alerts that are about a significant event.
-- **Recall**: the share of significant events that trigger an alert.
-- **Detection time**: how long the alert takes to fire.
-- **Reset time**: how long the alert keeps firing after the issue is resolved.
-
-An alert on a single window and a single threshold can't score well on all four. A short window detects fast, but also fires on brief errors that barely touch the budget, so its precision is low. A long window is precise, but slow to detect and slow to reset. [Alerting on SLOs](https://sre.google/workbook/alerting-on-slos/) walks through six alerting strategies, and ends on the one Sloth uses: [multiwindow, multi-burn-rate alerts](https://sre.google/workbook/alerting-on-slos/#6-multiwindow-multi-burn-rate-alerts).
-
-Multiple burn rates improve recall. A high burn rate over a short window catches an outage fast. A slow failure, like a small share of requests failing for days, stays below that threshold, but still consumes the budget. A low burn rate over a long window catches it.
-
-Multiple windows improve reset time. Each condition checks the burn rate over a long window and a short one, and fires only when both are above the threshold. The long window shows that enough budget was consumed to matter, and the short window shows that the errors are still happening. The workbook recommends a short window of 1/12 of the long one. Once the errors stop, the short window drops below the threshold first, and the alert resolves.
+A [multiwindow, multi-burn-rate alert](https://sre.google/workbook/alerting-on-slos/#6-multiwindow-multi-burn-rate-alerts) combines several conditions. Each condition pairs a burn rate threshold with two windows, a long one and a short one, and is true when the burn rate is above the threshold over both. A high threshold over short windows catches fast failures, and a low threshold over long windows catches slow ones.
 
 ```mermaid
 ---
@@ -73,7 +63,7 @@ flowchart LR
     both -->|"yes"| fire(["Alert fires"])
 ```
 
-Sloth uses the four conditions the SRE workbook recommends for a 30-day SLO (see [Recommended Parameters](https://sre.google/workbook/alerting-on-slos/#recommended_parameters_for_an_slo_based_a)). Each one fires once a given share of the budget was consumed over its long window:
+Sloth uses the four conditions the SRE workbook recommends for a 30-day SLO (see [Recommended Parameters](https://sre.google/workbook/alerting-on-slos/#recommended_parameters_for_an_slo_based_a)):
 
 | Alert | Burn rate | Long window | Short window | Budget consumed over the long window |
 |---|---|---|---|---|
@@ -83,8 +73,6 @@ Sloth uses the four conditions the SRE workbook recommends for a 30-day SLO (see
 | Ticket | 1 | 3 days | 6 hours | 10% |
 
 Each alert fires when either of its two conditions is true. These values are Sloth's defaults, listed in the [`sloth` Helm Chart](/docs/reference/helm_charts/monitoring/sloth/) reference.
-
-The trade-off is low traffic. With few requests, a handful of failures is a large share of them, so the burn rate climbs fast. That's why two minutes of `500`s fire both alerts in [Get Your First Page](/docs/monitoring/paging/get-your-first-page/): on a `dev` cluster, almost every request is one you sent. On a service with steady traffic, the same failures would barely move the burn rate.
 
 ## Page and Ticket Severities
 A page alert carries `severity: critical`. It fires on the two fastest conditions, with a burn rate of `14.4` or `6`, when the budget would run out within days. It needs a response right away, at any hour.
