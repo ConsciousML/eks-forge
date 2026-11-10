@@ -84,7 +84,7 @@ While the page alert fires, its ticket alert is muted. Both share the same `aler
 ## Sloth
 An SLO alert needs a recording rule for the SLI over each window, and alert rules that compare eight of them to thresholds computed from the objective. Writing them by hand for each SLO is repetitive and error-prone. [Sloth](https://sloth.dev/) generates them from a short spec, the same way for every SLO.
 
-The spec is a `PrometheusServiceLevel` custom resource. Each SLO in it sets its objective, and its SLI as two PromQL queries: `errorQuery` for the bad events, and `totalQuery` for all of them. Here is podinfo's availability SLO, from [`manifests/podinfo/podinfo-slo.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-slo.yaml):
+The spec is a `PrometheusServiceLevel` custom resource. Each SLO in it sets its objective, and its SLI as two [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) queries: `errorQuery` for the bad events, and `totalQuery` for all of them. Here is podinfo's availability SLO, from [`manifests/podinfo/podinfo-slo.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-slo.yaml):
 ```yaml
 - name: requests-availability
   objective: 99
