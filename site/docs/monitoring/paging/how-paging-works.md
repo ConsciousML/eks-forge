@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
 title: How Paging Works
 diataxis-tag: explanation
 description: Why only SLO page alerts page, and how they reach PagerDuty. Covers opt-in paging per environment, the routing key from the bootstrap to Alertmanager, the service region, and incidents that open and close themselves.
@@ -8,7 +8,7 @@ description: Why only SLO page alerts page, and how they reach PagerDuty. Covers
 # How Paging Works
 
 EKS Forge pages the person on call through [PagerDuty](https://www.pagerduty.com/), but only for SLO page alerts, and only in the environments that turn paging on. Every other alert stays in Slack. This page explains why, and how a page reaches PagerDuty.
-To get paged yourself, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/). To choose who gets paged, see [Manage On-Call in PagerDuty](/docs/monitoring/paging/manage-on-call-in-pagerduty/).
+To get paged yourself, follow [Get Your First Page](/docs/monitoring/get-started/paging/). To choose who gets paged, see [Manage On-Call in PagerDuty](/docs/monitoring/paging/manage-on-call-in-pagerduty/).
 
 ## Why Only SLO Alerts Page
 Of all the alerts EKS Forge ships, only the page alert of an SLO reaches PagerDuty. A page notifies the person on call at any hour, so it's kept for the alerts that need someone immediately (see [Pages and Tickets](/docs/monitoring/paging/how-slo-alerting-works/#pages-and-tickets) and [Multi-Window Multi-Burn-Rate Alerts](/docs/monitoring/paging/how-slo-alerting-works/#multi-window-multi-burn-rate-alerts)).
