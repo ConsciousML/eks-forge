@@ -11,7 +11,7 @@ Podinfo has two service level objectives (SLOs), one for availability and one fo
 To watch one fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
 ## Service Level Indicator (SLI)
-A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) measures how well a service does, from its users' side. It's written as a ratio: the bad events over all the events, in a time window. For podinfo's availability, that's the requests that failed with a `5xx` over every request. The SLI is then an error ratio, between `0` (nothing failed) and `1` (everything did).
+A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) is a number that measures one aspect of the service it provides, like how many requests succeed or how fast they complete. It's written as a ratio: the bad events over all the events, in a time window. For podinfo's availability, that's the requests that failed with a `5xx` over every request. The SLI is then an error ratio, between `0` (nothing failed) and `1` (everything did).
 
 A ratio, not a count, because a count grows with traffic. Fifty failed requests are an outage at a hundred requests a minute, and noise at a hundred thousand. A ratio means the same thing at any traffic.
 
@@ -123,6 +123,8 @@ Podinfo has two SLOs, both at 99% over 30 days:
 - **`requests-latency`**: requests that complete in 100ms or less. Its alert is `PodinfoLatencyBudgetBurn`.
 
 Both SLIs leave out `/healthz`, `/readyz`, and `/metrics`. The kubelet probes and Prometheus call them all the time, and they always answer fast with a `200`. Counting them would add good events no user made, and both SLIs would look better than what users see.
+
+The trade-off is what the SLIs can't see. They come from podinfo's own metrics, so they only count the requests that reach a podinfo pod. A request that fails before, on a DNS error, a certificate, or a `502` from the load balancer, never shows up in them. The blackbox exporter covers part of that gap: it requests podinfo's public hostname, through the same DNS, certificate, and load balancer as a user, and fires an `uptime` alert when it fails (see [Routing by Component, Then Severity](/docs/monitoring/alerting/how-alerting-works/#routing-by-component-then-severity)). Its probes don't count toward the SLOs, though: an SLI measured that way would count synthetic requests, not real ones.
 
 The latency SLI counts slow requests by subtraction: all requests, minus those in the `le="0.1"` bucket of the `http_request_duration_seconds` histogram. A Prometheus histogram only counts requests under each of its bucket boundaries, so the threshold has to be one of them. Moving it from 100ms means picking another boundary podinfo already exposes, not any duration.
 
