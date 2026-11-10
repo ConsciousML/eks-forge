@@ -26,9 +26,6 @@ Write pages with the user, not for them. The user reviews every change through e
 - If the page is sourced from a sibling repo, create its wrapper under `site/docs/` first,
   so the user can watch each edit live on the dev server.
 - Make one Edit per outline bullet, in order.
-- Write only what the bullet says. Don't add trade-offs or discussions the outline doesn't have.
-- Take definitions and claims from the code or a cited reference, not your own framing. When a
-  reference defines a term, follow its wording.
 - An accepted edit means continue: go straight to the next bullet without commenting.
 - A rejected edit comes with feedback: apply it, then resume.
 - Stop to talk only for a meaningful design decision.
