@@ -64,8 +64,8 @@ Implementation is not part of this skill.
 
 Skip if the change doesn't add or re-scope a site page.
 
-Set `title`, `diataxis-tag`, and `description` in the front matter of each such page (the wrapper's
-when the page is sourced from a submodule).
+Set the front matter values that `<documentation_map>` in `system.xml` lists, on each such page
+(the wrapper's when the page is sourced from a submodule).
 
 ## 4. Commit and Push
 
@@ -74,7 +74,7 @@ Don't wait for the user: they review the change in the GitHub UI.
 - Commit inside each touched submodule first, then push it with `git push -u origin <branch>`.
 - Then commit in eks-forge with the submodule pointers staged in the same commit as the change
   that uses them, and push.
-- Conventional Commits, subject line only (see `<commits>` in `system.xml`).
+- Follow `<commits>` in `system.xml`.
 
 Before the first push of a branch, in eks-forge and in each touched submodule, replay it on the
 latest `main`:

@@ -21,15 +21,10 @@ the worktree cleanup. Don't stop at the branches.
 
 ## 2. Doc Plan
 
-Follow steps 1 to 3 of the `drafting-doc-page` skill: gather context, settle the design decisions
-with the user, then write the outline as the page's headings with one bullet per paragraph, idea,
-or code block.
+Follow steps 1 to 3 of the `drafting-doc-page` skill.
 
-Then plan steps 4 and 5 of `drafting-doc-page` as the implementation that part 1 points to:
-- Step 4: the files to create (the wrapper first, if the source is in a sibling repo), and the
-  order of the edits, one per outline bullet, including the edits to other pages.
-- Step 5: the `aligning-doc-prose` pass, with its reference pages in order and the pages it
-  covers.
+Then plan steps 4 and 5 of `drafting-doc-page` as the implementation that part 1 points to,
+naming the files and pages they touch.
 
 Also give:
 - The Diataxis type and why.
