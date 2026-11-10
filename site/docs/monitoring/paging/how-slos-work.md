@@ -66,7 +66,7 @@ flowchart LR
     both -->|"yes"| fire(["Alert fires"])
 ```
 
-Sloth uses the four conditions the SRE workbook recommends for a 30-day SLO (see [Recommended Parameters](https://sre.google/workbook/alerting-on-slos/#recommended_parameters_for_an_slo_based_a)):
+Podinfo's SLOs use the four conditions the SRE workbook recommends for a 30-day SLO (see [Recommended Parameters](https://sre.google/workbook/alerting-on-slos/#recommended_parameters_for_an_slo_based_a)):
 
 | Alert | Burn rate | Long window | Short window | Budget consumed over the long window |
 |---|---|---|---|---|
@@ -75,7 +75,7 @@ Sloth uses the four conditions the SRE workbook recommends for a 30-day SLO (see
 | Ticket | 3 | 1 day | 2 hours | 10% |
 | Ticket | 1 | 3 days | 6 hours | 10% |
 
-Each alert fires when either of its two conditions is true. These values are Sloth's defaults, listed in the [`sloth` Helm Chart](/docs/reference/helm_charts/monitoring/sloth/) reference.
+Each alert fires when either of its two conditions is true.
 
 Each SLO has one page alert, with `severity: critical`, and one ticket alert, with `severity: warning`. While the page alert fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
 
@@ -92,7 +92,7 @@ The spec is a `PrometheusServiceLevel` custom resource. Each SLO in it sets its 
       totalQuery: sum(rate(http_request_duration_seconds_count{namespace="podinfo", path!~"healthz|readyz|metrics"}[{{.window}}]))
 ```
 
-`{{.window}}` is a placeholder. Sloth replaces it with each window the alerts need, so one query gives the SLI over all of them. The spec doesn't set the 30-day window either: it's Sloth's default.
+`{{.window}}` is a placeholder. Sloth replaces it with each window the alerts need, so one query gives the SLI over all of them. The spec doesn't set the 30-day window or the four alert conditions either: they're Sloth's defaults, listed in the [`sloth` Helm Chart](/docs/reference/helm_charts/monitoring/sloth/) reference.
 
 The Sloth controller watches every `PrometheusServiceLevel`, and writes a [`PrometheusRule`](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PrometheusRule) next to each one, in the same namespace. Prometheus loads it like any other rule.
 
