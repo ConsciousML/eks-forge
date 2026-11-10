@@ -11,7 +11,7 @@ Podinfo has two service level objectives (SLOs), one for availability and one fo
 To watch one fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
 ## Service Level Indicator (SLI)
-A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) is a ratio: the bad events over all the events, in a time window. It measures one aspect of how well a service works, like how many requests succeed or how fast they complete:
+A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) is a measure of one aspect of how well a service works, like how many requests succeed or how fast they complete. It's written as a ratio of bad events over all the events, in a time window:
 
 ```text
 SLI = bad events / total events
@@ -27,7 +27,7 @@ SLI = requests that returned a 5xx / all requests
 
 If podinfo served 2,000 requests in the last hour and 10 of them failed with a `5xx`, its SLI over that hour is `10 / 2000 = 0.005`, or 0.5%.
 
-A ratio, not a count, because a count grows with traffic. Fifty failed requests are an outage at a hundred requests a minute, and noise at a hundred thousand. A ratio is consistent at any traffic.
+The SLI uses a ratio rather than a count, because a count grows with traffic. Fifty failed requests are an outage at a hundred requests a minute, and noise at a hundred thousand. Dividing by the total keeps the SLI consistent at any traffic.
 
 For more on choosing what to measure, see [Indicators](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) in Google's SRE book.
 
