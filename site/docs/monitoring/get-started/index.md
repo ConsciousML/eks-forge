@@ -5,11 +5,11 @@ description: Tutorial overview for exploring the monitoring tools of the dev clu
 ---
 
 import DocCards from '@site/src/components/DocCards';
-import {ChartLine, ScrollText, Network, Gauge, Server, Bell} from 'lucide-react';
+import {ChartLine, ScrollText, Network, Gauge, Server, Bell, Siren} from 'lucide-react';
 
 # Monitor Your Cluster
 
-In this tutorial, you'll explore the monitoring tools of your `dev` cluster: you'll open a [Grafana](https://grafana.com/oss/) dashboard, query metrics in [Prometheus](https://prometheus.io/), browse logs, look at network flows in [Hubble](https://github.com/cilium/hubble), read a resource recommendation, look at the control plane in the EKS console, and follow an alert to Slack.
+In this tutorial, you'll explore the monitoring tools of your `dev` cluster: you'll open a [Grafana](https://grafana.com/oss/) dashboard, query metrics in [Prometheus](https://prometheus.io/), browse logs, look at network flows in [Hubble](https://github.com/cilium/hubble), read a resource recommendation, look at the control plane in the EKS console, follow an alert to Slack, and get paged in PagerDuty.
 
 Before starting, make sure you've performed the [Quickstart](/docs/quickstart) and that the `dev` cluster from [Dev Deployment](/docs/quickstart/deployment/) is still running.
 
@@ -53,5 +53,11 @@ Your `dev` cluster keeps costing around $5 per day in `us-east-1` while it runs.
     title: '6. Alerts',
     description: 'Follow an alert from firing to its Slack channel',
     link: '/docs/monitoring/get-started/alerts',
+  },
+  {
+    icon: <Siren size={36} color="var(--ifm-color-primary-dark)" />,
+    title: '7. Paging',
+    description: 'Get paged in PagerDuty',
+    link: '/docs/monitoring/get-started/paging',
   },
 ]} />

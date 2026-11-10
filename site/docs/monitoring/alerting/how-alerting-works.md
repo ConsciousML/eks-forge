@@ -7,11 +7,11 @@ description: How an alert goes from a rule to a Slack message. Covers routing by
 
 # How Alerting Works
 
-EKS Forge sends each alert to a Slack channel named after its environment, its component, and its severity. This page explains why, and how the routing works.
+EKS Forge sends each alert to a Slack channel named after its environment, its component, and its severity. SLO page alerts can also page PagerDuty (see [How Paging Works](/docs/monitoring/paging/how-paging-works/)). This page explains why, and how the routing works.
 For the steps to add your own alert, see [Add an Alert](/docs/monitoring/alerting/add-an-alert/). If you've never seen an alert reach Slack, follow [Follow an Alert](/docs/monitoring/get-started/alerts/) first.
 
 ## From a Rule to a Slack Message
-An alert is defined as a rule in a [`PrometheusRule`](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PrometheusRule). [Prometheus](https://prometheus.io/) checks each rule against its metrics, and sends the ones that fire to [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/). Alertmanager doesn't look at metrics. It only reads the labels of each alert, and picks a [receiver](https://prometheus.io/docs/alerting/latest/configuration/#receiver) from them. The receiver then posts the message to a Slack channel.
+An alert is defined as a rule in a [`PrometheusRule`](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.PrometheusRule). [Prometheus](https://prometheus.io/) checks each rule against its metrics, and sends the ones that fire to [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/). Alertmanager doesn't look at metrics. It only reads the labels of each alert, and picks a [receiver](https://prometheus.io/docs/alerting/latest/configuration/#receiver) from them. The receiver then posts the message to a Slack channel, and can also page PagerDuty for an SLO page alert.
 
 ```mermaid
 flowchart LR
@@ -35,8 +35,11 @@ This is deliberate. In a single channel, an ArgoCD sync failure and a full disk 
 | **`loki`** | Loki, and Alloy, which ships the logs to it |
 | **`argocd`** | ArgoCD and the Applications it syncs |
 | **`uptime`** | The endpoints the blackbox exporter probes, and their certificates |
+| **`slo`** | The SLOs of your apps, like podinfo's (see [How SLO Alerting Works](/docs/monitoring/paging/how-slo-alerting-works/)) |
 
 The [routing tree](https://prometheus.io/docs/alerting/latest/configuration/#route) is a flat list of routes, under `alertmanager.config.route` in [`charts/monitoring/kube-prometheus-stack/values.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/charts/monitoring/kube-prometheus-stack/values.yaml). Alertmanager reads it from top to bottom, and stops at the first route whose matchers all fit. There is one route per pair of `component` and `severity`, and no two of them match the same alert, so their order doesn't matter. Only the first two routes have to stay on top.
+
+Only one route changes its receiver per environment. The route of the `slo` alerts with `severity: critical` posts to `#<environment>-slo-critical`, and also pages PagerDuty where `pagerduty.enabled` is on (see [Paging Is Opt-In per Environment](/docs/monitoring/paging/how-paging-works/#paging-is-opt-in-per-environment)).
 
 ```mermaid
 ---
@@ -68,6 +71,7 @@ The remaining rules are written in the app of apps repository. Some are standalo
 | **Default rules of `kube-prometheus-stack`** | Once per rule group, in `defaultRules.additionalRuleGroupLabels` | `KubePodCrashLooping` carries `k8s` |
 | **An upstream chart's own alerts** | Once for the chart, in its key that labels every alert | Loki's alerts carry `loki` |
 | **Rules written in the app of apps repository** | On each rule, in its `labels` | `EndpointDown` carries `uptime` |
+| **Rules Sloth generates from an SLO** | Once per SLO, in its alerting labels | `PodinfoAvailabilityBudgetBurn` carries `slo` |
 
 A `component` names who deals with the alert, not which chart ships it. Alloy's alerts carry `loki`, since a broken Alloy means missing logs. Karpenter's carry `k8s`, since Karpenter provisions the cluster's nodes. This keeps the number of channels small: a new rule usually fits an existing component, and only something with its own owners needs a new one (see [Add an Alert Route & Slack Channel](/docs/monitoring/alerting/add-an-alert-route-and-slack-channel/)).
 
