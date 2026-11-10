@@ -29,10 +29,7 @@ Write pages with the user, not for them. The user reviews every change through e
 - An accepted edit means continue: go straight to the next bullet without commenting.
 - A rejected edit comes with feedback: apply it, then resume.
 - Stop to talk only for a meaningful design decision.
+- Never batch several bullets into parallel edits, and never commit before step 5 is done.
 
-## 5. Align the prose with the references
-Once every bullet is written:
-- Read the tagged examples of the page's type closest to it, starting with the siblings in the
-  same category.
-- Go through the page bullet by bullet, in order, and compare each one's prose with theirs.
-- When a bullet reads differently, align it with one Edit. Keep its content as it is.
+## 5. Align the prose with the references (required)
+Once every bullet is written, load the `aligning-doc-prose` skill and follow it.

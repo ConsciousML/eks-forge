@@ -28,8 +28,8 @@ or code block.
 Then plan steps 4 and 5 of `drafting-doc-page` as the implementation that part 1 points to:
 - Step 4: the files to create (the wrapper first, if the source is in a sibling repo), and the
   order of the edits, one per outline bullet, including the edits to other pages.
-- Step 5: the reference pages the prose is aligned with, in order, starting with the siblings in
-  the same category, and which edited pages the pass covers.
+- Step 5: the `aligning-doc-prose` pass, with its reference pages in order and the pages it
+  covers.
 
 Also give:
 - The Diataxis type and why.
