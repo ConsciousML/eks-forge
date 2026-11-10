@@ -77,7 +77,9 @@ Podinfo's SLOs use the four conditions the SRE workbook recommends for a 30-day 
 
 Each alert fires when either of its two conditions is true.
 
-Each SLO has one page alert and one ticket alert. The page alert carries `severity: critical`: when it fires, it notifies the person on call right away. The ticket alert carries `severity: warning`: when it fires, it waits for someone to pick it up during working hours. While the page alert fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
+Each SLO has one page alert and one ticket alert. The page alert carries `severity: critical`: when it fires, it notifies the person on call right away. The ticket alert carries `severity: warning`: when it fires, it waits for someone to pick it up during working hours.
+
+While the page alert fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
 
 ## Sloth
 An SLO alert needs a recording rule for the SLI over each window, and alert rules that compare eight of them to thresholds computed from the objective. Writing them by hand for each SLO is repetitive and error-prone. [Sloth](https://sloth.dev/) generates them from a short spec, the same way for every SLO.
