@@ -1,17 +1,17 @@
 ---
 sidebar_position: 4
-title: How SLOs Work
+title: How SLO Alerting Works
 diataxis-tag: explanation
 description: How podinfo's SLOs turn failed requests into page and ticket alerts. Covers SLIs, SLOs, error budgets, burn rates, multi-window multi-burn-rate alerts, page and ticket severities, Sloth, and the SLO dashboards.
 ---
 
-# How SLOs Work
+# How SLO Alerting Works
 
 EKS Forge alerts on service level objectives (SLOs) through [Sloth](https://sloth.dev/), which turns each SLO into a page alert and a ticket alert. Its only SLOs are those of [podinfo](https://github.com/stefanprodan/podinfo), the sample app it deploys. They show the pattern to follow when you add SLOs for your own app. This page explains the concepts behind them, from the SLI to the burn rate, and how Sloth applies them.
 To see a page alert fire, follow [Get Your First Page](/docs/monitoring/paging/get-your-first-page/).
 
 ## Pages and Tickets
-A [page](https://sre.google/sre-book/monitoring-distributed-systems/#alert) is an alert that notifies the person [on call](https://sre.google/sre-book/being-on-call/) right away, by phone or push notification, at any hour. It's for a problem that needs someone now. A ticket is an alert that waits for someone to pick it up during working hours.
+A [page](https://sre.google/sre-book/monitoring-distributed-systems/#alert) is an alert that notifies the person [on call](https://sre.google/sre-book/being-on-call/) right away, at any hour. It's for a problem that needs someone now. A ticket is an alert that waits for someone to pick it up during working hours.
 
 ## Service Level Indicator (SLI)
 A [service level indicator](https://sre.google/sre-book/service-level-objectives/#indicators-o8seIAcZ) (SLI) measures one aspect of the service that is provided, like the share of requests that succeed or how fast they complete. The SRE workbook recommends writing it as the ratio of good events over total events. SLO alerts use its complement, the error ratio:
@@ -77,7 +77,7 @@ Podinfo's SLOs use the four conditions the SRE workbook recommends for a 30-day 
 
 Each alert fires when either of its two conditions is true.
 
-Each SLO has one page alert and one ticket alert. The page alert carries `severity: critical`: when it fires, it notifies the person on call right away. The ticket alert carries `severity: warning`: when it fires, it waits for someone to pick it up during working hours.
+Each SLO has one page alert and one ticket alert. The page alert carries `severity: critical`: it's meant to notify the person on call right away. The ticket alert carries `severity: warning`: when it fires, it waits for someone to pick it up during working hours.
 
 While the page alert fires, its ticket alert is muted. Both share the same `alertname`, and the default [inhibit rules](https://prometheus.io/docs/alerting/latest/configuration/#inhibition-related-settings) of `kube-prometheus-stack` mute a `warning` alert while a `critical` alert with the same `alertname` fires. The ticket would only repeat the page.
 
@@ -115,7 +115,7 @@ Every rule carries the `sloth_service` and `sloth_slo` labels, which identify it
 
 Each app ships its `PrometheusServiceLevel` with its own manifests, like podinfo's `podinfo-slo.yaml`. Its SLOs are then deployed, updated, and removed with the app, and adding one needs no change to the `sloth` app. That's why the CRD isn't installed by the `sloth` chart, but by the `crds-sloth` application, which syncs before the apps (see [Sync Waves](/docs/applications/how-the-app-of-apps-works/#sync-waves)). Otherwise, an app's `PrometheusServiceLevel` would fail to apply until the `sloth` app had synced.
 
-Every SLO labels its alerts `component: slo`, whatever app it covers. An SLO alert reports a symptom users notice, not the component that caused it, so SLO alerts have routes of their own (see [Routing by Component, Then Severity](/docs/monitoring/alerting/how-alerting-works/#routing-by-component-then-severity)).
+Every SLO labels its alerts `component: slo`, whatever app it covers, and Alertmanager routes them on it (see [Routing by Component, Then Severity](/docs/monitoring/alerting/how-alerting-works/#routing-by-component-then-severity)).
 
 ## Podinfo's SLOs
 Podinfo's two SLOs, one for availability and one for latency, are an example pattern for a service that answers requests. They're set in [`manifests/podinfo/podinfo-slo.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-slo.yaml), and the [`podinfo` Manifests](/docs/reference/manifests/podinfo/) reference lists the other files. To choose the SLIs of your own app, see [What to Measure Using SLIs](https://sre.google/workbook/implementing-slos/#what-to-measure-using-slis) in the SRE workbook.
