@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 title: How SLO Alerting Works
 diataxis-tag: explanation
 description: How podinfo's SLOs turn failed requests into page and ticket alerts. Covers SLIs, SLOs, error budgets, burn rates, multi-window multi-burn-rate alerts, page and ticket severities, Sloth, and the SLO dashboards.
@@ -7,7 +7,7 @@ description: How podinfo's SLOs turn failed requests into page and ticket alerts
 
 # How SLO Alerting Works
 
-EKS Forge alerts on service level objectives (SLOs) through [Sloth](https://sloth.dev/), which turns each SLO into a page alert and a ticket alert. Its only SLOs are those of [podinfo](https://github.com/stefanprodan/podinfo), the sample app it deploys. They show the pattern to follow when you add SLOs for your own app. This page explains the concepts behind them, from the SLI to the burn rate, and how Sloth applies them.
+EKS Forge alerts on service level objectives (SLOs) through [Sloth](https://sloth.dev/), which turns each SLO into a page alert and a ticket alert. Its only SLOs are those of [podinfo](https://github.com/stefanprodan/podinfo), the sample app it deploys. They show the pattern to follow when you add SLOs for your own app (see [Add an SLO & Page Alert](/docs/monitoring/paging/add-an-slo-and-page-alert/)). This page explains the concepts behind them, from the SLI to the burn rate, and how Sloth applies them.
 To see a page alert fire, follow [Get Your First Page](/docs/monitoring/get-started/paging/).
 
 ## Pages and Tickets
