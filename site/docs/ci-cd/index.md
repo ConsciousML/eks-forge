@@ -88,6 +88,8 @@ CD creates the `prod` cluster with its own IAM role, which doesn't give your IAM
 ## Short-Lived Credentials
 The catalog and live workflows store no AWS access key and no Tailscale secret in GitHub. For AWS, a job exchanges a [GitHub OIDC](https://docs.github.com/en/actions/concepts/security/openid-connect) token for a temporary role session (see [AWS GitHub Actions Authentication](/docs/quickstart/bootstrap/aws_gh_actions_auth/)). For Tailscale, it does the same through [Workload Identity Federation](/docs/networking/tailscale/#2-workload-identity-federation-wif).
 
+Each job assumes only the role it needs. The catalog CI and the live plan jobs, `code-quality-checks` and `terragrunt-validate-plan`, assume a read-only role, which can plan but can't change resources. Only the live jobs that apply, the Terratest run and the CD apply, assume the `AdministratorAccess` role. For what the read-only role can access, see [Read-Only Plan Role](/docs/reference/bootstrap/aws_gh_actions_auth/#read-only-plan-role).
+
 The Tailscale token lasts 10 minutes, and a plan, an apply, or a test run in the live repository takes longer. So each of these jobs first uses the token to create a temporary Tailscale [OAuth client](https://tailscale.com/docs/features/oauth-clients), and runs Terragrunt with it. A cleanup job revokes the client afterwards, even when the job failed.
 
 ## Why Runs Are Queued
