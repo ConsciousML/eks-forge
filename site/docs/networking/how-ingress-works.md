@@ -161,6 +161,8 @@ A request to an internal tool follows the same chain, through the private Gatewa
 - **Split DNS** sends the queries for `private.<env>.<base_domain>` to the VPC's DNS resolver, over the tailnet.
 - **The connector**, run by the Tailscale operator in the cluster, advertises the VPC's CIDR as a route of the tailnet, so packets to the ALB's private IPs go through it.
 
+Pods can't reach the internal ALB either, apart from the connector and the blackbox exporter, so the tailnet is the only way in (see [Why Egress Skips the VPC](/docs/security/how-network-policies-work/#why-egress-skips-the-vpc)).
+
 ```mermaid
 ---
 title: A request to ArgoCD
