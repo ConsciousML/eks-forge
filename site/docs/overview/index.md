@@ -59,6 +59,7 @@ To decide whether EKS Forge suits your needs, here's a list of its features and 
 ### Cluster Features
 
 - node autoscaling with [Karpenter](https://karpenter.sh/docs/)
+- pod autoscaling on Prometheus and event-source metrics with [KEDA](https://keda.sh/docs/latest/)
 - GitOps via [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) following the [App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/#app-of-apps-pattern-alternative)
 - [EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) to bind IAM roles to Kubernetes service accounts
 - [Route 53](https://aws.amazon.com/route53/) for DNS routing
