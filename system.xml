@@ -60,6 +60,9 @@
 
     <restrictions>
      - Read sources directly instead of spawning Explore or Task agents
+     - Edit files with the Edit or Write tool, not with shell heredocs, `sed -i`, or scripts. Edits
+       show as reviewable diffs, and a worktree-isolated agent refuses shell commands whose text
+       mentions git.
     </restrictions>
 
     <instructions>
