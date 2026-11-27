@@ -47,7 +47,8 @@ Find what failed in the table below, and check that its secrets are in the list:
 | What fails | Secrets | Bootstrap pipeline |
 |------------|---------|--------------------|
 | `webfactory/ssh-agent` | `DEPLOY_KEY_TG_CATALOG` | `live/bootstrap/aws_gh_actions_auth` |
-| `Configure AWS Credentials` | `AWS_ROLE_ARN`, `AWS_REGION` | `live/bootstrap/aws_gh_actions_auth` |
+| `Configure AWS Credentials`, in `code-quality-checks` or `terragrunt-validate-plan` | `AWS_PLAN_ROLE_ARN`, `AWS_REGION` | `live/bootstrap/aws_gh_actions_auth` |
+| `Configure AWS Credentials`, in `terratest` or `terragrunt-apply-prod` | `AWS_ROLE_ARN`, `AWS_REGION` | `live/bootstrap/aws_gh_actions_auth` |
 | `Get Tailscale identity token` or `Connect to Tailscale` | `TS_OAUTH_CLIENT_ID`, `TS_AUDIENCE`, `TS_TAGS` | `live/bootstrap/tailscale` |
 | `Request Tailscale API token using WIF credentials` or `Create temporary Tailscale OAuth client` | `TS_OAUTH_CLIENT_ID`, `TS_AUDIENCE`, `TS_TAGS` | `live/bootstrap/tailscale` |
 
@@ -90,6 +91,7 @@ terragrunt run --all plan --non-interactive --no-stack-generate
 Fix the error the commands print, then commit and push:
 - **`terragrunt stack generate` can't fetch a unit**: the `version_catalog` tag of your stack file isn't in your catalog fork. Push it as in [Tag the Catalog Fork](/docs/iac/release-an-iac-change/#tag-the-catalog-fork), then rerun the failed jobs as in [Setup Fails](#setup-fails).
 - **`Error acquiring the state lock`**: continue at [State Is Locked](#state-is-locked).
+- **`AccessDenied` or `Forbidden`**: CI plans with the read-only plan role, so a plan that passes on your machine can still be denied in CI (see [Short-Lived Credentials](/docs/ci-cd/#short-lived-credentials)). If the plan reads a Secrets Manager secret, add its name to `plan_secret_names` in [`live/bootstrap/aws_gh_actions_auth/terragrunt.stack.hcl`](https://github.com/ConsciousML/eks-forge-live/blob/main/live/bootstrap/aws_gh_actions_auth/terragrunt.stack.hcl), and apply that bootstrap again. If Kubernetes returns `Forbidden`, check that `access_entries` in the stack file of that environment still has the `plan_role` entry.
 
 ### `check-pr-labels`
 
