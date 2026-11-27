@@ -21,3 +21,6 @@ mise.local.toml
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Claude Code plan files
+/.claude/plans/

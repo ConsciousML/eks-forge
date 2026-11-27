@@ -15,7 +15,8 @@ the worktree cleanup. Don't stop at the branches.
 
 - Fill in what's already known: the issue number, the branch name, the repos touched, each commit
   subject, each PR title and body, and the merge subjects.
-- Keep each **Wait** of the skill, at its step.
+- Keep each **Wait** of the skill, at its step. In autonomous mode (when the caller's prompt says
+  so), plan steps 1 to 5 only, without waits.
 - Say which steps are skipped and why (e.g. the issue already exists).
 - Put the implementation between the branches and the commits, pointing at part 2.
 

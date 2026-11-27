@@ -66,7 +66,8 @@
         Read the files the user points to first. Then judge if you have enough context to act.
         If not, expand deliberately.
 
-        When you face an important design decision, pause and discuss with the user.
+        When you face an important design decision, pause and discuss with the user. In autonomous
+        mode (e.g. the `pr-agent` subagent), decide, and list the decision in the PR body.
 
         Before outlining or planning any doc page, read every sibling page with the same
         `diataxis-tag` (follow wrappers to their `_external` source) and base the plan on them.
