@@ -146,11 +146,11 @@ Find what the log shows in the table below:
 
 | Log shows | Cause | Fix |
 |-----------|-------|-----|
-| A Terragrunt error, before any `[INFO]` line | The apply of the `staging` stack failed | Fix the error Terragrunt prints, then commit and push |
-| `app-of-apps stuck at sync=...` or `app-of-apps did not become Synced and Healthy` | An application doesn't sync or start | The `kubectl get pod -A` output printed right above shows which pods aren't `Running`. To find out why, see [Reproduce the Failure on Staging](#reproduce-the-failure-on-staging) |
+| A Terragrunt error on `eks/addons/argocd/app_of_apps` that names `app-of-apps-core-wait` | An application wasn't `Synced` and `Healthy` within 30 minutes (see [Waiting for the Root Apps](/docs/applications/how-the-app-of-apps-works/#waiting-for-the-root-apps)) | Follow [Reproduce the Failure on Staging](#reproduce-the-failure-on-staging). Once the apply fails there, `kubectl logs job/app-of-apps-core-wait -n argocd` names the application and its status |
+| Another Terragrunt error, before any `[INFO]` line | The apply of the `staging` stack failed | Fix the error Terragrunt prints, then commit and push |
 | `<url> did not become ready` | A tool deployed, but its hostname doesn't answer | Check the tool's route, DNS record, and network policies, as in [Reproduce the Failure on Staging](#reproduce-the-failure-on-staging) |
 | `login to <url> returned unexpected status` | A tool rejects its admin password | Check the tool reads the password its Secrets Manager secret holds, as in [Reproduce the Failure on Staging](#reproduce-the-failure-on-staging) |
-| `panic: test timed out` | The run reached its 90 minute timeout | See [Destroy a Leftover Staging](#destroy-a-leftover-staging) |
+| `panic: test timed out` | The run reached its 110 minute timeout | See [Destroy a Leftover Staging](#destroy-a-leftover-staging) |
 
 #### Reproduce the Failure on Staging
 
