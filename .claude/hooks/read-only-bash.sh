@@ -15,9 +15,11 @@ block() {
 case "$cmd" in
   *'>'* | *'$('* | *'`'*) block "redirection or command substitution" ;;
   *--output*) block "--output writes a file" ;;
+  *--upload-pack*) block "--upload-pack runs a command" ;;
 esac
 
-allowed='^(cd|cat|head|tail|grep|wc|sort|uniq|jq|yq|diff|ls)( |$)'
+# No sort, uniq, or yq: `sort -o`, `uniq IN OUT`, and `yq -i` write files.
+allowed='^(cd|cat|head|tail|grep|wc|jq|diff|ls)( |$)'
 allowed+='|^git (show|log|diff|fetch|ls-files|ls-tree|blame|rev-parse|merge-base|status|branch --show-current|submodule status)( |$)'
 allowed+='|^gh (pr (view|diff|checks|list)|issue (view|list)|repo view)( |$)'
 
@@ -26,6 +28,7 @@ segments=${cmd//&&/$nl}
 segments=${segments//||/$nl}
 segments=${segments//;/$nl}
 segments=${segments//|/$nl}
+segments=${segments//&/$nl}
 
 while read -r segment; do
   [ -z "$segment" ] && continue
