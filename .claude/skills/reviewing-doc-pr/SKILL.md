@@ -75,7 +75,19 @@ paths, defaults, and behaviour. Check each one against its source: the code, wor
 module, or stack file of the repo that owns it, on the PR branch when a PR in this review changes
 it, and on `main` otherwise. Report each claim the source contradicts or doesn't support.
 
-## 5. Page Checks
+## 5. Coverage
+
+Load `documentation-map`. List what the issue and the sibling PRs say changed, then find what the
+diffs leave stale:
+- Read the pages related to each change in `documentation-map.csv`.
+- Grep all four repos (docs, READMEs, `.md.gotmpl` files, code comments) for the old wording and
+  the related concepts. Include the unchanged lines of the files the PRs edit.
+- The hook blocks `git grep` and `|`: grep the working trees with one `-e` per pattern
+  (`grep -rn -e <old> -e <concept> <dir>`), and read a hit on a PR branch with `git show`.
+- Report each stale passage outside the diffs, and each point of the issue that no change covers,
+  in the findings format.
+
+## 6. Page Checks
 
 Load `documentation-map`. For each page the diffs touch (the wrapper and its `_external` source):
 - Read the siblings with the same `diataxis-tag`, following wrappers to their `_external` source.
@@ -84,7 +96,7 @@ Load `documentation-map`. For each page the diffs touch (the wrapper and its `_e
 - Check the front matter against `<documentation_map>` in `system.xml`: `title` (or an H1),
   `diataxis-tag`, and `description` are set, and the description still matches the page.
 
-## 6. Report
+## 7. Report
 
 List the findings, most severe first, one line each:
 ```
@@ -97,3 +109,6 @@ and the bullet number as the line.
 Then a status block, one line per PR: its link, draft state, and failing checks.
 
 When step 4 finds nothing, say `No wrong claim.` explicitly.
+
+Then list the searches run in step 5, so the coverage can be checked. Coverage findings go in the
+findings list.
