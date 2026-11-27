@@ -8,9 +8,17 @@ description: GitHub process for an EKS Forge change spanning eks-forge and its s
 Repos: eks-forge and its submodules under `site/docs/_external/` (`eks-forge-catalog`,
 `eks-forge-live`, `eks-forge-app-of-apps`).
 
-Steps marked **Wait** need the user. Never move past a wait on your own, unless the user asked to
-run the whole workflow autonomously. Then skip the waits, and replace each CI wait with
-`gh pr checks <N> --watch`, stopping on any failure.
+## Mode
+
+The `mode` is `autonomous` when the caller's prompt says so (e.g. the `pr-agent` subagent), and
+`interactive` otherwise.
+
+- autonomous: run steps 1 to 5 only, without waiting, then stop and report the PR links. Steps 6
+  to 8 always run interactively, in the user's session.
+- interactive: steps marked **Wait** need the user. Never move past a wait on your own.
+
+Run git in a submodule from its directory (`cd site/docs/_external/<repo> && git ...`), not with
+`git -C`: the allow list in `.claude/settings.json` doesn't match `git -C`.
 
 Never hardcode a GitHub owner, these repos are forked. Run `gh` from the target repo's directory so
 it infers the repo from `origin`. Read the owner with `gh repo view --json owner -q .owner.login`
@@ -19,6 +27,9 @@ when you need a cross-repo reference (`<owner>/<repo>#<N>`).
 ## 1. Issue
 
 Skip if the user gives an existing issue.
+
+- autonomous: use the issue the caller gives. If none is given, stop and report that you need one.
+- interactive: draft one with the user:
 
 1. Read similar issues in the repo that owns the work, and match their title and body style:
    ```bash
@@ -35,8 +46,12 @@ Skip if the user gives an existing issue.
 Use the same kebab-case branch in eks-forge and in each submodule the change touches (never `/` in
 branch names, it breaks Terragrunt).
 
-**Wait**: ask the user whether to work in a git worktree, so other sessions can keep working in the
-main checkout on other branches. When running autonomously, don't create one unless the user asked.
+- autonomous: you already run in your own worktree (`isolation: worktree`). Keep its branch
+  (`git branch --show-current`, `worktree-agent-*` is fine), or rename it with
+  `git branch -m <branch>` if the caller names one. Initialise the submodules with
+  `git submodule update --init`, then create the submodule branches below.
+- interactive: **Wait**: ask the user whether to work in a git worktree, so other sessions can keep
+  working in the main checkout on other branches.
 
 Without a worktree, create the eks-forge branch in place:
 ```bash
@@ -51,11 +66,9 @@ git worktree add .claude/worktrees/<branch> -b <branch> origin/main
 git submodule update --init
 ```
 
-Either way, then create the branch in each touched submodule:
+Either way, then create the branch in each touched submodule, from its latest `main`:
 ```bash
-git -C site/docs/_external/<repo> checkout main
-git -C site/docs/_external/<repo> pull
-git -C site/docs/_external/<repo> checkout -b <branch>
+cd site/docs/_external/<repo> && git fetch origin main && git checkout -b <branch> origin/main
 ```
 
 Implementation is not part of this skill.
@@ -122,8 +135,7 @@ Merge commit (not squash), subject `<PR title> #<N>`, empty body, head branch de
 
 Point each merged submodule at its `main`:
 ```bash
-git -C site/docs/_external/<repo> checkout main
-git -C site/docs/_external/<repo> pull
+cd site/docs/_external/<repo> && git checkout main && git pull
 ```
 
 Commit in eks-forge as `docs: bump submodules` and push to the eks-forge PR branch.

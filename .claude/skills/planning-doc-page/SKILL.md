@@ -15,7 +15,8 @@ the worktree cleanup. Don't stop at the branches.
 
 - Fill in what's already known: the issue number, the branch name, the repos touched, each commit
   subject, each PR title and body, and the merge subjects.
-- Keep each **Wait** of the skill, at its step.
+- Keep each **Wait** of the skill, at its step. In autonomous mode (when the caller's prompt says
+  so), plan steps 1 to 5 only, without waits.
 - Say which steps are skipped and why (e.g. the issue already exists).
 - Put the implementation between the branches and the commits, pointing at part 2.
 
@@ -23,7 +24,7 @@ the worktree cleanup. Don't stop at the branches.
 
 Follow steps 1 to 3 of the `drafting-doc-page` skill.
 
-Then plan steps 4 and 5 of `drafting-doc-page` as the implementation that part 1 points to,
+Then plan step 4 of `drafting-doc-page` as the implementation that part 1 points to,
 naming the files and pages they touch.
 
 Also give:
