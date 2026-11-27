@@ -4,6 +4,8 @@
 # ponytail: allowlists the start of each command segment, it is not a shell parser. Quoted
 # separators split too, which only blocks more. Swap for a real parser if it blocks valid reads.
 set -euo pipefail
+# Fail closed: Claude Code treats any exit other than 2 as non-blocking.
+trap 'exit 2' ERR
 
 cmd=$(jq -r '.tool_input.command // ""')
 
@@ -13,7 +15,7 @@ block() {
 }
 
 case "$cmd" in
-  *'>'* | *'$('* | *'`'*) block "redirection or command substitution" ;;
+  *'>'* | *'$('* | *'<('* | *'`'*) block "redirection or command substitution" ;;
   *--output*) block "--output writes a file" ;;
   *--upload-pack*) block "--upload-pack runs a command" ;;
 esac
