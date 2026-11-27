@@ -39,8 +39,9 @@ const modulesAbsDir = path.join(siteDir, 'docs', modulesSourceDir);
 const chartsSourceDir = '_external/eks-forge-app-of-apps/charts';
 const chartsRouteDir = 'reference/helm_charts';
 const chartsAbsDir = path.join(siteDir, 'docs', chartsSourceDir);
-// The root `apps` chart lives outside charts/, served next to them as app-of-apps
+// Root chart READMEs live outside charts/, served under Reference > Helm Charts, keeping their apps/ path
 const appsSourceDir = '_external/eks-forge-app-of-apps/apps';
+const appsRouteDir = `${chartsRouteDir}/apps`;
 const appsAbsDir = path.join(siteDir, 'docs', appsSourceDir);
 
 // App-of-apps manifest READMEs are served under Reference > Manifests, keeping their manifests/ path
@@ -52,7 +53,7 @@ const manifestsAbsDir = path.join(siteDir, 'docs', manifestsSourceDir);
 const sidebarDirRemaps = [
   [modulesSourceDir, modulesRouteDir],
   [chartsSourceDir, chartsRouteDir],
-  [appsSourceDir, chartsRouteDir],
+  [appsSourceDir, appsRouteDir],
   [manifestsSourceDir, manifestsRouteDir],
 ];
 
@@ -101,8 +102,11 @@ const config = {
         result.frontMatter.mdx = {format: 'md'};
       } else if (params.filePath.startsWith(chartsAbsDir + path.sep) || params.filePath.startsWith(appsAbsDir + path.sep)) {
         const chartDir = path.dirname(params.filePath);
-        const chartPath = chartDir === appsAbsDir ? 'app-of-apps' : path.relative(chartsAbsDir, chartDir);
-        result.frontMatter.slug = `/${chartsRouteDir}/${chartPath}`;
+        const [sourceAbsDir, routeDir] = params.filePath.startsWith(appsAbsDir + path.sep)
+          ? [appsAbsDir, appsRouteDir]
+          : [chartsAbsDir, chartsRouteDir];
+        const chartPath = path.relative(sourceAbsDir, chartDir);
+        result.frontMatter.slug = `/${routeDir}/${chartPath}`;
         result.frontMatter.sidebar_label = path.basename(chartPath);
         // helm-docs output has an HTML comment and raw `{` in tables, which MDX rejects
         result.frontMatter.mdx = {format: 'md'};
@@ -177,7 +181,7 @@ const config = {
         docs: {
           sidebarPath: './sidebars.js',
           // Default excludes, but '**/_*/**' is narrowed so that modules/<name>/README.md, charts/**/README.md,
-          // and manifests/**/README.md become docs while the rest of _external stays partials imported by wrapper pages
+          // apps/**/README.md, and manifests/**/README.md become docs while the rest of _external stays partials imported by wrapper pages
           exclude: [
             '**/_*.{js,jsx,ts,tsx,md,mdx}',
             '**/*.test.{js,jsx,ts,tsx}',
@@ -191,16 +195,13 @@ const config = {
             '_external/eks-forge-app-of-apps/!(charts|apps|manifests)/**',
             '_external/eks-forge-app-of-apps/*',
             `${chartsSourceDir}/**/!(README).md`,
-            `${appsSourceDir}/!(README.md)`,
-            `${appsSourceDir}/*/**`,
+            `${appsSourceDir}/**/!(README).md`,
             `${manifestsSourceDir}/**/!(README).md`,
           ],
           // Place the module, chart, and manifest READMEs in the sidebar as if they lived in docs/reference/
-          sidebarItemsGenerator: ({defaultSidebarItemsGenerator, docs, isCategoryIndex, ...args}) =>
+          sidebarItemsGenerator: ({defaultSidebarItemsGenerator, docs, ...args}) =>
             defaultSidebarItemsGenerator({
               ...args,
-              // apps/README.md lands in helm_charts/ itself, keep it a page instead of the category index
-              isCategoryIndex: (doc) => isCategoryIndex(doc) && doc.directories[0] !== path.basename(chartsRouteDir),
               docs: docs.map((doc) => {
                 const remap = sidebarDirRemaps.find(
                   ([source]) => doc.sourceDirName === source || doc.sourceDirName.startsWith(`${source}/`)

@@ -2,7 +2,7 @@
 sidebar_position: 1
 title: How the Infrastructure Tests Work
 diataxis-tag: explanation
-description: How Terratest deploys, tests, and destroys the staging stack, and checks prod after each apply. Covers what a passing check proves, the ArgoCD wait, the Tailscale reconnect, why a failed prod test doesn't roll back, and when staging isn't destroyed.
+description: How Terratest deploys, tests, and destroys the staging stack, and checks prod after each apply. Covers why the apply waits for ArgoCD, what a passing check proves, the Tailscale reconnect, why a failed prod test doesn't roll back, and when staging isn't destroyed.
 ---
 
 # How the Infrastructure Tests Work
@@ -19,10 +19,9 @@ The trade-off is time. A run builds a full cluster, and that's why CI only runs 
 
 ## What the Tests Check
 In CI, the `terratest` job runs `TestStack`, which:
-1. Applies the `staging` stack.
-2. Waits for ArgoCD's `app-of-apps` Application, which deploys the Kubernetes resources, to be `Synced` and `Healthy`.
-3. Runs the endpoint checks.
-4. Destroys the stack, even when a step failed.
+1. Applies the `staging` stack, which returns once ArgoCD has deployed every application (see [Why the Apply Waits for ArgoCD](#why-the-apply-waits-for-argocd)).
+2. Runs the endpoint checks.
+3. Destroys the stack, even when a step failed.
 
 ```mermaid
 ---
@@ -37,25 +36,25 @@ sequenceDiagram
     participant tools as Tools
     test->>ts: Disconnects
     test->>tg: Applies the staging stack
-    test->>argo: Waits for app-of-apps to be Synced and Healthy
+    tg->>argo: Waits for every Application to be Synced and Healthy
     test->>ts: Reconnects, flushes the DNS cache
     test->>tools: Runs the endpoint checks
     test->>ts: Disconnects
     test->>tg: Destroys the staging stack
 ```
 
-In CD, the `Run Terratest on prod` step runs `TestProdStack` once the `prod` apply is done. It runs steps 2 and 3 only, against `prod`: it never applies or destroys anything.
+In CD, the `Run Terratest on prod` step runs `TestProdStack` once the `prod` apply is done. It runs step 2 only, against `prod`: it never applies or destroys anything.
 
 The existing checks are the entries of `endpointChecks`, in [`tests/endpoint_checks_test.go`](https://github.com/ConsciousML/eks-forge-live/blob/main/tests/endpoint_checks_test.go).
 
 For what the tests can't catch, see [Limitations](/docs/ci-cd/limitations-and-improvements/#limitations).
 
-## Why the Test Waits for ArgoCD
-A finished Terragrunt apply doesn't mean a working cluster. Terragrunt installs ArgoCD and creates its `app-of-apps` Application, then returns. Most of the tools the tests check are deployed afterwards by ArgoCD, from the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps).
+## Why the Apply Waits for ArgoCD
+Terragrunt installs ArgoCD and creates its `app-of-apps-core` Application, but most of the tools the tests check are deployed afterwards by ArgoCD, from the [app of apps repository](https://github.com/ConsciousML/eks-forge-app-of-apps). If the apply returned there, the checks would run against a cluster still deploying.
 
-So the test waits before it checks anything. It watches a single Application, `app-of-apps`: ArgoCD reports it `Synced` and `Healthy` only once every application it creates is (see [The Root App and Its Children](/docs/applications/how-the-app-of-apps-works/#the-root-app-and-its-children)). A new application is then covered by the wait without any change to the tests.
+So the apply itself waits. It returns only once `app-of-apps-core` and every Application it creates are `Synced` and `Healthy` (see [Waiting for the Root Apps](/docs/applications/how-the-app-of-apps-works/#waiting-for-the-root-apps)). The tests then need no wait of their own, and a new application is covered without any change to them.
 
-The test doesn't wait its whole budget on a broken application. `app-of-apps` itself can stay `OutOfSync` for a while as its children deploy one by one, so its own status doesn't tell a slow deployment from a stuck one. The test watches every Application instead: when none of them changes state for a while, it fails early, and prints the cluster's pods so the log shows which ones aren't running.
+An application that doesn't deploy fails the apply, not a check. The trade-off is time: the apply waits up to 30 minutes for it before failing.
 
 ## What a Passing Check Proves
 An endpoint check requests the tool's hostname from outside the cluster, the way you would from a browser. For the tool to answer, its DNS record, its certificate, its load balancer, its route, its network policies, and its pods all have to work. One `200` covers the whole chain, with no check written for any of its parts.
@@ -74,11 +73,11 @@ The test runs the `tailscale` commands itself. That's why a full run on your mac
 ## Existing Tests
 There are three tests, and each runs in one place:
 
-| Test | Runs | Environment | Applies and destroys | Waits for ArgoCD |
-|---|---|---|---|---|
-| `TestStack` | In CI | `staging` | Yes | Yes |
-| `TestProdStack` | In CD | `prod` | No | Yes |
-| `TestStackExists` | On your machine | `staging` by default | No | No |
+| Test | Runs | Environment | Applies and destroys |
+|---|---|---|---|
+| `TestStack` | In CI | `staging` | Yes |
+| `TestProdStack` | In CD | `prod` | No |
+| `TestStackExists` | On your machine | `staging` by default | No |
 
 All three run the same checks, through the same `assertStack` function. A check added to `assertStack` then runs in CI, in CD, and against a cluster you deployed yourself, with no second copy to keep in sync. It also means every check has to pass on `prod`, not only on `staging`.
 
