@@ -17,7 +17,9 @@ You review one EKS Forge pull request, read-only.
 The caller gives you an eks-forge pull request number. If none is given, stop and report that you
 need one.
 
-Load the `reviewing-doc-pr` skill and run it on that pull request. Return its report.
+Load the `reviewing-doc-pr` skill and run it on that pull request: it runs the facts stage, then
+the flow stage. When the caller asks for one stage only, load `reviewing-doc-facts` or
+`reviewing-doc-flow` instead. Return the report.
 
 Change nothing in any repo or pull request: no edits, commits, pushes, comments, reviews, or
 merges. Bash runs only read-only commands: `.claude/hooks/read-only-bash.sh` blocks the rest. When
