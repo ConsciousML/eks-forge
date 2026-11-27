@@ -14,9 +14,14 @@ function isInside(root, target) {
  * These links will fail once rendered in the documentation site.
  * 
  * This function rewrites relative links inside imported submodule content
- * to GitHub blob URLs, using the `bases` produced by
+ * to GitHub blob URLs, and relative images to raw URLs (a blob URL serves an
+ * HTML page, not the image), using the `bases` produced by
  * `getSubmoduleLinkBases`. Links that aren't relative, or don't resolve
  * inside any known submodule, are left untouched.
+ *
+ * A definition (`[id]: ./path`) gets the raw URL when any image references
+ * it, even if a link references it too: the image must render, and a link to
+ * the raw file still opens it.
  */
 export default function rewriteSubmoduleLinks({bases}) {
   return (tree, file) => {
@@ -29,6 +34,11 @@ export default function rewriteSubmoduleLinks({bases}) {
     if (!base) {
       return;
     }
+
+    const imageIds = new Set();
+    visit(tree, 'imageReference', (node) => {
+      imageIds.add(node.identifier);
+    });
 
     visit(tree, ['link', 'image', 'definition'], (node) => {
       const url = node.url;
@@ -47,7 +57,9 @@ export default function rewriteSubmoduleLinks({bases}) {
       }
 
       const relFromSubmodule = path.relative(base.submoduleRoot, absTarget);
-      node.url = `${base.repoBlobBase}/${relFromSubmodule}${hashPart ? `#${hashPart}` : ''}`;
+      const isImage = node.type === 'image' || (node.type === 'definition' && imageIds.has(node.identifier));
+      const repoBase = isImage ? base.repoRawBase : base.repoBlobBase;
+      node.url = `${repoBase}/${relFromSubmodule}${hashPart ? `#${hashPart}` : ''}`;
     });
   };
 }

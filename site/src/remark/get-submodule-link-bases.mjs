@@ -15,7 +15,8 @@ function normalizeGitUrl(url) {
 /**
  * Reads `.gitmodules` at `repoRoot` and, for each submodule, resolves its
  * origin URL and the exact commit it's checked out at, so cross-repo links
- * inside imported submodule content can be rewritten to live GitHub blob URLs.
+ * inside imported submodule content can be rewritten to live GitHub URLs: blob
+ * URLs for links, raw URLs for images.
  */
 export function getSubmoduleLinkBases(repoRoot) {
   const gitmodulesPath = path.join(repoRoot, '.gitmodules');
@@ -50,9 +51,12 @@ export function getSubmoduleLinkBases(repoRoot) {
       );
     }
 
+    const repoUrl = normalizeGitUrl(remoteUrl);
     return {
       submoduleRoot,
-      repoBlobBase: `${normalizeGitUrl(remoteUrl)}/blob/${commit}`,
+      repoBlobBase: `${repoUrl}/blob/${commit}`,
+      // A blob URL serves an HTML page, so <img src> needs the raw file instead.
+      repoRawBase: `https://raw.githubusercontent.com${new URL(repoUrl).pathname}/${commit}`,
     };
   });
 }
