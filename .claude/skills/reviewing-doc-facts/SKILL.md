@@ -83,16 +83,15 @@ it, and on `main` otherwise. Report each claim the source contradicts or doesn't
 Load `documentation-map`. List what the issue and the sibling PRs say changed, then find what the
 diffs leave stale:
 - Read the pages related to each change in `documentation-map.csv`.
-- Search the four repos (docs, READMEs, `.md.gotmpl` files, code comments) for the old wording and
-  the related concepts: eks-forge from its root, and each submodule from
-  `site/docs/_external/<repo>`. In each, search `origin/<branch>` when a PR in this review changes
-  that repo, and `origin/main` otherwise.
+- Search the four repos for the old wording and the related concepts: eks-forge from its root, and
+  each submodule from `site/docs/_external/<repo>`. In each, search `origin/<branch>` when a PR in
+  this review changes that repo, and `origin/main` otherwise.
 - List the files on the ref with a line matching a pattern, one command per pattern (the hash is
-  git's empty tree). It searches tracked files only, so it skips `.claude/worktrees/`,
-  `site/node_modules`, `site/build`, and the submodules, which you search from their directory:
+  git's empty tree). It searches every tracked file, so it covers docs, READMEs, `.md.gotmpl`
+  files, and code comments, and skips `.claude/worktrees/`, `site/node_modules`, `site/build`, and
+  the submodules, which you search from their directory:
   ```bash
   git diff --name-only -G'<pattern>' 4b825dc642cb6eb9a060e54bf8d69288fbee4904 <ref>
-  git ls-tree -r --name-only <ref> | grep -e README -e '\.md\.gotmpl$'
   ```
 - Read each hit on the ref, and the unchanged lines of each file the PRs edit
   (`git diff --name-only origin/main...<ref>`):

@@ -20,13 +20,20 @@ branches as it says.
 
 ## 2. List the Pages
 
-List every page the PRs change: the files each PR diff changes under `site/docs/` or a submodule's
-`docs/`, plus the files a submodule pointer bump changes. For a bump, take the old and new commit
-from the eks-forge diff, then list the files between them from the submodule's directory:
+List every page the PRs change: the files the eks-forge diff changes under `site/docs/` outside
+`site/docs/_external/`, plus each submodule file that a submodule PR diff or a submodule pointer
+bump changes and that the `source` column of `documentation-map.csv` lists as
+`site/docs/_external/<repo>/<path>`. Pages import submodule files outside `docs/` too, such as
+READMEs under `live/bootstrap/`, `pipelines/`, `modules/`, `charts/`, and `manifests/`. A `<...>`
+placeholder in a `source` path, such as `charts/<chart path>/README.md`, matches one or more path
+segments. For a bump, take the old and new commit from the eks-forge diff, then list the files
+between them from the submodule's directory:
 ```bash
 git diff origin/main...origin/<branch> -- site/docs/_external/<repo>
 cd site/docs/_external/<repo> && git fetch origin main && git diff --name-only <old> <new>
 ```
+
+When the list is empty, stop the flow stage and report `No page changed.`
 
 Match each wrapper to its `_external` source with the `source` column of `documentation-map.csv`,
 and add the other half of each pair. Read every page in full on its PR branch, or at the new commit
@@ -65,4 +72,4 @@ break in flow, name the section and what a reader would get stuck on:
 <repo>:<file>:<line>: <section>: <what's wrong, and what a reader gets stuck on>. Checked against <the rule>.
 ```
 
-Then list the pages read in step 2.
+Then list the pages read in step 2, or `No page changed.`

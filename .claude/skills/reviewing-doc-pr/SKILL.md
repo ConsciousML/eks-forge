@@ -20,4 +20,5 @@ alone.
 
 Merge the findings of both stages into one list, most severe first, in the findings format of
 `reviewing-doc-facts`. Then add, from `reviewing-doc-facts`, the status block, `No wrong claim.`
-when no claim is wrong, and the coverage searches, and from `reviewing-doc-flow`, the pages read.
+when no claim is wrong, and the coverage searches, and from `reviewing-doc-flow`, the pages read,
+or `No page changed.`
