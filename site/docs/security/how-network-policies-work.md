@@ -7,7 +7,7 @@ description: Why traffic is denied by default and how the Cilium policies fit to
 
 # How Network Policies Work
 
-EKS Forge denies all network traffic in the namespaces it manages, then allows each flow a pod needs, one by one. This page explains why, and how its policies fit together.
+EKS Forge denies all network traffic in every namespace, then allows each flow a pod needs, one by one. This page explains why, and how its policies fit together.
 For the rules to write for your own app, see [Write Network Policies](/docs/security/write-network-policies/).
 
 ## Cilium VPC CNI Chaining
@@ -25,7 +25,7 @@ EKS Forge keeps the VPC CNI for pod networking because it is robust: it is AWS's
 Chaining comes with a limit. A policy can match who the peer is ([Layer 3](https://docs.cilium.io/en/stable/security/policy/layer3/)) and which port it uses ([Layer 4](https://docs.cilium.io/en/stable/security/policy/layer4/)), but not what the traffic contains ([Layer 7](https://docs.cilium.io/en/stable/security/policy/layer7/)), like an HTTP path. Rules on DNS names ([`toFQDNs`](https://docs.cilium.io/en/stable/security/policy/layer3/#dns-based)) need Layer 7 too, so they don't work either. For the full list, see Cilium's [AWS VPC CNI Chaining](https://docs.cilium.io/en/stable/installation/cni-chaining-aws-cni/).
 
 ## Why Traffic Is Denied by Default
-In the namespaces EKS Forge manages, nothing is allowed by default. [`default-deny.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/network-policies/cluster-wide/default-deny.yaml) lists them, and Cilium drops all traffic to and from every pod in them. A flow only goes through once another policy allows it.
+Nothing is allowed by default. [`default-deny.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/network-policies/cluster-wide/default-deny.yaml) selects every pod in every namespace, and Cilium drops all traffic to and from them. A flow only goes through once another policy allows it.
 
 ```mermaid
 ---
@@ -42,18 +42,18 @@ This is deliberate. Without it, any pod can reach any other pod in the cluster, 
 
 Policies add up. Cilium combines every policy that selects a pod, and a flow goes through if any one of them allows it. A policy with only egress rules denies the rest of its pod's egress, and leaves its ingress open.
 
-`default-deny.yaml` replaces one default-deny policy per namespace. The list of protected namespaces sits in one place, and a pod is denied in both directions even when it has no policy of its own.
+`default-deny.yaml` replaces one default-deny policy per namespace. A pod is denied in both directions even when it has no policy of its own.
 
-The deny is opt-in per namespace, though. In a namespace missing from `default-deny.yaml`, a pod that no policy selects can talk to anything, so a new app's namespace has to be added to the list before any of this protects it.
+It doesn't list namespaces, so none can be forgotten. A namespace is denied as soon as it exists, including `argocd`, `kube-system`, and the namespaces of optional features.
 
 ## Two Kinds of Policies
-The allow rules come from two kinds of policies. A [`CiliumClusterwideNetworkPolicy`](https://docs.cilium.io/en/stable/network/kubernetes/policy/#ciliumclusterwidenetworkpolicy) covers a concern several namespaces share, like resolving DNS. There is one file per concern in [`manifests/network-policies/cluster-wide/`](https://github.com/ConsciousML/eks-forge-app-of-apps/tree/main/manifests/network-policies/cluster-wide), each listing the namespaces it applies to. Allowing DNS for a new namespace is then one line, not a rule copied into every app.
+The allow rules come from two kinds of policies. A [`CiliumClusterwideNetworkPolicy`](https://docs.cilium.io/en/stable/network/kubernetes/policy/#ciliumclusterwidenetworkpolicy) covers a concern several namespaces share, like resolving DNS. There is one file per concern in [`manifests/network-policies/cluster-wide/`](https://github.com/ConsciousML/eks-forge-app-of-apps/tree/main/manifests/network-policies/cluster-wide), each selecting the namespaces labelled `network-policy.eks-forge.io/<file name>: "true"`. The labels sit on the `Namespace` in [`manifests/namespaces/`](https://github.com/ConsciousML/eks-forge-app-of-apps/tree/main/manifests/namespaces). Allowing DNS for a new namespace is then one label, not a rule copied into every app.
 
 A [`CiliumNetworkPolicy`](https://docs.cilium.io/en/stable/network/kubernetes/policy/#ciliumnetworkpolicy) covers a concern specific to one component, like Prometheus scraping podinfo. It lives next to the workload it protects, as [`manifests/podinfo/podinfo-network-policy.yaml`](https://github.com/ConsciousML/eks-forge-app-of-apps/blob/main/manifests/podinfo/podinfo-network-policy.yaml) does, so an app and its rules change together. A chart with several components gets one policy per component, each selecting its own pods, so Loki's cache can't do what Loki itself is allowed to.
 
 | | Applies to | Lives in | When to use |
 |---|---|---|---|
-| **`CiliumClusterwideNetworkPolicy`** | Every pod of the namespaces it lists | `manifests/network-policies/cluster-wide/` | A concern several namespaces share (DNS, the Kubernetes API, EKS Pod Identity) |
+| **`CiliumClusterwideNetworkPolicy`** | Every pod of the namespaces carrying its label | `manifests/network-policies/cluster-wide/` | A concern several namespaces share (DNS, the Kubernetes API, EKS Pod Identity) |
 | **`CiliumNetworkPolicy`** | The pods of one component | Next to the workload, in its chart or manifests | A concern specific to one component (a scrape, a probe, a call to another app) |
 
 ## Why Both Ends Need a Rule
@@ -86,7 +86,7 @@ Some peers aren't pods, so they have no labels to select. Cilium groups them int
 - `world`: anything outside the cluster.
 - `cluster`: everything inside the cluster.
 
-An entity can also replace a long list of namespaces. Every namespace resolves DNS, so CoreDNS allows port 53 from `cluster` instead of naming each one. Prometheus does the same in the other direction: it scrapes pods in every namespace, so its egress allows `cluster`. That's why a new app changes nothing in CoreDNS's or Prometheus's policy: it only needs its namespace in `kube-dns-egress.yaml`, and an ingress rule for Prometheus in its own policy.
+An entity can also replace a long list of namespaces. Every namespace resolves DNS, so CoreDNS allows port 53 from `cluster` instead of naming each one. Prometheus does the same in the other direction: it scrapes pods in every namespace, so its egress allows `cluster`. That's why a new app changes nothing in CoreDNS's or Prometheus's policy: it only needs the `kube-dns-egress` label on its namespace, and an ingress rule for Prometheus in its own policy.
 
 ### The `host` Entity
 The kubelet runs on the node and probes your pods from there, so its health checks arrive as `host`. The [EKS Pod Identity agent](https://docs.aws.amazon.com/eks/latest/userguide/pod-id-how-it-works.html) answers on an address the node owns, so a pod asking it for AWS credentials sends to `host` as well.
@@ -128,9 +128,9 @@ flowchart LR
 Not every destination has an IP to pin. S3 uses a [gateway endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html), which is an entry in the route table, not a network interface. So Loki's policy allows `world` on port 443 to reach its buckets, even though that traffic never leaves AWS. The same goes for anything outside AWS, and for an AWS service with no endpoint yet (see [Add a VPC Endpoint](/docs/iac/add-a-vpc-endpoint/)).
 
 ## Avoiding a Lockout
-`argocd` and `kube-system` are in `default-deny.yaml` like any other namespace, and they're the risky ones. ArgoCD is what syncs the policies, and it needs CoreDNS and the Kubernetes API to do it. If the deny reached them before their allow rules, ArgoCD would be cut off with nothing left to sync the fix.
+`default-deny.yaml` selects `argocd` and `kube-system` like any other namespace, and they're the risky ones. ArgoCD is what syncs the policies, and it needs CoreDNS and the Kubernetes API to do it. If the deny reached them before their allow rules, ArgoCD would be cut off with nothing left to sync the fix.
 
-So neither namespace is listed in `kube-dns-egress.yaml` or `kube-apiserver-egress.yaml`. Each carries its own copy of those two allow rules, in an Application of its own: `argocd-network-policies` and `network-policies-kube-system`. Both sync one [wave](/docs/applications/how-the-app-of-apps-works/#sync-waves) before `network-policies-cluster-wide`, so the allow rules exist before the deny does, and they stay in place even if `network-policies-cluster-wide` fails to sync.
+So neither namespace carries a cluster-wide policy's label. Each carries its own copy of the DNS and Kubernetes API allow rules, in an Application of its own: `argocd-network-policies` and `network-policies-kube-system`. Both sync one [wave](/docs/applications/how-the-app-of-apps-works/#sync-waves) before `network-policies-cluster-wide`, so the allow rules exist before the deny does, and they stay in place even if `network-policies-cluster-wide` fails to sync.
 
 These two Applications hold policies only, away from the workloads they protect. ArgoCD, CoreDNS, Karpenter, and the other `kube-system` addons are installed by Terraform or by EKS, so the app of apps repository has no chart of theirs to put a policy in. It works because Cilium matches pods by labels and namespace, whoever deployed them.
 
