@@ -77,7 +77,7 @@ To decide whether EKS Forge suits your needs, here's a list of its features and 
 - [Hubble](https://docs.cilium.io/en/stable/observability/hubble/) for pod-to-pod network flow visibility
 - [Elastic Block Store](https://aws.amazon.com/ebs/) (EBS) for persistent storage
 - [fck-nat](https://fck-nat.dev/v1.4.0/) to remove [NAT Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) costs on `dev`
-- [VPC Endpoints](https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html) to keep AWS API traffic off the NAT gateway
+- [VPC Endpoints](https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html) for the AWS APIs [critical pods](/docs/security/how-network-policies-work/#reaching-aws-apis) call
 - [podinfo](https://github.com/stefanprodan/podinfo) for showcasing how to deploy and publicly expose an EKS microservice
 
 For how these tools fit together in the cluster, see [Infrastructure Architecture](/docs/architecture/#infrastructure-architecture).
