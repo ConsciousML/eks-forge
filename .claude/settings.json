@@ -1,4 +1,5 @@
 {
+  "plansDirectory": ".claude/plans",
   "permissions": {
     "defaultMode": "default",
     "allow": [
@@ -36,7 +37,12 @@
       "Bash(stat:*)",
       "Bash(file:*)",
       "Bash(source .env)",
-      "Edit(~/.claude/plans/**)"
+      "Bash(git worktree add:*)",
+      "Bash(git checkout -b:*)",
+      "Bash(git branch -m:*)",
+      "Bash(git rebase origin/main)",
+      "Bash(git submodule update --init)",
+      "Bash(gh repo view:*)"
     ],
     "ask": [
       "Bash(* > ~/.claude/**)",
