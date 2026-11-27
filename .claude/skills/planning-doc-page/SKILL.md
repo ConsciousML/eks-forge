@@ -24,7 +24,7 @@ the worktree cleanup. Don't stop at the branches.
 
 Follow steps 1 to 3 of the `drafting-doc-page` skill.
 
-Then plan steps 4 and 5 of `drafting-doc-page` as the implementation that part 1 points to,
+Then plan step 4 of `drafting-doc-page` as the implementation that part 1 points to,
 naming the files and pages they touch.
 
 Also give:
