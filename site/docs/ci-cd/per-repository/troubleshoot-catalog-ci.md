@@ -139,7 +139,7 @@ terragrunt run --all plan --non-interactive --no-stack-generate
 
 Fix the error the plan prints, then commit and push:
 - **`Error acquiring the state lock`**: continue at [State Is Locked](#state-is-locked).
-- **`AccessDenied` on a state bucket**: CI plans with a read-only role (see [Short-Lived Credentials](/docs/ci-cd/#short-lived-credentials)), which can't create the bucket. Deploy `dev` once by following [Dev Deployment](/docs/quickstart/deployment/), then rerun the failed jobs as in [Setup Fails](#setup-fails).
+- **`AccessDenied` on a state bucket**: CI plans with the read-only plan role, which can't create CI's state bucket, `tofu-state-<account_id>-<region>-catalog-eks-ci` (see [Short-Lived Credentials](/docs/ci-cd/#short-lived-credentials)). Run the plan above once with `--backend-bootstrap`, so your credentials create the bucket, then rerun the failed jobs as in [Setup Fails](#setup-fails).
 - **Any other `AccessDenied`**: your change needs more than the read-only role grants, even if the plan passes on your machine. If the plan reads a new Secrets Manager secret, add its name to `plan_secret_names` in [`pipelines/bootstrap/aws_gh_actions_auth/terragrunt.stack.hcl`](https://github.com/ConsciousML/eks-forge-catalog/blob/main/pipelines/bootstrap/aws_gh_actions_auth/terragrunt.stack.hcl), and apply that bootstrap again as in [AWS GitHub Actions Authentication](/docs/quickstart/bootstrap/aws_gh_actions_auth/).
 
 Once you're done, open a new shell, or unset both variables, so your next commands target `dev` again:
