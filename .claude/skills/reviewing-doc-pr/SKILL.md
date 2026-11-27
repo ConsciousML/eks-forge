@@ -19,8 +19,18 @@ gh pr view <N> --json title,body,isDraft,labels,headRefName,createdAt,commits,fi
 gh pr diff <N>
 ```
 
-The submodule PRs are the `<owner>/<repo>#<N>` references in the body, and the PRs whose head
-commit a `site/docs/_external/<repo>` pointer in the diff points to. For each, from its directory:
+The submodule PRs are the `<owner>/<repo>#<N>` references in the body, the PRs whose head
+commit a `site/docs/_external/<repo>` pointer in the diff points to, and the open PRs that say
+they are part of the same issue. Take the issue from `Closes #<issue>` in the body, then list those
+PRs from each submodule directory (`eks-forge-catalog`, `eks-forge-live`, `eks-forge-app-of-apps`):
+```bash
+cd site/docs/_external/<repo> && gh pr list --state open --search "\"eks-forge#<issue>\" in:body" --json number,title,headRefOid,body
+```
+Also list the other open eks-forge PRs on the issue, and ignore `<N>` itself:
+```bash
+gh pr list --state open --search "\"#<issue>\" in:body" --json number,title
+```
+Review them all as one change. For each submodule PR, from its directory:
 ```bash
 cd site/docs/_external/<repo> && gh pr view <N> --json title,body,isDraft,labels,headRefName,headRefOid,createdAt,commits,files,state
 cd site/docs/_external/<repo> && gh pr diff <N>
@@ -41,6 +51,8 @@ Check each PR against steps 4 and 5 of `github-workflow`:
 - The eks-forge body has `Closes #<issue>`. Each submodule body has
   `Part of <owner>/<repo>#<issue>`, with the same issue.
 - The eks-forge body names each submodule PR it bumps.
+- Each sibling PR found by the issue search is named in the eks-forge body and pointed to by a
+  submodule pointer in the diff. Report one that isn't. No sibling found is not a finding.
 - Each submodule PR was opened before the eks-forge PR (`createdAt`).
 - Each submodule pointer in the eks-forge diff equals the `headRefOid` of its submodule PR.
 - Each PR title is its main commit subject. Each commit follows `<commits>` in `system.xml`:
