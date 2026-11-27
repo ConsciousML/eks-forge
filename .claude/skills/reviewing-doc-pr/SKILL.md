@@ -37,10 +37,10 @@ cd site/docs/_external/<repo> && gh pr diff <N>
 ```
 
 Read files from the PR branches, never from the working tree, which may be on another branch or
-dirty:
+dirty. Name refs as `origin/<branch>`, never `FETCH_HEAD`, which parallel review agents overwrite:
 ```bash
 git fetch origin <branch>
-git show FETCH_HEAD:<path>
+git show origin/<branch>:<path>
 git show origin/main:<path>
 ```
 
@@ -64,7 +64,8 @@ Check each PR against steps 4 and 5 of `github-workflow`:
 ## 3. PR Body Against the Diff
 
 For each bullet of each PR body, find the change in the diff that backs it. Report bullets that no
-change backs, and changes in the diff that no bullet covers.
+change backs, and changes in the diff that no bullet covers. Skip the eks-forge body's `## Coverage`
+section: step 5 checks it.
 
 ## 4. Claims Against Sources
 
@@ -80,16 +81,34 @@ it, and on `main` otherwise. Report each claim the source contradicts or doesn't
 Load `documentation-map`. List what the issue and the sibling PRs say changed, then find what the
 diffs leave stale:
 - Read the pages related to each change in `documentation-map.csv`.
-- Grep all four repos (docs, READMEs, `.md.gotmpl` files, code comments) for the old wording and
-  the related concepts. Include the unchanged lines of the files the PRs edit.
-- The hook blocks `git grep` and `|`: grep the working trees with one `-e` per pattern
-  (`grep -rn -e <old> -e <concept> <dir>`), and read a hit on a PR branch with `git show`.
+- Search the four repos (docs, READMEs, `.md.gotmpl` files, code comments) for the old wording and
+  the related concepts: eks-forge from its root, and each submodule from
+  `site/docs/_external/<repo>`. In each, search `origin/<branch>` when a PR in this review changes
+  that repo, and `origin/main` otherwise.
+- List the files on the ref with a line matching a pattern, one command per pattern (the hash is
+  git's empty tree). It searches tracked files only, so it skips `.claude/worktrees/`,
+  `site/node_modules`, `site/build`, and the submodules, which you search from their directory:
+  ```bash
+  git diff --name-only -G'<pattern>' 4b825dc642cb6eb9a060e54bf8d69288fbee4904 <ref>
+  git ls-tree -r --name-only <ref> | grep -e README -e '\.md\.gotmpl$'
+  ```
+- Read each hit on the ref, and the unchanged lines of each file the PRs edit
+  (`git diff --name-only origin/main...<ref>`):
+  ```bash
+  git show <ref>:<path> | grep -n -e <old> -e <concept>
+  ```
+- Under `review-agent`, `.claude/hooks/read-only-bash.sh` blocks `git grep`, and any command with
+  `>`, `$(`, `<(` or a backtick. It splits commands on `&&`, `||`, `;`, `|` and `&`, and blocks a
+  part that doesn't start with an allowed command, so a pattern can't hold those characters: use one
+  `-G` or `-e` per pattern, not `\|` alternation.
+- Check each claim of the eks-forge body's `## Coverage` section: the passages it lists are fixed in
+  the diffs or left out with a reason, and its searches would find the hits above.
 - Report each stale passage outside the diffs, and each point of the issue that no change covers,
   in the findings format.
 
 ## 6. Page Checks
 
-Load `documentation-map`. For each page the diffs touch (the wrapper and its `_external` source):
+For each page the diffs touch (the wrapper and its `_external` source):
 - Read the siblings with the same `diataxis-tag`, following wrappers to their `_external` source.
   Report where the page breaks their structure or style.
 - Check each added or changed link against `linking-doc-pages`.
@@ -110,5 +129,4 @@ Then a status block, one line per PR: its link, draft state, and failing checks.
 
 When step 4 finds nothing, say `No wrong claim.` explicitly.
 
-Then list the searches run in step 5, so the coverage can be checked. Coverage findings go in the
-findings list.
+Then list the searches run in step 5, so the coverage can be checked.
